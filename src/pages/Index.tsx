@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { Award, Trophy, Plus } from "lucide-react";
+import { Trophy, Plus, Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useState } from "react";
+import Header from "@/components/Header";
+import ClientLogos from "@/components/ClientLogos";
+import logo from "@/assets/logo.png";
 
 const Index = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -17,6 +20,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <Header />
+      
       {/* Hero Section */}
       <section className="bg-[hsl(var(--dark-blue))] text-white pt-16 pb-24 px-6 md:px-12 lg:px-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
@@ -55,12 +60,8 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Brand Icons */}
-          <div className="mt-16 flex justify-between items-center opacity-30 gap-8">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="w-12 h-12 bg-white/20 rounded"></div>
-            ))}
-          </div>
+          {/* Client Logos Scrolling */}
+          <ClientLogos />
         </div>
         
         {/* Wave decoration */}
@@ -184,35 +185,32 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 md:px-12 lg:px-24 bg-gradient-to-br from-[hsl(var(--accent))] to-red-700 relative overflow-hidden">
+      <section className="py-16 px-6 md:px-12 lg:px-24 bg-[hsl(var(--accent))] relative overflow-hidden">
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             Let the people know your<br />Achievement
           </h2>
-          <Button className="bg-white hover:bg-gray-100 text-[hsl(var(--accent))] px-10 py-6 text-lg rounded-full font-semibold">
+          <Button className="bg-white hover:bg-gray-100 text-[hsl(var(--accent))] px-8 py-6 text-base rounded-full font-semibold">
             Book a Meeting
           </Button>
         </div>
-        {/* Decorative shapes */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-32 h-32 border-4 border-white rounded-lg rotate-12"></div>
-          <div className="absolute bottom-10 right-10 w-24 h-24 border-4 border-white rounded-full"></div>
+        {/* Decorative circles */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-10 left-10 w-32 h-32 bg-white/30 rounded-full"></div>
+          <div className="absolute bottom-10 right-10 w-24 h-24 bg-white/30 rounded-full"></div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-white py-12 px-6 md:px-12 lg:px-24 border-t">
+      <footer className="bg-white py-12 px-6 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-8">
             <div>
-              <div className="text-2xl font-bold mb-4">
-                ANNUAL<br />
-                <span className="text-[hsl(var(--accent))]">REPORTS</span>
-              </div>
-              <p className="text-sm text-gray-600 mb-4">
-                ANNUAL REPORTS is Your ideal choice for Data analytics and Annual report for Civil and governmental sector.
+              <img src={logo} alt="Annual Reports" className="h-10 mb-4" />
+              <p className="text-sm text-gray-600 mb-6">
+                The Annual Reports, Bespoke data analysis and visual reports for Gulf area governments and corporations since 2010.
               </p>
-              <div className="flex gap-2 text-xs">
+              <div className="flex gap-2 text-xs text-gray-600">
                 <a href="#" className="hover:text-[hsl(var(--accent))]">Privacy Policy</a>
                 <span>|</span>
                 <a href="#" className="hover:text-[hsl(var(--accent))]">Terms & Conditions</a>
@@ -220,51 +218,59 @@ const Index = () => {
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">Navigation</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
+              <ul className="space-y-3 text-sm text-gray-700">
                 <li><a href="#" className="hover:text-[hsl(var(--accent))]">Home</a></li>
                 <li><a href="#" className="hover:text-[hsl(var(--accent))]">Work</a></li>
-                <li><a href="#" className="hover:text-[hsl(var(--accent))]">Gulf news</a></li>
+                <li><a href="#" className="hover:text-[hsl(var(--accent))]">Gulf new's</a></li>
                 <li><a href="#" className="hover:text-[hsl(var(--accent))]">Infographic</a></li>
               </ul>
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">Contact</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="flex items-center gap-2">
-                  <span>📞</span>
-                  <span>+971582985443</span>
+              <ul className="space-y-3 text-sm text-gray-700">
+                <li className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center text-white flex-shrink-0">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+                    </svg>
+                  </div>
+                  <span>+971856784543</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <span>✉️</span>
+                <li className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center text-white flex-shrink-0">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                  </div>
                   <span>info@annualreport.net</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span>📍</span>
-                  <span>421, Park Plaza, saudi arabia</span>
+                <li className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center text-white flex-shrink-0">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                  </div>
+                  <span>JLT, Dubai, 123 adress street</span>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">Follow Us</h3>
               <div className="flex gap-3">
-                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center text-white hover:opacity-80">
-                  f
+                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center text-white hover:opacity-80 transition-opacity">
+                  <Linkedin className="w-5 h-5" />
                 </a>
-                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center text-white hover:opacity-80">
-                  in
+                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center text-white hover:opacity-80 transition-opacity">
+                  <Facebook className="w-5 h-5" />
                 </a>
-                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center text-white hover:opacity-80">
-                  ▶
+                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center text-white hover:opacity-80 transition-opacity">
+                  <Instagram className="w-5 h-5" />
+                </a>
+                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center text-white hover:opacity-80 transition-opacity">
+                  <Youtube className="w-5 h-5" />
                 </a>
               </div>
             </div>
-          </div>
-
-          <div className="text-center text-sm text-gray-500 pt-8 border-t">
-            <p>gothencompany.com - All rights reserved 2025</p>
           </div>
         </div>
       </footer>
