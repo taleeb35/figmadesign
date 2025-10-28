@@ -4,9 +4,9 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { useState } from "react";
 import Header from "@/components/Header";
 import ClientLogos from "@/components/ClientLogos";
+import CTASection from "@/components/CTASection";
 import logo from "@/assets/logo.png";
 import heroImage from "@/assets/hero-image.png";
-import ctaShape from "@/assets/cta-shape.png";
 
 const Index = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -188,24 +188,7 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 px-6 md:px-12 lg:px-24 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div
-            className="relative w-full overflow-hidden rounded-2xl md:rounded-[28px] shadow-2xl"
-            style={{ backgroundImage: `url(${ctaShape})`, backgroundSize: "cover", backgroundPosition: "center" }}
-          >
-            <div className="px-6 md:px-10 lg:px-12 py-12 md:py-14 text-center">
-              <h2 className="text-white mb-6 leading-tight">
-                <span className="block text-lg md:text-xl font-medium">Let the people know your</span>
-                <span className="block text-3xl md:text-4xl font-extrabold">Achievement</span>
-              </h2>
-              <Button className="bg-white hover:bg-white/90 text-gray-900 px-6 md:px-8 py-3 md:py-3.5 text-sm md:text-base rounded-full font-semibold shadow-md">
-                Book a Meeting
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <CTASection />
 
       {/* Footer */}
       <footer className="bg-white pt-12 pb-0 px-6 md:px-12 lg:px-24">

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
+import CTASection from "@/components/CTASection";
 import logo from "@/assets/logo.png";
 import reportsBanner from "@/assets/reports-banner.png";
 
@@ -130,6 +131,9 @@ const Reports = () => {
           </div>
         </div>
       </section>
+
+      {/* CTA Section */}
+      <CTASection />
 
       {/* Footer */}
       <footer className="bg-white pt-12 pb-0 px-6 md:px-12 lg:px-24">
