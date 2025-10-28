@@ -69,16 +69,18 @@ const ContentList = ({ items, onEdit, onDelete }: ContentListProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Type</TableHead>
             <TableHead>Title</TableHead>
             <TableHead>Year</TableHead>
+            <TableHead>Type</TableHead>
             <TableHead>Available Content</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {items.map((item) => (
             <TableRow key={item.id}>
+              <TableCell className="font-medium">{item.title}</TableCell>
+              <TableCell>{item.year}</TableCell>
               <TableCell>
                 <Badge className={getTypeColor(item.content_type)}>
                   <span className="flex items-center gap-1">
@@ -87,8 +89,6 @@ const ContentList = ({ items, onEdit, onDelete }: ContentListProps) => {
                   </span>
                 </Badge>
               </TableCell>
-              <TableCell className="font-medium">{item.title}</TableCell>
-              <TableCell>{item.year}</TableCell>
               <TableCell className="text-sm text-muted-foreground">
                 {item.content_type === "pdf" && getAvailableLanguages(item)}
                 {item.content_type === "flipbook" && getAvailableLanguages(item)}

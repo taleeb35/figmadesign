@@ -29,20 +29,14 @@ export function AdminSidebar() {
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      end
-                      className={({ isActive }) =>
-                        isActive
-                          ? "bg-primary text-primary-foreground"
-                          : "hover:bg-muted"
-                      }
-                    >
-                      <item.icon className="h-4 w-4" />
-                      {state === "expanded" && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
+                  <NavLink to={item.url} end>
+                    {({ isActive }) => (
+                      <SidebarMenuButton isActive={isActive}>
+                        <item.icon className="h-4 w-4" />
+                        {state === "expanded" && <span>{item.title}</span>}
+                      </SidebarMenuButton>
+                    )}
+                  </NavLink>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
