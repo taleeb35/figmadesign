@@ -18,6 +18,9 @@ const Infographic = () => {
               <a href="/" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
                 Home
               </a>
+              <a href="/reports" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
+                Reports
+              </a>
               <a href="/infographic" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
                 Infographic
               </a>
@@ -45,8 +48,8 @@ const Infographic = () => {
       </section>
 
       {/* Masonry Grid */}
-      <section className="py-12 px-6 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-12 px-6 md:px-12 lg:px-24 overflow-hidden">
+        <div className="max-w-7xl mx-auto w-full">
           {/* First Row - 2 Large Squares */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="aspect-square bg-gray-200 rounded-lg w-full"></div>

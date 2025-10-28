@@ -19,7 +19,10 @@ const AboutUs = () => {
               <a href="/" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
                 Home
               </a>
-              <a href="#" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
+              <a href="/reports" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
+                Reports
+              </a>
+              <a href="/infographic" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
                 Infographic
               </a>
               <a href="/statistics" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
