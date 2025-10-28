@@ -5,6 +5,8 @@ import { useToast } from "@/hooks/use-toast";
 import ContentCategoryForm from "./ContentCategoryForm";
 import ContentCategoryList from "./ContentCategoryList";
 
+// Content category management component
+
 export type ContentCategory = {
   id: string;
   name: string;

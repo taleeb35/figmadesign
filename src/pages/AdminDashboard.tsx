@@ -10,6 +10,8 @@ import ContentManager from "@/components/admin/ContentManager";
 import ContentCategoryManager from "@/components/admin/ContentCategoryManager";
 import PasswordReset from "@/components/admin/PasswordReset";
 
+// Admin dashboard with sidebar navigation
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
