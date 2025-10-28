@@ -11,7 +11,7 @@ const Header = () => {
           </div>
 
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
+            <a href="/" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
               Home
             </a>
             <a href="#" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">

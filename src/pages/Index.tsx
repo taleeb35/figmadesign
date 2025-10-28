@@ -227,8 +227,8 @@ const Index = () => {
             {/* Column 2: Navigation Links */}
             <div>
               <ul className="space-y-4 text-base">
-                <li><a href="#" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Home</a></li>
-                <li><a href="#" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Work</a></li>
+                <li><a href="/" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Home</a></li>
+                <li><a href="/reports" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Work</a></li>
                 <li><a href="#" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Gulf new's</a></li>
                 <li><a href="#" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Infographic</a></li>
               </ul>
