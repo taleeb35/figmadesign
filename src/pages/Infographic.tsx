@@ -48,38 +48,38 @@ const Infographic = () => {
       <section className="py-12 px-6 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
           {/* First Row - 2 Large Squares */}
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <div className="aspect-square bg-gray-200 rounded-lg"></div>
-            <div className="aspect-square bg-gray-200 rounded-lg"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="aspect-square bg-gray-200 rounded-lg w-full"></div>
+            <div className="aspect-square bg-gray-200 rounded-lg w-full"></div>
           </div>
 
           {/* Second Row - 1 Small + 1 Large Horizontal */}
-          <div className="grid md:grid-cols-[1fr_2fr] gap-6 mb-6">
-            <div className="aspect-[4/3] bg-gray-200 rounded-lg"></div>
-            <div className="aspect-[2/1] bg-gray-200 rounded-lg"></div>
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-6 mb-6">
+            <div className="aspect-[4/3] bg-gray-200 rounded-lg w-full"></div>
+            <div className="aspect-[2/1] bg-gray-200 rounded-lg w-full"></div>
           </div>
 
           {/* Third Row - Complex Grid */}
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             {/* Left Column */}
-            <div className="grid gap-6">
-              <div className="aspect-[3/2] bg-gray-200 rounded-lg"></div>
-              <div className="aspect-[3/2] bg-gray-200 rounded-lg"></div>
-              <div className="aspect-[3/2] bg-gray-200 rounded-lg"></div>
+            <div className="grid gap-6 w-full">
+              <div className="aspect-[3/2] bg-gray-200 rounded-lg w-full"></div>
+              <div className="aspect-[3/2] bg-gray-200 rounded-lg w-full"></div>
+              <div className="aspect-[3/2] bg-gray-200 rounded-lg w-full"></div>
             </div>
 
             {/* Right Column */}
-            <div className="grid gap-6">
-              <div className="aspect-[4/3] bg-gray-200 rounded-lg"></div>
-              <div className="aspect-[2/1] bg-gray-200 rounded-lg"></div>
-              <div className="aspect-[3/2] bg-gray-200 rounded-lg"></div>
+            <div className="grid gap-6 w-full">
+              <div className="aspect-[4/3] bg-gray-200 rounded-lg w-full"></div>
+              <div className="aspect-[2/1] bg-gray-200 rounded-lg w-full"></div>
+              <div className="aspect-[3/2] bg-gray-200 rounded-lg w-full"></div>
             </div>
           </div>
 
           {/* Fourth Row - 2 Column Grid */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="aspect-[3/4] bg-gray-200 rounded-lg"></div>
-            <div className="aspect-[3/4] bg-gray-200 rounded-lg"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="aspect-[3/4] bg-gray-200 rounded-lg w-full"></div>
+            <div className="aspect-[3/4] bg-gray-200 rounded-lg w-full"></div>
           </div>
         </div>
       </section>
