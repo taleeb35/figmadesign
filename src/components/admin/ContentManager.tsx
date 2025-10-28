@@ -12,6 +12,7 @@ export type ContentItem = {
   year: number;
   title: string;
   category_id?: string | null;
+  category_name?: string;
   english_pdf_url?: string;
   arabic_pdf_url?: string;
   english_flipbook_url?: string;
@@ -35,11 +36,22 @@ const ContentManager = () => {
     try {
       const { data, error } = await supabase
         .from("content_items")
-        .select("*")
+        .select(`
+          *,
+          content_categories (
+            name
+          )
+        `)
         .order("year", { ascending: false });
 
       if (error) throw error;
-      setItems(data || []);
+      
+      const itemsWithCategories = (data || []).map(item => ({
+        ...item,
+        category_name: item.content_categories?.name
+      }));
+      
+      setItems(itemsWithCategories);
     } catch (error: any) {
       toast({
         title: "Error",

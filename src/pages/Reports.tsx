@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
@@ -6,7 +8,87 @@ import CTASection from "@/components/CTASection";
 import logo from "@/assets/logo.png";
 import reportsBanner from "@/assets/reports-banner.png";
 
+type ContentItem = {
+  id: string;
+  title: string;
+  year: number;
+  content_type: string;
+  cover_image_url?: string;
+  category_id?: string;
+  category_name?: string;
+  created_at: string;
+};
+
+type ContentCategory = {
+  id: string;
+  name: string;
+};
+
 const Reports = () => {
+  const [items, setItems] = useState<ContentItem[]>([]);
+  const [categories, setCategories] = useState<ContentCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filterType, setFilterType] = useState<string>("all");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [filterYear, setFilterYear] = useState<string>("all");
+  const [sortOrder, setSortOrder] = useState<string>("latest");
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch categories
+      const { data: categoriesData } = await supabase
+        .from("content_categories")
+        .select("*")
+        .order("name");
+      
+      // Fetch content items with categories
+      const { data: itemsData } = await supabase
+        .from("content_items")
+        .select(`
+          *,
+          content_categories (
+            name
+          )
+        `);
+
+      setCategories(categoriesData || []);
+      
+      const itemsWithCategories = (itemsData || []).map(item => ({
+        ...item,
+        category_name: item.content_categories?.name
+      }));
+      
+      setItems(itemsWithCategories);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredAndSortedItems = items
+    .filter(item => {
+      if (filterType !== "all" && item.content_type !== filterType) return false;
+      if (filterCategory !== "all" && item.category_id !== filterCategory) return false;
+      if (filterYear !== "all" && item.year.toString() !== filterYear) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (sortOrder === "latest") {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      } else {
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      }
+    });
+
+  const availableYears = [...new Set(items.map(item => item.year))].sort((a, b) => b - a);
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -22,7 +104,7 @@ const Reports = () => {
           {/* Counter */}
           <div className="flex justify-center mb-6">
             <div className="bg-blue-500 text-white px-4 py-1 rounded text-sm font-semibold">
-              1440 ⊞ 224
+              {filteredAndSortedItems.length} Results
             </div>
           </div>
 
@@ -33,75 +115,118 @@ const Reports = () => {
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end mb-8">
             <div>
               <label className="block text-sm font-semibold mb-2">Type</label>
-              <Select>
+              <Select value={filterType} onValueChange={setFilterType}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder="All types" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="annual">Annual Report</SelectItem>
-                  <SelectItem value="quarterly">Quarterly Report</SelectItem>
-                  <SelectItem value="special">Special Report</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold mb-2">Country</label>
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select country" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="uae">UAE</SelectItem>
-                  <SelectItem value="saudi">Saudi Arabia</SelectItem>
-                  <SelectItem value="kuwait">Kuwait</SelectItem>
-                  <SelectItem value="qatar">Qatar</SelectItem>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="pdf">PDF</SelectItem>
+                  <SelectItem value="flipbook">Flipbook</SelectItem>
+                  <SelectItem value="youtube">YouTube</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
               <label className="block text-sm font-semibold mb-2">Content</label>
-              <Select>
+              <Select value={filterCategory} onValueChange={setFilterCategory}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select content" />
+                  <SelectValue placeholder="All content" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="financial">Financial</SelectItem>
-                  <SelectItem value="sustainability">Sustainability</SelectItem>
-                  <SelectItem value="governance">Governance</SelectItem>
+                  <SelectItem value="all">All Content</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
 
             <div>
               <label className="block text-sm font-semibold mb-2">Year</label>
-              <Select>
+              <Select value={filterYear} onValueChange={setFilterYear}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select year" />
+                  <SelectValue placeholder="All years" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="2025">2025</SelectItem>
-                  <SelectItem value="2024">2024</SelectItem>
-                  <SelectItem value="2023">2023</SelectItem>
-                  <SelectItem value="2022">2022</SelectItem>
+                  <SelectItem value="all">All Years</SelectItem>
+                  {availableYears.map((year) => (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <Button className="w-full bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white rounded-full">
-                Filter
+              <label className="block text-sm font-semibold mb-2">Sort By</label>
+              <Select value={sortOrder} onValueChange={setSortOrder}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Sort order" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="latest">Latest</SelectItem>
+                  <SelectItem value="oldest">Oldest</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Button 
+                onClick={() => {
+                  setFilterType("all");
+                  setFilterCategory("all");
+                  setFilterYear("all");
+                  setSortOrder("latest");
+                }}
+                className="w-full bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white rounded-full"
+              >
+                Reset
               </Button>
             </div>
           </div>
 
           {/* Report Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="aspect-[3/4] bg-gray-200 rounded-lg hover:shadow-xl transition-shadow"></div>
-            ))}
-          </div>
+          {loading ? (
+            <div className="text-center py-12">Loading...</div>
+          ) : filteredAndSortedItems.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">No content found matching your filters.</div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredAndSortedItems.map((item) => (
+                <div 
+                  key={item.id} 
+                  className="group aspect-[3/4] bg-gray-200 rounded-lg hover:shadow-xl transition-all overflow-hidden relative cursor-pointer"
+                >
+                  {item.cover_image_url ? (
+                    <img 
+                      src={item.cover_image_url} 
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-400">
+                      <span className="text-gray-600 text-lg font-semibold px-4 text-center">
+                        {item.title}
+                      </span>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 text-white">
+                    <h3 className="text-lg font-bold mb-2 text-center">{item.title}</h3>
+                    <p className="text-sm mb-1">{item.year}</p>
+                    <p className="text-xs uppercase tracking-wider">{item.content_type}</p>
+                    {item.category_name && (
+                      <p className="text-xs mt-2 px-3 py-1 bg-white/20 rounded-full">{item.category_name}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

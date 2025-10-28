@@ -72,7 +72,7 @@ const ContentList = ({ items, onEdit, onDelete }: ContentListProps) => {
             <TableHead>Title</TableHead>
             <TableHead>Year</TableHead>
             <TableHead>Type</TableHead>
-            <TableHead>Available Content</TableHead>
+            <TableHead>Content</TableHead>
             <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -90,14 +90,7 @@ const ContentList = ({ items, onEdit, onDelete }: ContentListProps) => {
                 </Badge>
               </TableCell>
               <TableCell className="text-sm text-muted-foreground">
-                {item.content_type === "pdf" && getAvailableLanguages(item)}
-                {item.content_type === "flipbook" && getAvailableLanguages(item)}
-                {item.content_type === "youtube" && (
-                  <div className="space-y-1">
-                    {item.youtube_url && <div>✓ Video URL</div>}
-                    {item.cover_image_url && <div>✓ Cover Image</div>}
-                  </div>
-                )}
+                {item.category_name || "N/A"}
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex gap-2 justify-end">
