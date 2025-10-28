@@ -10,18 +10,11 @@ const ClientLogos = () => {
   const logos = [logo1, logo2, logo3, logo4, logo5, logo6, logo7];
 
   return (
-    <div className="mt-16 overflow-hidden">
-      <div className="flex animate-scroll">
-        {/* First set of logos */}
+    <div className="mt-16">
+      <div className="flex justify-center items-center gap-12 flex-wrap">
         {logos.map((logo, i) => (
-          <div key={`first-${i}`} className="flex-shrink-0 mx-8">
-            <img src={logo} alt={`Client ${i + 1}`} className="h-12 opacity-40 grayscale hover:opacity-70 hover:grayscale-0 transition-all" />
-          </div>
-        ))}
-        {/* Duplicate set for seamless loop */}
-        {logos.map((logo, i) => (
-          <div key={`second-${i}`} className="flex-shrink-0 mx-8">
-            <img src={logo} alt={`Client ${i + 1}`} className="h-12 opacity-40 grayscale hover:opacity-70 hover:grayscale-0 transition-all" />
+          <div key={i} className="flex-shrink-0">
+            <img src={logo} alt={`Client ${i + 1}`} className="h-16 opacity-70 hover:opacity-100 transition-all" />
           </div>
         ))}
       </div>

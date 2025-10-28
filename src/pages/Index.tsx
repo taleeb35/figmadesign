@@ -5,6 +5,7 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import ClientLogos from "@/components/ClientLogos";
 import logo from "@/assets/logo.png";
+import heroImage from "@/assets/hero-image.png";
 
 const Index = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -56,7 +57,7 @@ const Index = () => {
               </div>
             </div>
             <div className="hidden lg:block">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg h-96"></div>
+              <img src={heroImage} alt="Annual Reports Analytics" className="w-full h-auto rounded-2xl shadow-2xl" />
             </div>
           </div>
 
