@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { X, Upload } from "lucide-react";
 import type { ContentItem } from "./ContentManager";
+import type { ContentCategory } from "./ContentCategoryManager";
 
 type ContentFormProps = {
   item: ContentItem | null;
@@ -17,9 +18,15 @@ type ContentFormProps = {
 const ContentForm = ({ item, onClose }: ContentFormProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState<ContentCategory[]>([]);
   const [contentType, setContentType] = useState<"pdf" | "flipbook" | "youtube">(item?.content_type || "pdf");
   const [year, setYear] = useState(item?.year?.toString() || new Date().getFullYear().toString());
   const [title, setTitle] = useState(item?.title || "");
+  const [categoryId, setCategoryId] = useState(item?.category_id || "");
+  
+  // Image field for all types
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [coverImageUrl, setCoverImageUrl] = useState(item?.cover_image_url || "");
   
   // PDF fields
   const [englishPdfFile, setEnglishPdfFile] = useState<File | null>(null);
@@ -33,8 +40,24 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
   
   // YouTube fields
   const [youtubeUrl, setYoutubeUrl] = useState(item?.youtube_url || "");
-  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
-  const [coverImageUrl, setCoverImageUrl] = useState(item?.cover_image_url || "");
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("content_categories")
+        .select("*")
+        .order("name");
+
+      if (error) throw error;
+      setCategories(data || []);
+    } catch (error: any) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   const uploadFile = async (file: File, path: string): Promise<string> => {
     const { data, error } = await supabase.storage
@@ -62,8 +85,17 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
         content_type: contentType,
         year: parseInt(year),
         title,
+        category_id: categoryId || null,
         created_by: user.id,
       };
+
+      // Handle cover image upload (for all types)
+      if (coverImageFile) {
+        const url = await uploadFile(coverImageFile, `covers/${Date.now()}_${coverImageFile.name}`);
+        dataToSave.cover_image_url = url;
+      } else if (item && coverImageUrl) {
+        dataToSave.cover_image_url = coverImageUrl;
+      }
 
       // Handle file uploads and URLs based on content type
       if (contentType === "pdf") {
@@ -85,13 +117,6 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
         dataToSave.arabic_flipbook_url = arabicFlipbookUrl || null;
       } else if (contentType === "youtube") {
         dataToSave.youtube_url = youtubeUrl;
-        
-        if (coverImageFile) {
-          const url = await uploadFile(coverImageFile, `covers/${Date.now()}_${coverImageFile.name}`);
-          dataToSave.cover_image_url = url;
-        } else if (item) {
-          dataToSave.cover_image_url = coverImageUrl;
-        }
       }
 
       if (item) {
@@ -172,6 +197,35 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
             />
           </div>
 
+          <div>
+            <Label htmlFor="category">Content Category</Label>
+            <Select value={categoryId} onValueChange={setCategoryId}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="coverImage">Cover Image</Label>
+            <Input
+              id="coverImage"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setCoverImageFile(e.target.files?.[0] || null)}
+            />
+            {coverImageUrl && !coverImageFile && (
+              <p className="text-sm text-muted-foreground mt-1">Current image uploaded</p>
+            )}
+          </div>
+
           {contentType === "pdf" && (
             <>
               <div>
@@ -227,32 +281,17 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
           )}
 
           {contentType === "youtube" && (
-            <>
-              <div>
-                <Label htmlFor="youtubeUrl">YouTube URL</Label>
-                <Input
-                  id="youtubeUrl"
-                  type="url"
-                  value={youtubeUrl}
-                  onChange={(e) => setYoutubeUrl(e.target.value)}
-                  required
-                  placeholder="https://www.youtube.com/watch?v=..."
-                />
-              </div>
-              <div>
-                <Label htmlFor="coverImage">Cover Image</Label>
-                <Input
-                  id="coverImage"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setCoverImageFile(e.target.files?.[0] || null)}
-                  required={!item}
-                />
-                {coverImageUrl && !coverImageFile && (
-                  <p className="text-sm text-muted-foreground mt-1">Current image uploaded</p>
-                )}
-              </div>
-            </>
+            <div>
+              <Label htmlFor="youtubeUrl">YouTube URL</Label>
+              <Input
+                id="youtubeUrl"
+                type="url"
+                value={youtubeUrl}
+                onChange={(e) => setYoutubeUrl(e.target.value)}
+                required
+                placeholder="https://www.youtube.com/watch?v=..."
+              />
+            </div>
           )}
 
           <div className="flex gap-2">

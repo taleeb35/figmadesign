@@ -7,6 +7,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { LogOut } from "lucide-react";
 import ContentManager from "@/components/admin/ContentManager";
+import ContentCategoryManager from "@/components/admin/ContentCategoryManager";
 import PasswordReset from "@/components/admin/PasswordReset";
 
 const AdminDashboard = () => {
@@ -95,6 +96,7 @@ const AdminDashboard = () => {
           <main className="container mx-auto px-4 py-8 flex-1">
             <Routes>
               <Route path="/" element={<ContentManager />} />
+              <Route path="/content" element={<ContentCategoryManager />} />
               <Route path="/settings" element={<PasswordReset />} />
             </Routes>
           </main>

@@ -11,6 +11,7 @@ export type ContentItem = {
   content_type: "pdf" | "flipbook" | "youtube";
   year: number;
   title: string;
+  category_id?: string | null;
   english_pdf_url?: string;
   arabic_pdf_url?: string;
   english_flipbook_url?: string;

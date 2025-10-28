@@ -14,10 +14,32 @@ export type Database = {
   }
   public: {
     Tables: {
+      content_categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       content_items: {
         Row: {
           arabic_flipbook_url: string | null
           arabic_pdf_url: string | null
+          category_id: string | null
           content_type: Database["public"]["Enums"]["content_type"]
           cover_image_url: string | null
           created_at: string | null
@@ -33,6 +55,7 @@ export type Database = {
         Insert: {
           arabic_flipbook_url?: string | null
           arabic_pdf_url?: string | null
+          category_id?: string | null
           content_type: Database["public"]["Enums"]["content_type"]
           cover_image_url?: string | null
           created_at?: string | null
@@ -48,6 +71,7 @@ export type Database = {
         Update: {
           arabic_flipbook_url?: string | null
           arabic_pdf_url?: string | null
+          category_id?: string | null
           content_type?: Database["public"]["Enums"]["content_type"]
           cover_image_url?: string | null
           created_at?: string | null
@@ -60,7 +84,15 @@ export type Database = {
           year?: number
           youtube_url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "content_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "content_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

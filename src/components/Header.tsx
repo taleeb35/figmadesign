@@ -19,9 +19,6 @@ const Header = () => {
             <a href="/reports" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
               Reports
             </a>
-            <a href="/content" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
-              Content
-            </a>
             <a href="/infographic" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
               Infographic
             </a>
@@ -51,9 +48,6 @@ const Header = () => {
                   </a>
                   <a href="/reports" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium text-lg">
                     Reports
-                  </a>
-                  <a href="/content" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium text-lg">
-                    Content
                   </a>
                   <a href="/infographic" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium text-lg">
                     Infographic
