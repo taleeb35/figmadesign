@@ -187,21 +187,36 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 md:px-12 lg:px-24 bg-[hsl(var(--accent))] relative overflow-hidden">
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-8 leading-tight">
-            Let the people know your<br />Achievement
-          </h2>
-          <Button className="bg-white hover:bg-gray-100 text-gray-900 px-10 py-6 text-base rounded-full font-semibold shadow-lg">
-            Book a Meeting
-          </Button>
-        </div>
-        {/* Decorative wave shapes */}
-        <div className="absolute inset-0 opacity-30">
-          <svg className="absolute left-0 top-0 h-full" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 0C100 50 150 150 150 250C150 350 100 400 0 400V0Z" fill="rgba(139, 0, 0, 0.3)"/>
-            <path d="M0 100C80 130 120 180 120 250C120 320 80 370 0 400V100Z" fill="rgba(139, 0, 0, 0.2)"/>
-          </svg>
+      <section className="py-12 px-6 md:px-12 lg:px-24 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="relative w-full rounded-2xl md:rounded-[28px] bg-[hsl(var(--accent))] text-white shadow-2xl overflow-hidden">
+            {/* Side inner shadows (both sides) */}
+            <div className="pointer-events-none absolute inset-0 opacity-60">
+              <div className="absolute inset-y-0 left-0 w-24 md:w-40">
+                <svg className="h-full w-full fill-current text-[hsl(var(--accent))]/40" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0C100 50 150 150 150 250C150 350 100 400 0 400V0Z" />
+                  <path className="text-[hsl(var(--accent))]/30" fill="currentColor" d="M0 100C80 130 120 180 120 250C120 320 80 370 0 400V100Z" />
+                </svg>
+              </div>
+              <div className="absolute inset-y-0 right-0 w-24 md:w-40 rotate-180">
+                <svg className="h-full w-full fill-current text-[hsl(var(--accent))]/40" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0C100 50 150 150 150 250C150 350 100 400 0 400V0Z" />
+                  <path className="text-[hsl(var(--accent))]/30" fill="currentColor" d="M0 100C80 130 120 180 120 250C120 320 80 370 0 400V100Z" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="px-6 md:px-10 lg:px-12 py-10 md:py-12 text-center relative z-10">
+              <h2 className="text-white mb-6 leading-tight">
+                <span className="block text-lg md:text-xl font-medium">Let the people know your</span>
+                <span className="block text-3xl md:text-4xl font-extrabold">Achievement</span>
+              </h2>
+              <Button className="bg-white hover:bg-white/90 text-gray-900 px-6 md:px-8 py-3 md:py-3.5 text-sm md:text-base rounded-full font-semibold shadow-md">
+                Book a Meeting
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
