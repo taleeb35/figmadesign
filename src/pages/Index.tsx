@@ -266,18 +266,18 @@ const Index = () => {
 
             {/* Column 4: Social Media Icons */}
             <div>
-              <div className="flex gap-4">
-                <a href="#" className="w-12 h-12 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="LinkedIn">
-                  <Linkedin className="w-6 h-6 text-white" />
+              <div className="flex items-center gap-6">
+                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="LinkedIn">
+                  <Linkedin className="w-5 h-5 text-white" strokeWidth={2.5} />
                 </a>
-                <a href="#" className="w-12 h-12 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="Facebook">
-                  <Facebook className="w-6 h-6 text-white" />
+                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="Facebook">
+                  <Facebook className="w-5 h-5 text-white" strokeWidth={2.5} />
                 </a>
-                <a href="#" className="w-12 h-12 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="Instagram">
-                  <Instagram className="w-6 h-6 text-white" />
+                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="Instagram">
+                  <Instagram className="w-5 h-5 text-white" strokeWidth={2.5} />
                 </a>
-                <a href="#" className="w-12 h-12 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="YouTube">
-                  <Youtube className="w-6 h-6 text-white" />
+                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="YouTube">
+                  <Youtube className="w-5 h-5 text-white" strokeWidth={2.5} />
                 </a>
               </div>
             </div>
