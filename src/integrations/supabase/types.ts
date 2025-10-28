@@ -115,6 +115,71 @@ export type Database = {
         }
         Relationships: []
       }
+      statistics: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          created_by: string | null
+          external_link: string | null
+          id: string
+          image_url: string | null
+          title: string
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          external_link?: string | null
+          id?: string
+          image_url?: string | null
+          title: string
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          external_link?: string | null
+          id?: string
+          image_url?: string | null
+          title?: string
+          updated_at?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "statistics_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "statistics_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      statistics_categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null

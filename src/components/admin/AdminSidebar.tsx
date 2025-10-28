@@ -1,4 +1,4 @@
-import { FileText, Settings, FolderKanban } from "lucide-react";
+import { FileText, Settings, FolderKanban, BarChart3 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -15,6 +15,7 @@ import {
 const menuItems = [
   { title: "Reports", url: "/admin/dashboard", icon: FileText },
   { title: "Content", url: "/admin/dashboard/content", icon: FolderKanban },
+  { title: "Statistics", url: "/admin/dashboard/statistics", icon: BarChart3 },
   { title: "Settings", url: "/admin/dashboard/settings", icon: Settings },
 ];
 

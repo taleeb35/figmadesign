@@ -8,6 +8,7 @@ import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { LogOut } from "lucide-react";
 import ContentManager from "@/components/admin/ContentManager";
 import ContentCategoryManager from "@/components/admin/ContentCategoryManager";
+import StatisticsManager from "@/components/admin/StatisticsManager";
 import PasswordReset from "@/components/admin/PasswordReset";
 
 // Admin dashboard with sidebar navigation
@@ -99,6 +100,7 @@ const AdminDashboard = () => {
             <Routes>
               <Route path="/" element={<ContentManager />} />
               <Route path="/content" element={<ContentCategoryManager />} />
+              <Route path="/statistics" element={<StatisticsManager />} />
               <Route path="/settings" element={<PasswordReset />} />
             </Routes>
           </main>
