@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Linkedin, Facebook, Instagram, Youtube, Play } from "lucide-react";
 import Header from "@/components/Header";
 import CTASection from "@/components/CTASection";
 import logo from "@/assets/logo.png";
@@ -16,6 +17,7 @@ type ContentItem = {
   cover_image_url?: string;
   category_id?: string;
   category_name?: string;
+  youtube_url?: string;
   created_at: string;
 };
 
@@ -32,6 +34,8 @@ const Reports = () => {
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterYear, setFilterYear] = useState<string>("all");
   const [sortOrder, setSortOrder] = useState<string>("latest");
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const videoRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     fetchData();
@@ -80,12 +84,32 @@ const Reports = () => {
       return true;
     })
     .sort((a, b) => {
+      // First, sort by content type (YouTube videos at the end)
+      if (a.content_type === "youtube" && b.content_type !== "youtube") return 1;
+      if (a.content_type !== "youtube" && b.content_type === "youtube") return -1;
+      
+      // Then sort by date
       if (sortOrder === "latest") {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       } else {
         return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
       }
     });
+
+  const getYouTubeEmbedUrl = (url: string) => {
+    const videoId = url.includes("youtube.com") 
+      ? url.split("v=")[1]?.split("&")[0]
+      : url.split("youtu.be/")[1]?.split("?")[0];
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+  };
+
+  const handleVideoClick = (youtubeUrl: string) => {
+    setSelectedVideo(youtubeUrl);
+  };
+
+  const handleCloseVideo = () => {
+    setSelectedVideo(null);
+  };
 
   const availableYears = [...new Set(items.map(item => item.year))].sort((a, b) => b - a);
 
@@ -197,38 +221,72 @@ const Reports = () => {
             <div className="text-center py-12 text-gray-500">No content found matching your filters.</div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredAndSortedItems.map((item) => (
-                <div 
-                  key={item.id} 
-                  className="group aspect-[3/4] bg-gray-200 rounded-lg hover:shadow-xl transition-all overflow-hidden relative cursor-pointer"
-                >
-                  {item.cover_image_url ? (
-                    <img 
-                      src={item.cover_image_url} 
-                      alt={item.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-400">
-                      <span className="text-gray-600 text-lg font-semibold px-4 text-center">
-                        {item.title}
-                      </span>
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 text-white">
-                    <h3 className="text-lg font-bold mb-2 text-center">{item.title}</h3>
-                    <p className="text-sm mb-1">{item.year}</p>
-                    <p className="text-xs uppercase tracking-wider">{item.content_type}</p>
-                    {item.category_name && (
-                      <p className="text-xs mt-2 px-3 py-1 bg-white/20 rounded-full">{item.category_name}</p>
+              {filteredAndSortedItems.map((item) => {
+                const isYouTube = item.content_type === "youtube";
+                const aspectClass = isYouTube ? "aspect-video" : "aspect-[3/4]";
+                
+                return (
+                  <div 
+                    key={item.id} 
+                    className={`group ${aspectClass} bg-gray-200 rounded-lg hover:shadow-xl transition-all overflow-hidden relative cursor-pointer`}
+                    onClick={() => isYouTube && item.youtube_url && handleVideoClick(item.youtube_url)}
+                  >
+                    {item.cover_image_url ? (
+                      <img 
+                        src={item.cover_image_url} 
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-400">
+                        <span className="text-gray-600 text-lg font-semibold px-4 text-center">
+                          {item.title}
+                        </span>
+                      </div>
                     )}
+                    
+                    {/* Play button overlay for YouTube videos */}
+                    {isYouTube && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors">
+                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <Play className="w-8 h-8 text-red-600 fill-red-600 ml-1" />
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 text-white">
+                      <h3 className="text-lg font-bold mb-2 text-center">{item.title}</h3>
+                      <p className="text-sm mb-1">{item.year}</p>
+                      <p className="text-xs uppercase tracking-wider">{item.content_type}</p>
+                      {item.category_name && (
+                        <p className="text-xs mt-2 px-3 py-1 bg-white/20 rounded-full">{item.category_name}</p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
       </section>
+
+      {/* YouTube Video Modal */}
+      <Dialog open={!!selectedVideo} onOpenChange={(open) => !open && handleCloseVideo()}>
+        <DialogContent className="max-w-4xl w-full p-0">
+          <DialogTitle className="sr-only">Video Player</DialogTitle>
+          <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+            {selectedVideo && (
+              <iframe
+                ref={videoRef}
+                src={getYouTubeEmbedUrl(selectedVideo)}
+                className="absolute top-0 left-0 w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* CTA Section */}
       <CTASection />
