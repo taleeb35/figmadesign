@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Routes, Route } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogOut, Settings } from "lucide-react";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { LogOut } from "lucide-react";
 import ContentManager from "@/components/admin/ContentManager";
 import PasswordReset from "@/components/admin/PasswordReset";
 
@@ -74,35 +75,32 @@ const AdminDashboard = () => {
   if (!isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-          <Button onClick={handleLogout} variant="outline" size="sm">
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </Button>
-        </div>
-      </header>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AdminSidebar />
+        <div className="flex-1 flex flex-col">
+          <header className="border-b">
+            <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <SidebarTrigger />
+                <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+              </div>
+              <Button onClick={handleLogout} variant="outline" size="sm">
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </Button>
+            </div>
+          </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="content" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="content">Content Management</TabsTrigger>
-            <TabsTrigger value="settings">
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="content" className="mt-6">
-            <ContentManager />
-          </TabsContent>
-          <TabsContent value="settings" className="mt-6">
-            <PasswordReset />
-          </TabsContent>
-        </Tabs>
-      </main>
-    </div>
+          <main className="container mx-auto px-4 py-8 flex-1">
+            <Routes>
+              <Route path="/" element={<ContentManager />} />
+              <Route path="/settings" element={<PasswordReset />} />
+            </Routes>
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 

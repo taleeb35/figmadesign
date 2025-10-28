@@ -1,6 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Edit, Trash2, FileText, BookOpen, Video } from "lucide-react";
 import type { ContentItem } from "./ContentManager";
 
@@ -37,75 +44,84 @@ const ContentList = ({ items, onEdit, onDelete }: ContentListProps) => {
     }
   };
 
+  const getAvailableLanguages = (item: ContentItem) => {
+    const languages = [];
+    if (item.content_type === "pdf") {
+      if (item.english_pdf_url) languages.push("EN");
+      if (item.arabic_pdf_url) languages.push("AR");
+    } else if (item.content_type === "flipbook") {
+      if (item.english_flipbook_url) languages.push("EN");
+      if (item.arabic_flipbook_url) languages.push("AR");
+    }
+    return languages.join(", ");
+  };
+
   if (items.length === 0) {
     return (
-      <Card>
-        <CardContent className="py-12 text-center text-muted-foreground">
-          No content items yet. Click "Add Content" to create one.
-        </CardContent>
-      </Card>
+      <div className="border rounded-lg p-12 text-center text-muted-foreground">
+        No content items yet. Click "Add Content" to create one.
+      </div>
     );
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {items.map((item) => (
-        <Card key={item.id}>
-          <CardContent className="pt-6">
-            <div className="flex items-start justify-between mb-3">
-              <Badge className={getTypeColor(item.content_type)}>
-                <span className="flex items-center gap-1">
-                  {getTypeIcon(item.content_type)}
-                  {item.content_type.toUpperCase()}
-                </span>
-              </Badge>
-              <span className="text-sm text-muted-foreground">{item.year}</span>
-            </div>
-            
-            <h3 className="font-semibold mb-4 line-clamp-2">{item.title}</h3>
-            
-            <div className="text-sm text-muted-foreground mb-4">
-              {item.content_type === "pdf" && (
-                <div className="space-y-1">
-                  {item.english_pdf_url && <div>✓ English PDF</div>}
-                  {item.arabic_pdf_url && <div>✓ Arabic PDF</div>}
+    <div className="border rounded-lg">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Type</TableHead>
+            <TableHead>Title</TableHead>
+            <TableHead>Year</TableHead>
+            <TableHead>Available Content</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {items.map((item) => (
+            <TableRow key={item.id}>
+              <TableCell>
+                <Badge className={getTypeColor(item.content_type)}>
+                  <span className="flex items-center gap-1">
+                    {getTypeIcon(item.content_type)}
+                    {item.content_type.toUpperCase()}
+                  </span>
+                </Badge>
+              </TableCell>
+              <TableCell className="font-medium">{item.title}</TableCell>
+              <TableCell>{item.year}</TableCell>
+              <TableCell className="text-sm text-muted-foreground">
+                {item.content_type === "pdf" && getAvailableLanguages(item)}
+                {item.content_type === "flipbook" && getAvailableLanguages(item)}
+                {item.content_type === "youtube" && (
+                  <div className="space-y-1">
+                    {item.youtube_url && <div>✓ Video URL</div>}
+                    {item.cover_image_url && <div>✓ Cover Image</div>}
+                  </div>
+                )}
+              </TableCell>
+              <TableCell className="text-right">
+                <div className="flex gap-2 justify-end">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => onEdit(item)}
+                  >
+                    <Edit className="h-3 w-3 mr-1" />
+                    Edit
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => onDelete(item.id)}
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
                 </div>
-              )}
-              {item.content_type === "flipbook" && (
-                <div className="space-y-1">
-                  {item.english_flipbook_url && <div>✓ English Link</div>}
-                  {item.arabic_flipbook_url && <div>✓ Arabic Link</div>}
-                </div>
-              )}
-              {item.content_type === "youtube" && (
-                <div className="space-y-1">
-                  {item.youtube_url && <div>✓ Video URL</div>}
-                  {item.cover_image_url && <div>✓ Cover Image</div>}
-                </div>
-              )}
-            </div>
-
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => onEdit(item)}
-                className="flex-1"
-              >
-                <Edit className="h-3 w-3 mr-1" />
-                Edit
-              </Button>
-              <Button
-                size="sm"
-                variant="destructive"
-                onClick={() => onDelete(item.id)}
-              >
-                <Trash2 className="h-3 w-3" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };
