@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const Header = () => {
@@ -28,9 +30,41 @@ const Header = () => {
             </a>
           </nav>
 
-          <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-6 rounded-full">
-            Meeting
-          </Button>
+          <div className="flex items-center gap-4">
+            <Button className="hidden md:block bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-6 rounded-full">
+              Meeting
+            </Button>
+
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] bg-white">
+                <nav className="flex flex-col gap-6 mt-8">
+                  <a href="/" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium text-lg">
+                    Home
+                  </a>
+                  <a href="/reports" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium text-lg">
+                    Reports
+                  </a>
+                  <a href="/infographic" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium text-lg">
+                    Infographic
+                  </a>
+                  <a href="/statistics" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium text-lg">
+                    Statics
+                  </a>
+                  <a href="/about" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium text-lg">
+                    About us
+                  </a>
+                  <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-6 rounded-full mt-4">
+                    Meeting
+                  </Button>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </header>

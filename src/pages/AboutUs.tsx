@@ -1,44 +1,13 @@
-import { Button } from "@/components/ui/button";
 import { Heart, Lightbulb, Users, Zap, Check, Quote } from "lucide-react";
 import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
+import Header from "@/components/Header";
 import CTASection from "@/components/CTASection";
 import logo from "@/assets/logo.png";
 
 const AboutUs = () => {
   return (
     <div className="min-h-screen bg-white">
-      {/* Header with shadow */}
-      <header className="bg-white sticky top-0 z-50 py-4 shadow-md">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
-          <div className="bg-white rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
-            <div className="flex items-center">
-              <img src={logo} alt="Annual Reports" className="h-8 md:h-10" />
-            </div>
-
-            <nav className="hidden md:flex items-center gap-8">
-              <a href="/" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
-                Home
-              </a>
-              <a href="/reports" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
-                Reports
-              </a>
-              <a href="/infographic" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
-                Infographic
-              </a>
-              <a href="/statistics" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
-                Statics
-              </a>
-              <a href="/about" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium">
-                About us
-              </a>
-            </nav>
-
-            <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-6 rounded-full">
-              Meeting
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Banner - Dark Gray */}
       <section className="bg-gray-700 py-16 md:py-20 text-center">
