@@ -8,6 +8,11 @@ import Reports from "./pages/Reports";
 import Statistics from "./pages/Statistics";
 import AboutUs from "./pages/AboutUs";
 import Infographic from "./pages/Infographic";
+import Content from "./pages/Content";
+import AdminLogin from "./pages/AdminLogin";
+import AdminForgotPassword from "./pages/AdminForgotPassword";
+import AdminResetPassword from "./pages/AdminResetPassword";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +29,11 @@ const App = () => (
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/infographic" element={<Infographic />} />
+          <Route path="/content" element={<Content />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
+          <Route path="/admin/reset-password" element={<AdminResetPassword />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
