@@ -122,7 +122,7 @@ const AboutUs = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-md hover:shadow-lg transition-shadow">
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)] transition-shadow">
               <Heart className="w-12 h-12 text-[hsl(var(--accent))] mx-auto mb-4" strokeWidth={1.5} />
               <h3 className="text-xl font-bold mb-3">Passion</h3>
               <p className="text-sm text-gray-700 leading-relaxed">
@@ -130,7 +130,7 @@ const AboutUs = () => {
               </p>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-md hover:shadow-lg transition-shadow">
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)] transition-shadow">
               <Lightbulb className="w-12 h-12 text-[hsl(var(--accent))] mx-auto mb-4" strokeWidth={1.5} />
               <h3 className="text-xl font-bold mb-3">Innovation</h3>
               <p className="text-sm text-gray-700 leading-relaxed">
@@ -138,7 +138,7 @@ const AboutUs = () => {
               </p>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-md hover:shadow-lg transition-shadow">
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)] transition-shadow">
               <Users className="w-12 h-12 text-[hsl(var(--accent))] mx-auto mb-4" strokeWidth={1.5} />
               <h3 className="text-xl font-bold mb-3">Collaboration</h3>
               <p className="text-sm text-gray-700 leading-relaxed">
@@ -146,7 +146,7 @@ const AboutUs = () => {
               </p>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-md hover:shadow-lg transition-shadow">
+            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)] transition-shadow">
               <Zap className="w-12 h-12 text-[hsl(var(--accent))] mx-auto mb-4" strokeWidth={1.5} />
               <h3 className="text-xl font-bold mb-3">Excellence</h3>
               <p className="text-sm text-gray-700 leading-relaxed">
