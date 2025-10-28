@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Trophy, Plus, Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
+import { Trophy, Plus, Linkedin, Facebook, Instagram, Youtube, FileText } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useState } from "react";
 import Header from "@/components/Header";
@@ -11,12 +11,12 @@ const Index = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const faqItems = [
-    { question: "What are you guys?" },
-    { question: "How do you work?" },
-    { question: "What services do you offer?" },
-    { question: "How long does a project take?" },
-    { question: "What are your pricing options?" },
-    { question: "Do you offer ongoing support?" },
+    { question: "What is the Annual Reports?" },
+    { question: "How do you handle sensitive or confidential data?" },
+    { question: "How long does the annual report process take?" },
+    { question: "What is the typical end product? Is it digital, print, or both?" },
+    { question: "what kind of historical data depth can you manage?" },
+    { question: "How do you ensure the final report reflects Company Vision?" },
   ];
 
   return (
@@ -129,25 +129,26 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">Our Story</h2>
-            <p className="text-gray-600">From Data Analytics to Report Authorities.</p>
+            <p className="text-gray-600">From Data Analysts to Report Leaders.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { year: "2010", label: "YEAR" },
-              { year: "2010", label: "YEAR" },
-              { year: "2010", label: "YEAR" },
-              { year: "2025", label: "YEAR" },
+              { year: "2010", text: "Data Specialization: Focused on extracting data integrity and structure in complex Gulf markets." },
+              { year: "2015", text: "Strategic Consolidation: Refined our services to directly link deep data analysis with C-suite objectives." },
+              { year: "2020", text: "Visual Intelligence: Defined the benchmark for concise, high-impact visualization in regional reports." },
+              { year: "2025", text: "Report Leaders: Solidified our position as the region's definitive reporting partner for the Gulf's top leaders." },
             ].map((item, i) => (
               <div key={i} className="relative">
-                <div className="bg-gray-200 rounded-xl p-8 text-center h-32 flex flex-col items-center justify-center">
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-12 h-12 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center text-white font-bold text-sm">
-                    {item.label}
+                <div className="bg-gray-100 rounded-2xl p-6 pt-8 text-center min-h-[200px] flex flex-col items-center">
+                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-14 h-14 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center text-white shadow-lg">
+                    <FileText className="w-7 h-7" />
                   </div>
-                  <div className="text-3xl font-bold mt-4">{item.year}</div>
+                  <div className="text-3xl font-bold mb-3 mt-2">{item.year}</div>
+                  <p className="text-sm text-gray-700 leading-relaxed">{item.text}</p>
                 </div>
                 {i < 3 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-3 w-6 h-0.5 bg-[hsl(var(--accent))]"></div>
+                  <div className="hidden lg:block absolute top-16 -right-4 w-8 h-0.5 bg-[hsl(var(--accent))]"></div>
                 )}
               </div>
             ))}
@@ -159,24 +160,24 @@ const Index = () => {
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">FAQ</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-2">FAQ</h2>
             <p className="text-gray-600">Question? Look here</p>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {faqItems.map((item, i) => (
               <Collapsible
                 key={i}
                 open={openFaq === i}
                 onOpenChange={() => setOpenFaq(openFaq === i ? null : i)}
               >
-                <div className="border-b border-gray-300 pb-4">
-                  <CollapsibleTrigger className="flex items-center justify-between w-full text-left py-2">
-                    <span className="text-lg font-medium">{item.question}</span>
-                    <Plus className={`w-6 h-6 text-[hsl(var(--accent))] transition-transform ${openFaq === i ? 'rotate-45' : ''}`} />
+                <div className={`bg-white rounded-xl border-2 transition-all ${openFaq === i ? 'border-blue-500' : 'border-gray-200'}`}>
+                  <CollapsibleTrigger className="flex items-center justify-between w-full text-left py-4 px-6">
+                    <span className="text-base font-normal">{item.question}</span>
+                    <Plus className={`w-6 h-6 flex-shrink-0 ml-4 transition-all ${openFaq === i ? 'rotate-45 text-blue-500' : 'text-[hsl(var(--accent))]'}`} />
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="pt-4 text-gray-600">
-                    <p>Answer content goes here. This is placeholder text for the FAQ answer.</p>
+                  <CollapsibleContent className="px-6 pb-4">
+                    <p className="text-gray-600 text-sm">Answer content goes here. This is placeholder text for the FAQ answer.</p>
                   </CollapsibleContent>
                 </div>
               </Collapsible>
@@ -186,19 +187,21 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-6 md:px-12 lg:px-24 bg-[hsl(var(--accent))] relative overflow-hidden">
+      <section className="py-20 px-6 md:px-12 lg:px-24 bg-[hsl(var(--accent))] relative overflow-hidden">
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-8 leading-tight">
             Let the people know your<br />Achievement
           </h2>
-          <Button className="bg-white hover:bg-gray-100 text-[hsl(var(--accent))] px-8 py-6 text-base rounded-full font-semibold">
+          <Button className="bg-white hover:bg-gray-100 text-gray-900 px-10 py-6 text-base rounded-full font-semibold shadow-lg">
             Book a Meeting
           </Button>
         </div>
-        {/* Decorative circles */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-10 left-10 w-32 h-32 bg-white/30 rounded-full"></div>
-          <div className="absolute bottom-10 right-10 w-24 h-24 bg-white/30 rounded-full"></div>
+        {/* Decorative wave shapes */}
+        <div className="absolute inset-0 opacity-30">
+          <svg className="absolute left-0 top-0 h-full" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0C100 50 150 150 150 250C150 350 100 400 0 400V0Z" fill="rgba(139, 0, 0, 0.3)"/>
+            <path d="M0 100C80 130 120 180 120 250C120 320 80 370 0 400V100Z" fill="rgba(139, 0, 0, 0.2)"/>
+          </svg>
         </div>
       </section>
 
