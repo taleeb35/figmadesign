@@ -88,6 +88,7 @@ const InfographicsList = ({ onEdit, refreshTrigger }: InfographicsListProps) => 
         <TableHeader>
           <TableRow>
             <TableHead>Title</TableHead>
+            <TableHead>Image</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -95,6 +96,16 @@ const InfographicsList = ({ onEdit, refreshTrigger }: InfographicsListProps) => 
           {infographics.map((infographic) => (
             <TableRow key={infographic.id}>
               <TableCell className="font-medium">{infographic.title}</TableCell>
+              <TableCell>
+                <a 
+                  href={infographic.image_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline text-sm"
+                >
+                  View Image
+                </a>
+              </TableCell>
               <TableCell className="text-right">
                 <div className="flex gap-2 justify-end">
                   <Button
