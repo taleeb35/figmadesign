@@ -10,13 +10,8 @@ interface Statistic {
   id: string;
   title: string;
   year: number;
-  content_type: "pdf" | "flipbook" | "youtube";
-  cover_image_url?: string;
-  english_pdf_url?: string;
-  arabic_pdf_url?: string;
-  english_flipbook_url?: string;
-  arabic_flipbook_url?: string;
-  youtube_url?: string;
+  image_url: string;
+  external_link: string;
   category_id?: string;
   category_name?: string;
 }
@@ -123,63 +118,25 @@ const Statistics = () => {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredStatistics.map((stat) => (
                     <div key={stat.id} className="bg-card rounded-lg border p-4 hover:shadow-lg transition-shadow">
-                      {stat.cover_image_url ? (
-                        <img 
-                          src={stat.cover_image_url} 
-                          alt={stat.title} 
-                          className="w-full h-48 object-cover rounded-md mb-4"
-                        />
-                      ) : (
-                        <div className="w-full h-48 bg-muted rounded-md mb-4 flex items-center justify-center">
-                          <span className="text-muted-foreground text-sm">No image</span>
-                        </div>
-                      )}
+                      <img 
+                        src={stat.image_url} 
+                        alt={stat.title} 
+                        className="w-full h-48 object-cover rounded-md mb-4"
+                      />
                       <h3 className="font-semibold text-lg mb-2">{stat.title}</h3>
                       <p className="text-sm text-muted-foreground mb-3">Year: {stat.year}</p>
-                      {(stat.english_pdf_url || stat.arabic_pdf_url || stat.english_flipbook_url || stat.arabic_flipbook_url) && (
-                        <div className="flex gap-2">
-                          {stat.english_pdf_url && (
-                            <a 
-                              href={stat.english_pdf_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="text-primary hover:underline text-sm"
-                            >
-                              English
-                            </a>
-                          )}
-                          {stat.arabic_pdf_url && (
-                            <a 
-                              href={stat.arabic_pdf_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="text-primary hover:underline text-sm"
-                            >
-                              Arabic
-                            </a>
-                          )}
-                          {stat.english_flipbook_url && (
-                            <a 
-                              href={stat.english_flipbook_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="text-primary hover:underline text-sm"
-                            >
-                              English Flipbook
-                            </a>
-                          )}
-                          {stat.arabic_flipbook_url && (
-                            <a 
-                              href={stat.arabic_flipbook_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="text-primary hover:underline text-sm"
-                            >
-                              Arabic Flipbook
-                            </a>
-                          )}
-                        </div>
+                      {stat.category_name && (
+                        <p className="text-xs text-muted-foreground mb-3">{stat.category_name}</p>
                       )}
+                      <a 
+                        href={stat.external_link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="inline-flex items-center gap-2 text-primary hover:underline text-sm"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        View Source
+                      </a>
                     </div>
                   ))}
                 </div>

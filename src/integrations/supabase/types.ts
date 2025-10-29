@@ -144,52 +144,37 @@ export type Database = {
       }
       statistics: {
         Row: {
-          arabic_flipbook_url: string | null
-          arabic_pdf_url: string | null
           category_id: string | null
-          content_type: Database["public"]["Enums"]["content_type"]
-          cover_image_url: string | null
           created_at: string
           created_by: string | null
-          english_flipbook_url: string | null
-          english_pdf_url: string | null
+          external_link: string
           id: string
+          image_url: string
           title: string
           updated_at: string
           year: number
-          youtube_url: string | null
         }
         Insert: {
-          arabic_flipbook_url?: string | null
-          arabic_pdf_url?: string | null
           category_id?: string | null
-          content_type?: Database["public"]["Enums"]["content_type"]
-          cover_image_url?: string | null
           created_at?: string
           created_by?: string | null
-          english_flipbook_url?: string | null
-          english_pdf_url?: string | null
+          external_link: string
           id?: string
+          image_url: string
           title: string
           updated_at?: string
           year: number
-          youtube_url?: string | null
         }
         Update: {
-          arabic_flipbook_url?: string | null
-          arabic_pdf_url?: string | null
           category_id?: string | null
-          content_type?: Database["public"]["Enums"]["content_type"]
-          cover_image_url?: string | null
           created_at?: string
           created_by?: string | null
-          english_flipbook_url?: string | null
-          english_pdf_url?: string | null
+          external_link?: string
           id?: string
+          image_url?: string
           title?: string
           updated_at?: string
           year?: number
-          youtube_url?: string | null
         }
         Relationships: [
           {

@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -8,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Edit, Trash2, FileText, BookOpen, Video } from "lucide-react";
+import { Edit, Trash2, ExternalLink } from "lucide-react";
 import type { StatisticItem } from "./StatisticsManager";
 
 type StatisticsListProps = {
@@ -18,31 +17,6 @@ type StatisticsListProps = {
 };
 
 const StatisticsList = ({ items, onEdit, onDelete }: StatisticsListProps) => {
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case "pdf":
-        return <FileText className="h-4 w-4" />;
-      case "flipbook":
-        return <BookOpen className="h-4 w-4" />;
-      case "youtube":
-        return <Video className="h-4 w-4" />;
-      default:
-        return null;
-    }
-  };
-
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "pdf":
-        return "bg-blue-500";
-      case "flipbook":
-        return "bg-green-500";
-      case "youtube":
-        return "bg-red-500";
-      default:
-        return "bg-gray-500";
-    }
-  };
 
   if (items.length === 0) {
     return (
@@ -59,9 +33,9 @@ const StatisticsList = ({ items, onEdit, onDelete }: StatisticsListProps) => {
           <TableRow>
             <TableHead>Title</TableHead>
             <TableHead>Year</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Content</TableHead>
-            <TableHead className="text-right">Action</TableHead>
+            <TableHead>Link</TableHead>
+            <TableHead>Content Type</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -70,12 +44,15 @@ const StatisticsList = ({ items, onEdit, onDelete }: StatisticsListProps) => {
               <TableCell className="font-medium">{item.title}</TableCell>
               <TableCell>{item.year}</TableCell>
               <TableCell>
-                <Badge className={getTypeColor(item.content_type)}>
-                  <span className="flex items-center gap-1">
-                    {getTypeIcon(item.content_type)}
-                    {item.content_type.toUpperCase()}
-                  </span>
-                </Badge>
+                <a 
+                  href={item.external_link} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-primary hover:underline"
+                >
+                  <ExternalLink className="h-3 w-3" />
+                  View
+                </a>
               </TableCell>
               <TableCell className="text-sm text-muted-foreground">
                 {item.category_name || "N/A"}

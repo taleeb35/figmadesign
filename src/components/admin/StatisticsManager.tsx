@@ -10,15 +10,10 @@ export type StatisticItem = {
   id: string;
   title: string;
   year: number;
-  content_type: "pdf" | "flipbook" | "youtube";
+  image_url: string;
+  external_link: string;
   category_id?: string;
   category_name?: string;
-  cover_image_url?: string;
-  english_pdf_url?: string;
-  arabic_pdf_url?: string;
-  english_flipbook_url?: string;
-  arabic_flipbook_url?: string;
-  youtube_url?: string;
   created_at?: string;
   updated_at?: string;
   created_by?: string;

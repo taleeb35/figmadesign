@@ -23,27 +23,12 @@ const StatisticsForm = ({ item, onClose }: StatisticsFormProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [contentType, setContentType] = useState<"pdf" | "flipbook" | "youtube">(item?.content_type || "pdf");
   const [year, setYear] = useState(item?.year?.toString() || new Date().getFullYear().toString());
   const [title, setTitle] = useState(item?.title || "");
   const [categoryId, setCategoryId] = useState(item?.category_id || "");
-  
-  // Image field for all types
-  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
-  const [coverImageUrl, setCoverImageUrl] = useState(item?.cover_image_url || "");
-  
-  // PDF fields
-  const [englishPdfFile, setEnglishPdfFile] = useState<File | null>(null);
-  const [arabicPdfFile, setArabicPdfFile] = useState<File | null>(null);
-  const [englishPdfUrl, setEnglishPdfUrl] = useState(item?.english_pdf_url || "");
-  const [arabicPdfUrl, setArabicPdfUrl] = useState(item?.arabic_pdf_url || "");
-  
-  // Flipbook fields
-  const [englishFlipbookUrl, setEnglishFlipbookUrl] = useState(item?.english_flipbook_url || "");
-  const [arabicFlipbookUrl, setArabicFlipbookUrl] = useState(item?.arabic_flipbook_url || "");
-  
-  // YouTube fields
-  const [youtubeUrl, setYoutubeUrl] = useState(item?.youtube_url || "");
+  const [externalLink, setExternalLink] = useState(item?.external_link || "");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState(item?.image_url || "");
 
   useEffect(() => {
     fetchCategories();
@@ -86,41 +71,19 @@ const StatisticsForm = ({ item, onClose }: StatisticsFormProps) => {
       if (!user) throw new Error("Not authenticated");
 
       let dataToSave: any = {
-        content_type: contentType,
         year: parseInt(year),
         title,
+        external_link: externalLink,
         category_id: categoryId || null,
         created_by: user.id,
       };
 
-      // Handle cover image upload (for all types)
-      if (coverImageFile) {
-        const url = await uploadFile(coverImageFile, `statistics/covers/${Date.now()}_${coverImageFile.name}`);
-        dataToSave.cover_image_url = url;
-      } else if (item && coverImageUrl) {
-        dataToSave.cover_image_url = coverImageUrl;
-      }
-
-      // Handle file uploads and URLs based on content type
-      if (contentType === "pdf") {
-        if (englishPdfFile) {
-          const url = await uploadFile(englishPdfFile, `statistics/pdfs/${Date.now()}_en_${englishPdfFile.name}`);
-          dataToSave.english_pdf_url = url;
-        } else if (item) {
-          dataToSave.english_pdf_url = englishPdfUrl;
-        }
-
-        if (arabicPdfFile) {
-          const url = await uploadFile(arabicPdfFile, `statistics/pdfs/${Date.now()}_ar_${arabicPdfFile.name}`);
-          dataToSave.arabic_pdf_url = url;
-        } else if (item) {
-          dataToSave.arabic_pdf_url = arabicPdfUrl;
-        }
-      } else if (contentType === "flipbook") {
-        dataToSave.english_flipbook_url = englishFlipbookUrl || null;
-        dataToSave.arabic_flipbook_url = arabicFlipbookUrl || null;
-      } else if (contentType === "youtube") {
-        dataToSave.youtube_url = youtubeUrl;
+      // Handle image upload
+      if (imageFile) {
+        const url = await uploadFile(imageFile, `statistics/${Date.now()}_${imageFile.name}`);
+        dataToSave.image_url = url;
+      } else if (item && imageUrl) {
+        dataToSave.image_url = imageUrl;
       }
 
       if (item) {
@@ -165,17 +128,13 @@ const StatisticsForm = ({ item, onClose }: StatisticsFormProps) => {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="contentType">Content Type</Label>
-            <Select value={contentType} onValueChange={(value: any) => setContentType(value)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pdf">PDF</SelectItem>
-                <SelectItem value="flipbook">Flipbook</SelectItem>
-                <SelectItem value="youtube">YouTube</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label htmlFor="title">Title</Label>
+            <Input
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
           </div>
 
           <div>
@@ -192,12 +151,28 @@ const StatisticsForm = ({ item, onClose }: StatisticsFormProps) => {
           </div>
 
           <div>
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="image">Image</Label>
             <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              id="image"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+              required={!item}
+            />
+            {imageUrl && !imageFile && (
+              <p className="text-sm text-muted-foreground mt-1">Current image uploaded</p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="externalLink">External Link</Label>
+            <Input
+              id="externalLink"
+              type="url"
+              value={externalLink}
+              onChange={(e) => setExternalLink(e.target.value)}
               required
+              placeholder="https://..."
             />
           </div>
 
@@ -205,7 +180,7 @@ const StatisticsForm = ({ item, onClose }: StatisticsFormProps) => {
             <Label htmlFor="category">Content Type</Label>
             <Select value={categoryId} onValueChange={setCategoryId}>
               <SelectTrigger>
-                <SelectValue placeholder="Select category" />
+                <SelectValue placeholder="Select content type" />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((category) => (
@@ -216,87 +191,6 @@ const StatisticsForm = ({ item, onClose }: StatisticsFormProps) => {
               </SelectContent>
             </Select>
           </div>
-
-          <div>
-            <Label htmlFor="coverImage">Cover Image</Label>
-            <Input
-              id="coverImage"
-              type="file"
-              accept="image/*"
-              onChange={(e) => setCoverImageFile(e.target.files?.[0] || null)}
-            />
-            {coverImageUrl && !coverImageFile && (
-              <p className="text-sm text-muted-foreground mt-1">Current image uploaded</p>
-            )}
-          </div>
-
-          {contentType === "pdf" && (
-            <>
-              <div>
-                <Label htmlFor="englishPdf">English PDF File</Label>
-                <Input
-                  id="englishPdf"
-                  type="file"
-                  accept=".pdf"
-                  onChange={(e) => setEnglishPdfFile(e.target.files?.[0] || null)}
-                />
-                {englishPdfUrl && !englishPdfFile && (
-                  <p className="text-sm text-muted-foreground mt-1">Current file uploaded</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="arabicPdf">Arabic PDF File</Label>
-                <Input
-                  id="arabicPdf"
-                  type="file"
-                  accept=".pdf"
-                  onChange={(e) => setArabicPdfFile(e.target.files?.[0] || null)}
-                />
-                {arabicPdfUrl && !arabicPdfFile && (
-                  <p className="text-sm text-muted-foreground mt-1">Current file uploaded</p>
-                )}
-              </div>
-            </>
-          )}
-
-          {contentType === "flipbook" && (
-            <>
-              <div>
-                <Label htmlFor="englishFlipbook">English Flipbook URL</Label>
-                <Input
-                  id="englishFlipbook"
-                  type="url"
-                  value={englishFlipbookUrl}
-                  onChange={(e) => setEnglishFlipbookUrl(e.target.value)}
-                  placeholder="https://..."
-                />
-              </div>
-              <div>
-                <Label htmlFor="arabicFlipbook">Arabic Flipbook URL</Label>
-                <Input
-                  id="arabicFlipbook"
-                  type="url"
-                  value={arabicFlipbookUrl}
-                  onChange={(e) => setArabicFlipbookUrl(e.target.value)}
-                  placeholder="https://..."
-                />
-              </div>
-            </>
-          )}
-
-          {contentType === "youtube" && (
-            <div>
-              <Label htmlFor="youtubeUrl">YouTube URL</Label>
-              <Input
-                id="youtubeUrl"
-                type="url"
-                value={youtubeUrl}
-                onChange={(e) => setYoutubeUrl(e.target.value)}
-                required
-                placeholder="https://www.youtube.com/watch?v=..."
-              />
-            </div>
-          )}
 
           <div className="flex gap-2">
             <Button type="submit" disabled={loading}>
