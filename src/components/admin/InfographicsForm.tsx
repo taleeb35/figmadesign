@@ -72,6 +72,28 @@ const InfographicsForm = ({ infographicId, onSuccess, onCancel }: InfographicsFo
     return data.publicUrl;
   };
 
+  const checkTitleExists = async (title: string): Promise<boolean> => {
+    const { data, error } = await supabase
+      .from("infographics")
+      .select("title")
+      .eq("title", title)
+      .maybeSingle();
+
+    return !!data && !error;
+  };
+
+  const generateUniqueTitle = async (baseTitle: string): Promise<string> => {
+    let title = baseTitle;
+    let counter = 1;
+
+    while (await checkTitleExists(title)) {
+      title = `${baseTitle} ${counter}`;
+      counter++;
+    }
+
+    return title;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -95,8 +117,22 @@ const InfographicsForm = ({ infographicId, onSuccess, onCancel }: InfographicsFo
           return;
         }
 
+        // Check if title was changed and if new title exists
+        let finalTitle = title.trim();
+        if (finalTitle) {
+          const { data: currentData } = await supabase
+            .from("infographics")
+            .select("title")
+            .eq("id", infographicId)
+            .single();
+
+          if (currentData && currentData.title !== finalTitle) {
+            finalTitle = await generateUniqueTitle(finalTitle);
+          }
+        }
+
         const infographicData = {
-          title,
+          title: finalTitle || "Infographic",
           image_url: imageUrl,
         };
 
@@ -124,14 +160,20 @@ const InfographicsForm = ({ infographicId, onSuccess, onCancel }: InfographicsFo
         }
 
         const infographicsToInsert = [];
+        const baseTitle = title.trim() || "Infographic";
 
         for (let i = 0; i < imageFiles.length; i++) {
           const file = imageFiles[i];
           const imageUrl = await uploadImage(file);
           
           if (imageUrl) {
+            // Generate unique title for each image
+            const uniqueTitle = await generateUniqueTitle(
+              imageFiles.length === 1 ? baseTitle : `${baseTitle} ${i + 1}`
+            );
+
             infographicsToInsert.push({
-              title: title || `Infographic ${i + 1}`,
+              title: uniqueTitle,
               image_url: imageUrl,
             });
           }

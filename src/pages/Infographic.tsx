@@ -70,11 +70,6 @@ const Infographic = () => {
                       loading="lazy"
                     />
                   </div>
-                  <div className="p-3 bg-white">
-                    <h3 className="font-semibold text-sm text-gray-900 line-clamp-2">
-                      {infographic.title}
-                    </h3>
-                  </div>
                 </div>
               ))}
             </div>
