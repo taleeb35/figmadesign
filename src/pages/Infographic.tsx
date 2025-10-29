@@ -55,22 +55,23 @@ const Infographic = () => {
           {loading ? (
             <div className="text-center py-12">Loading...</div>
           ) : (
-            <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
+            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
               {infographics.map((infographic) => (
                 <div
                   key={infographic.id}
-                  className="break-inside-avoid group cursor-pointer rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow"
+                  className="break-inside-avoid mb-4 group cursor-pointer rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
                   onClick={() => setSelectedImage(infographic)}
                 >
-                  <div className="overflow-hidden bg-gray-100">
+                  <div className="overflow-hidden bg-gray-50">
                     <img
                       src={infographic.image_url}
                       alt={infographic.title}
                       className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
                     />
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-900 line-clamp-2">
+                  <div className="p-3 bg-white">
+                    <h3 className="font-semibold text-sm text-gray-900 line-clamp-2">
                       {infographic.title}
                     </h3>
                   </div>
