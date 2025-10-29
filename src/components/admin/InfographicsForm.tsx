@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
 type InfographicsFormProps = {
@@ -174,56 +173,49 @@ const InfographicsForm = ({ infographicId, onSuccess, onCancel }: InfographicsFo
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{infographicId ? "Edit" : "Add"} Infographic</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="title">Title {!infographicId && "(optional for multiple uploads)"}</Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required={!!infographicId}
-              placeholder={infographicId ? "" : "Leave empty to auto-generate titles"}
-            />
-          </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <Label htmlFor="title">Title {!infographicId && "(optional for multiple uploads)"}</Label>
+        <Input
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required={!!infographicId}
+          placeholder={infographicId ? "" : "Leave empty to auto-generate titles"}
+        />
+      </div>
 
-          <div>
-            <Label htmlFor="image">Image(s) *</Label>
-            <Input
-              id="image"
-              type="file"
-              accept="image/*"
-              multiple={!infographicId}
-              onChange={(e) => setImageFiles(e.target.files)}
-              required={!currentImageUrl}
-            />
-            {currentImageUrl && !imageFiles && (
-              <img src={currentImageUrl} alt="Current" className="mt-2 w-32 h-32 object-cover rounded" />
-            )}
-            {imageFiles && imageFiles.length > 0 && (
-              <p className="mt-2 text-sm text-muted-foreground">
-                {imageFiles.length} file(s) selected
-              </p>
-            )}
-          </div>
+      <div>
+        <Label htmlFor="image">Image(s) *</Label>
+        <Input
+          id="image"
+          type="file"
+          accept="image/*"
+          multiple={!infographicId}
+          onChange={(e) => setImageFiles(e.target.files)}
+          required={!currentImageUrl}
+        />
+        {currentImageUrl && !imageFiles && (
+          <img src={currentImageUrl} alt="Current" className="mt-2 w-32 h-32 object-cover rounded" />
+        )}
+        {imageFiles && imageFiles.length > 0 && (
+          <p className="mt-2 text-sm text-muted-foreground">
+            {imageFiles.length} file(s) selected
+          </p>
+        )}
+      </div>
 
-          <div className="flex gap-2">
-            <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : infographicId ? "Update" : "Add"} Infographic
-            </Button>
-            {infographicId && (
-              <Button type="button" variant="outline" onClick={onCancel}>
-                Cancel
-              </Button>
-            )}
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+      <div className="flex gap-2">
+        <Button type="submit" disabled={loading}>
+          {loading ? "Saving..." : infographicId ? "Update" : "Add"} Infographic
+        </Button>
+        {infographicId && (
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+        )}
+      </div>
+    </form>
   );
 };
 

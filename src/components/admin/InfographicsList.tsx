@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Edit, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type Infographic = {
@@ -74,50 +74,51 @@ const InfographicsList = ({ onEdit, refreshTrigger }: InfographicsListProps) => 
 
   if (loading) return <div>Loading...</div>;
 
+  if (infographics.length === 0) {
+    return (
+      <div className="border rounded-lg p-12 text-center text-muted-foreground">
+        No infographics yet. Click "Add Infographic" to create one.
+      </div>
+    );
+  }
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Infographics List</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Image</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Actions</TableHead>
+    <div className="border rounded-lg">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Title</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {infographics.map((infographic) => (
+            <TableRow key={infographic.id}>
+              <TableCell className="font-medium">{infographic.title}</TableCell>
+              <TableCell className="text-right">
+                <div className="flex gap-2 justify-end">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => onEdit(infographic.id)}
+                  >
+                    <Edit className="h-3 w-3 mr-1" />
+                    Edit
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => handleDelete(infographic.id)}
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {infographics.map((infographic) => (
-              <TableRow key={infographic.id}>
-                <TableCell>
-                  <img src={infographic.image_url} alt={infographic.title} className="w-16 h-16 object-cover rounded" />
-                </TableCell>
-                <TableCell>{infographic.title}</TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => onEdit(infographic.id)}>
-                      Edit
-                    </Button>
-                    <Button variant="destructive" size="sm" onClick={() => handleDelete(infographic.id)}>
-                      Delete
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-            {infographics.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={3} className="text-center text-muted-foreground">
-                  No infographics yet
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 
