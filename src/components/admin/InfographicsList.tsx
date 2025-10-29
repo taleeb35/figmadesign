@@ -1,9 +1,6 @@
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 
 type Infographic = {
   id: string;
@@ -12,69 +9,14 @@ type Infographic = {
 };
 
 type InfographicsListProps = {
+  items: Infographic[];
   onEdit: (id: string) => void;
-  refreshTrigger: number;
+  onDelete: (id: string) => void;
 };
 
-const InfographicsList = ({ onEdit, refreshTrigger }: InfographicsListProps) => {
-  const [infographics, setInfographics] = useState<Infographic[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
+const InfographicsList = ({ items, onEdit, onDelete }: InfographicsListProps) => {
 
-  useEffect(() => {
-    fetchInfographics();
-  }, [refreshTrigger]);
-
-  const fetchInfographics = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("infographics")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-
-      setInfographics(data || []);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch infographics",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this infographic?")) return;
-
-    try {
-      const { error } = await supabase
-        .from("infographics")
-        .delete()
-        .eq("id", id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Infographic deleted successfully",
-      });
-
-      fetchInfographics();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete infographic",
-        variant: "destructive",
-      });
-    }
-  };
-
-  if (loading) return <div>Loading...</div>;
-
-  if (infographics.length === 0) {
+  if (items.length === 0) {
     return (
       <div className="border rounded-lg p-12 text-center text-muted-foreground">
         No infographics yet. Click "Add Infographic" to create one.
@@ -93,7 +35,7 @@ const InfographicsList = ({ onEdit, refreshTrigger }: InfographicsListProps) => 
           </TableRow>
         </TableHeader>
         <TableBody>
-          {infographics.map((infographic) => (
+          {items.map((infographic) => (
             <TableRow key={infographic.id}>
               <TableCell className="font-medium">{infographic.title}</TableCell>
               <TableCell>
@@ -119,7 +61,7 @@ const InfographicsList = ({ onEdit, refreshTrigger }: InfographicsListProps) => 
                   <Button
                     size="sm"
                     variant="destructive"
-                    onClick={() => handleDelete(infographic.id)}
+                    onClick={() => onDelete(infographic.id)}
                   >
                     <Trash2 className="h-3 w-3" />
                   </Button>
