@@ -4,8 +4,7 @@ import Header from "@/components/Header";
 import CTASection from "@/components/CTASection";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import logo from "@/assets/logo.png";
-import infographicBanner from "@/assets/infographic-banner.png";
-import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
+import { Linkedin, Facebook, Instagram, Youtube, Share2 } from "lucide-react";
 
 type Infographic = {
   id: string;
@@ -43,8 +42,11 @@ const Infographic = () => {
       <Header />
       
       {/* Banner Section */}
-      <section className="w-full border-b-2 border-blue-500">
-        <img src={infographicBanner} alt="Infographic Banner" className="w-full h-auto" />
+      <section className="w-full bg-[#C62828] py-6 px-8">
+        <div className="flex items-center gap-4">
+          <h1 className="text-white text-4xl font-bold lowercase">Infographic</h1>
+          <Share2 className="text-white w-10 h-10" strokeWidth={2.5} />
+        </div>
       </section>
 
       <main className="py-12 px-6 md:px-12 lg:px-24">

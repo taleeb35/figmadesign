@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ExternalLink, Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
+import { ExternalLink, Linkedin, Facebook, Instagram, Youtube, Menu } from "lucide-react";
 import Header from "@/components/Header";
 import CTASection from "@/components/CTASection";
 import logo from "@/assets/logo.png";
-import statisticsBanner from "@/assets/statistics-banner.png";
 
 interface Statistic {
   id: string;
@@ -84,8 +83,11 @@ const Statistics = () => {
       <Header />
 
       {/* Banner Section */}
-      <section className="w-full border-b-2 border-blue-500">
-        <img src={statisticsBanner} alt="Statistics Banner" className="w-full h-auto" />
+      <section className="w-full bg-[#C62828] py-6 px-8">
+        <div className="flex items-center gap-4">
+          <h1 className="text-white text-4xl font-bold lowercase">statistics</h1>
+          <Menu className="text-white w-10 h-10" strokeWidth={2.5} />
+        </div>
       </section>
 
       {/* Content Section */}
