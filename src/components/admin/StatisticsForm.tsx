@@ -6,96 +6,75 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-
-type StatisticsFormProps = {
-  statisticId: string | null;
-  onSuccess: () => void;
-  onCancel: () => void;
-};
+import { X } from "lucide-react";
+import type { StatisticItem } from "./StatisticsManager";
 
 type Category = {
   id: string;
   name: string;
 };
 
-const StatisticsForm = ({ statisticId, onSuccess, onCancel }: StatisticsFormProps) => {
-  const [title, setTitle] = useState("");
-  const [year, setYear] = useState(new Date().getFullYear());
-  const [externalLink, setExternalLink] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [currentImageUrl, setCurrentImageUrl] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(false);
+type StatisticsFormProps = {
+  item: StatisticItem | null;
+  onClose: () => void;
+};
+
+const StatisticsForm = ({ item, onClose }: StatisticsFormProps) => {
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [contentType, setContentType] = useState<"pdf" | "flipbook" | "youtube">(item?.content_type || "pdf");
+  const [year, setYear] = useState(item?.year?.toString() || new Date().getFullYear().toString());
+  const [title, setTitle] = useState(item?.title || "");
+  const [categoryId, setCategoryId] = useState(item?.category_id || "");
+  
+  // Image field for all types
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [coverImageUrl, setCoverImageUrl] = useState(item?.cover_image_url || "");
+  
+  // PDF fields
+  const [englishPdfFile, setEnglishPdfFile] = useState<File | null>(null);
+  const [arabicPdfFile, setArabicPdfFile] = useState<File | null>(null);
+  const [englishPdfUrl, setEnglishPdfUrl] = useState(item?.english_pdf_url || "");
+  const [arabicPdfUrl, setArabicPdfUrl] = useState(item?.arabic_pdf_url || "");
+  
+  // Flipbook fields
+  const [englishFlipbookUrl, setEnglishFlipbookUrl] = useState(item?.english_flipbook_url || "");
+  const [arabicFlipbookUrl, setArabicFlipbookUrl] = useState(item?.arabic_flipbook_url || "");
+  
+  // YouTube fields
+  const [youtubeUrl, setYoutubeUrl] = useState(item?.youtube_url || "");
 
   useEffect(() => {
     fetchCategories();
-    if (statisticId) {
-      fetchStatistic();
-    } else {
-      resetForm();
-    }
-  }, [statisticId]);
+  }, []);
 
   const fetchCategories = async () => {
-    const { data } = await supabase
-      .from("statistics_categories")
-      .select("*")
-      .order("name");
-    setCategories(data || []);
-  };
+    try {
+      const { data, error } = await supabase
+        .from("content_categories")
+        .select("*")
+        .order("name");
 
-  const fetchStatistic = async () => {
-    if (!statisticId) return;
-
-    const { data, error } = await supabase
-      .from("statistics")
-      .select("*")
-      .eq("id", statisticId)
-      .single();
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch statistic",
-        variant: "destructive",
-      });
-      return;
+      if (error) throw error;
+      setCategories(data || []);
+    } catch (error: any) {
+      console.error("Error fetching categories:", error);
     }
-
-    setTitle(data.title);
-    setYear(data.year);
-    setExternalLink(data.external_link || "");
-    setCategoryId(data.category_id || "");
-    setCurrentImageUrl(data.image_url || "");
   };
 
-  const resetForm = () => {
-    setTitle("");
-    setYear(new Date().getFullYear());
-    setExternalLink("");
-    setCategoryId("");
-    setImageFile(null);
-    setCurrentImageUrl("");
-  };
+  const uploadFile = async (file: File, path: string): Promise<string> => {
+    const { data, error } = await supabase.storage
+      .from("content-files")
+      .upload(path, file, { upsert: true });
 
-  const uploadImage = async (file: File): Promise<string | null> => {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
-    const filePath = `statistics/${fileName}`;
+    if (error) throw error;
 
-    const { error: uploadError } = await supabase.storage
-      .from('content-files')
-      .upload(filePath, file);
+    const { data: { publicUrl } } = supabase.storage
+      .from("content-files")
+      .getPublicUrl(data.path);
 
-    if (uploadError) throw uploadError;
-
-    const { data } = supabase.storage
-      .from('content-files')
-      .getPublicUrl(filePath);
-
-    return data.publicUrl;
+    return publicUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -103,51 +82,71 @@ const StatisticsForm = ({ statisticId, onSuccess, onCancel }: StatisticsFormProp
     setLoading(true);
 
     try {
-      let imageUrl = currentImageUrl;
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
 
-      if (imageFile) {
-        imageUrl = await uploadImage(imageFile) || "";
-      }
-
-      const statisticData = {
+      let dataToSave: any = {
+        content_type: contentType,
+        year: parseInt(year),
         title,
-        year,
-        external_link: externalLink,
         category_id: categoryId || null,
-        image_url: imageUrl,
+        created_by: user.id,
       };
 
-      if (statisticId) {
+      // Handle cover image upload (for all types)
+      if (coverImageFile) {
+        const url = await uploadFile(coverImageFile, `statistics/covers/${Date.now()}_${coverImageFile.name}`);
+        dataToSave.cover_image_url = url;
+      } else if (item && coverImageUrl) {
+        dataToSave.cover_image_url = coverImageUrl;
+      }
+
+      // Handle file uploads and URLs based on content type
+      if (contentType === "pdf") {
+        if (englishPdfFile) {
+          const url = await uploadFile(englishPdfFile, `statistics/pdfs/${Date.now()}_en_${englishPdfFile.name}`);
+          dataToSave.english_pdf_url = url;
+        } else if (item) {
+          dataToSave.english_pdf_url = englishPdfUrl;
+        }
+
+        if (arabicPdfFile) {
+          const url = await uploadFile(arabicPdfFile, `statistics/pdfs/${Date.now()}_ar_${arabicPdfFile.name}`);
+          dataToSave.arabic_pdf_url = url;
+        } else if (item) {
+          dataToSave.arabic_pdf_url = arabicPdfUrl;
+        }
+      } else if (contentType === "flipbook") {
+        dataToSave.english_flipbook_url = englishFlipbookUrl || null;
+        dataToSave.arabic_flipbook_url = arabicFlipbookUrl || null;
+      } else if (contentType === "youtube") {
+        dataToSave.youtube_url = youtubeUrl;
+      }
+
+      if (item) {
         const { error } = await supabase
           .from("statistics")
-          .update(statisticData)
-          .eq("id", statisticId);
+          .update(dataToSave)
+          .eq("id", item.id);
 
         if (error) throw error;
-
-        toast({
-          title: "Success",
-          description: "Statistic updated successfully",
-        });
       } else {
         const { error } = await supabase
           .from("statistics")
-          .insert(statisticData);
+          .insert([dataToSave]);
 
         if (error) throw error;
-
-        toast({
-          title: "Success",
-          description: "Statistic created successfully",
-        });
       }
 
-      resetForm();
-      onSuccess();
-    } catch (error) {
+      toast({
+        title: "Success",
+        description: `Statistic ${item ? "updated" : "created"} successfully`,
+      });
+      onClose();
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to save statistic",
+        description: error.message,
         variant: "destructive",
       });
     } finally {
@@ -157,11 +156,41 @@ const StatisticsForm = ({ statisticId, onSuccess, onCancel }: StatisticsFormProp
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{statisticId ? "Edit" : "Add"} Statistic</CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>{item ? "Edit" : "Add"} Statistic</CardTitle>
+        <Button variant="ghost" size="icon" onClick={onClose}>
+          <X className="h-4 w-4" />
+        </Button>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="contentType">Content Type</Label>
+            <Select value={contentType} onValueChange={(value: any) => setContentType(value)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pdf">PDF</SelectItem>
+                <SelectItem value="flipbook">Flipbook</SelectItem>
+                <SelectItem value="youtube">YouTube</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="year">Year</Label>
+            <Input
+              id="year"
+              type="number"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              required
+              min="1900"
+              max="2100"
+            />
+          </div>
+
           <div>
             <Label htmlFor="title">Title</Label>
             <Input
@@ -173,26 +202,15 @@ const StatisticsForm = ({ statisticId, onSuccess, onCancel }: StatisticsFormProp
           </div>
 
           <div>
-            <Label htmlFor="year">Year</Label>
-            <Input
-              id="year"
-              type="number"
-              value={year}
-              onChange={(e) => setYear(parseInt(e.target.value))}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category">Content Type</Label>
             <Select value={categoryId} onValueChange={setCategoryId}>
               <SelectTrigger>
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
-                {categories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>
-                    {cat.name}
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -200,38 +218,93 @@ const StatisticsForm = ({ statisticId, onSuccess, onCancel }: StatisticsFormProp
           </div>
 
           <div>
-            <Label htmlFor="externalLink">External Link</Label>
+            <Label htmlFor="coverImage">Cover Image</Label>
             <Input
-              id="externalLink"
-              type="url"
-              value={externalLink}
-              onChange={(e) => setExternalLink(e.target.value)}
-              placeholder="https://example.com"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="image">Image</Label>
-            <Input
-              id="image"
+              id="coverImage"
               type="file"
               accept="image/*"
-              onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+              onChange={(e) => setCoverImageFile(e.target.files?.[0] || null)}
             />
-            {currentImageUrl && !imageFile && (
-              <img src={currentImageUrl} alt="Current" className="mt-2 w-32 h-32 object-cover rounded" />
+            {coverImageUrl && !coverImageFile && (
+              <p className="text-sm text-muted-foreground mt-1">Current image uploaded</p>
             )}
           </div>
+
+          {contentType === "pdf" && (
+            <>
+              <div>
+                <Label htmlFor="englishPdf">English PDF File</Label>
+                <Input
+                  id="englishPdf"
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => setEnglishPdfFile(e.target.files?.[0] || null)}
+                />
+                {englishPdfUrl && !englishPdfFile && (
+                  <p className="text-sm text-muted-foreground mt-1">Current file uploaded</p>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="arabicPdf">Arabic PDF File</Label>
+                <Input
+                  id="arabicPdf"
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => setArabicPdfFile(e.target.files?.[0] || null)}
+                />
+                {arabicPdfUrl && !arabicPdfFile && (
+                  <p className="text-sm text-muted-foreground mt-1">Current file uploaded</p>
+                )}
+              </div>
+            </>
+          )}
+
+          {contentType === "flipbook" && (
+            <>
+              <div>
+                <Label htmlFor="englishFlipbook">English Flipbook URL</Label>
+                <Input
+                  id="englishFlipbook"
+                  type="url"
+                  value={englishFlipbookUrl}
+                  onChange={(e) => setEnglishFlipbookUrl(e.target.value)}
+                  placeholder="https://..."
+                />
+              </div>
+              <div>
+                <Label htmlFor="arabicFlipbook">Arabic Flipbook URL</Label>
+                <Input
+                  id="arabicFlipbook"
+                  type="url"
+                  value={arabicFlipbookUrl}
+                  onChange={(e) => setArabicFlipbookUrl(e.target.value)}
+                  placeholder="https://..."
+                />
+              </div>
+            </>
+          )}
+
+          {contentType === "youtube" && (
+            <div>
+              <Label htmlFor="youtubeUrl">YouTube URL</Label>
+              <Input
+                id="youtubeUrl"
+                type="url"
+                value={youtubeUrl}
+                onChange={(e) => setYoutubeUrl(e.target.value)}
+                required
+                placeholder="https://www.youtube.com/watch?v=..."
+              />
+            </div>
+          )}
 
           <div className="flex gap-2">
             <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : statisticId ? "Update" : "Add"} Statistic
+              {loading ? "Saving..." : item ? "Update" : "Create"}
             </Button>
-            {statisticId && (
-              <Button type="button" variant="outline" onClick={onCancel}>
-                Cancel
-              </Button>
-            )}
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
           </div>
         </form>
       </CardContent>
