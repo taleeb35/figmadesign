@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import CTASection from "@/components/CTASection";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import logo from "@/assets/logo.png";
+import infographicBanner from "@/assets/infographic-banner.png";
 import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
 
 type Infographic = {
@@ -41,9 +42,13 @@ const Infographic = () => {
     <div className="min-h-screen bg-white">
       <Header />
       
+      {/* Banner Section */}
+      <section className="w-full border-b-2 border-blue-500">
+        <img src={infographicBanner} alt="Infographic Banner" className="w-full h-auto" />
+      </section>
+
       <main className="py-12 px-6 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8">Infographics</h1>
 
           {loading ? (
             <div className="text-center py-12">Loading...</div>

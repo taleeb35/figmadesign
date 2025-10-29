@@ -5,6 +5,7 @@ import { ExternalLink, Linkedin, Facebook, Instagram, Youtube } from "lucide-rea
 import Header from "@/components/Header";
 import CTASection from "@/components/CTASection";
 import logo from "@/assets/logo.png";
+import statisticsBanner from "@/assets/statistics-banner.png";
 
 interface Statistic {
   id: string;
@@ -82,13 +83,18 @@ const Statistics = () => {
     <div className="min-h-screen bg-white">
       <Header />
 
+      {/* Banner Section */}
+      <section className="w-full border-b-2 border-blue-500">
+        <img src={statisticsBanner} alt="Statistics Banner" className="w-full h-auto" />
+      </section>
+
+      {/* Content Section */}
       <section className="py-12 px-6 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8">Statistics</h1>
-
           <div className="flex gap-12">
             {/* Sidebar Filters */}
             <aside className="w-48 flex-shrink-0">
+              <h3 className="text-lg font-bold mb-4">Filter by Content Type:</h3>
               <div className="space-y-4">
                 {categories.map((category) => (
                   <div key={category.id} className="flex items-center space-x-2">
