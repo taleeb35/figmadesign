@@ -96,7 +96,6 @@ const Statistics = () => {
           <div className="flex gap-12">
             {/* Sidebar Filters */}
             <aside className="w-48 flex-shrink-0">
-              <h3 className="text-lg font-bold mb-4">Filter by Content Type:</h3>
               <div className="space-y-4">
                 {categories.map((category) => (
                   <div key={category.id} className="flex items-center space-x-2">

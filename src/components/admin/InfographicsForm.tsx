@@ -14,7 +14,7 @@ type InfographicsFormProps = {
 
 const InfographicsForm = ({ infographicId, onSuccess, onCancel }: InfographicsFormProps) => {
   const [title, setTitle] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFiles, setImageFiles] = useState<FileList | null>(null);
   const [currentImageUrl, setCurrentImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -51,7 +51,7 @@ const InfographicsForm = ({ infographicId, onSuccess, onCancel }: InfographicsFo
 
   const resetForm = () => {
     setTitle("");
-    setImageFile(null);
+    setImageFiles(null);
     setCurrentImageUrl("");
   };
 
@@ -78,28 +78,29 @@ const InfographicsForm = ({ infographicId, onSuccess, onCancel }: InfographicsFo
     setLoading(true);
 
     try {
-      let imageUrl = currentImageUrl;
-
-      if (imageFile) {
-        imageUrl = await uploadImage(imageFile) || "";
-      }
-
-      if (!imageUrl) {
-        toast({
-          title: "Error",
-          description: "Image is required",
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
-      }
-
-      const infographicData = {
-        title,
-        image_url: imageUrl,
-      };
-
+      // Handle editing existing infographic
       if (infographicId) {
+        let imageUrl = currentImageUrl;
+
+        if (imageFiles && imageFiles.length > 0) {
+          imageUrl = await uploadImage(imageFiles[0]) || "";
+        }
+
+        if (!imageUrl) {
+          toast({
+            title: "Error",
+            description: "Image is required",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+
+        const infographicData = {
+          title,
+          image_url: imageUrl,
+        };
+
         const { error } = await supabase
           .from("infographics")
           .update(infographicData)
@@ -112,15 +113,50 @@ const InfographicsForm = ({ infographicId, onSuccess, onCancel }: InfographicsFo
           description: "Infographic updated successfully",
         });
       } else {
+        // Handle creating multiple new infographics
+        if (!imageFiles || imageFiles.length === 0) {
+          toast({
+            title: "Error",
+            description: "At least one image is required",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+
+        const infographicsToInsert = [];
+
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
+          const imageUrl = await uploadImage(file);
+          
+          if (imageUrl) {
+            infographicsToInsert.push({
+              title: title || `Infographic ${i + 1}`,
+              image_url: imageUrl,
+            });
+          }
+        }
+
+        if (infographicsToInsert.length === 0) {
+          toast({
+            title: "Error",
+            description: "Failed to upload images",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+
         const { error } = await supabase
           .from("infographics")
-          .insert(infographicData);
+          .insert(infographicsToInsert);
 
         if (error) throw error;
 
         toast({
           title: "Success",
-          description: "Infographic created successfully",
+          description: `${infographicsToInsert.length} infographic(s) created successfully`,
         });
       }
 
@@ -145,26 +181,33 @@ const InfographicsForm = ({ infographicId, onSuccess, onCancel }: InfographicsFo
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">Title {!infographicId && "(optional for multiple uploads)"}</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              required
+              required={!!infographicId}
+              placeholder={infographicId ? "" : "Leave empty to auto-generate titles"}
             />
           </div>
 
           <div>
-            <Label htmlFor="image">Image *</Label>
+            <Label htmlFor="image">Image(s) *</Label>
             <Input
               id="image"
               type="file"
               accept="image/*"
-              onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+              multiple={!infographicId}
+              onChange={(e) => setImageFiles(e.target.files)}
               required={!currentImageUrl}
             />
-            {currentImageUrl && !imageFile && (
+            {currentImageUrl && !imageFiles && (
               <img src={currentImageUrl} alt="Current" className="mt-2 w-32 h-32 object-cover rounded" />
+            )}
+            {imageFiles && imageFiles.length > 0 && (
+              <p className="mt-2 text-sm text-muted-foreground">
+                {imageFiles.length} file(s) selected
+              </p>
             )}
           </div>
 
