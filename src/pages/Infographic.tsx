@@ -1,69 +1,90 @@
-import { Network, Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import CTASection from "@/components/CTASection";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import logo from "@/assets/logo.png";
+import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
+
+type Infographic = {
+  id: string;
+  title: string;
+  image_url: string;
+};
 
 const Infographic = () => {
+  const [infographics, setInfographics] = useState<Infographic[]>([]);
+  const [selectedImage, setSelectedImage] = useState<Infographic | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchInfographics();
+  }, []);
+
+  const fetchInfographics = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("infographics")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setInfographics(data || []);
+    } catch (error) {
+      console.error("Error fetching infographics:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
+      
+      <main className="py-12 px-6 md:px-12 lg:px-24">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-4xl font-bold mb-8">Infographics</h1>
 
-      {/* Red Banner */}
-      <section className="bg-[hsl(var(--accent))] py-8 px-8">
-        <div className="flex items-center gap-4 max-w-md">
-          <h1 className="text-white text-4xl md:text-5xl font-bold">Infographic</h1>
-          <Network className="text-white w-12 h-12" strokeWidth={2.5} />
-        </div>
-      </section>
-
-      {/* Masonry Grid */}
-      <section className="py-12 px-6 md:px-12 lg:px-24 overflow-hidden">
-        <div className="max-w-7xl mx-auto w-full">
-          {/* First Row - 2 Large Squares */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="aspect-square bg-gray-200 rounded-lg w-full"></div>
-            <div className="aspect-square bg-gray-200 rounded-lg w-full"></div>
-          </div>
-
-          {/* Second Row - 1 Small + 1 Large Horizontal */}
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-6 mb-6">
-            <div className="aspect-[4/3] bg-gray-200 rounded-lg w-full"></div>
-            <div className="aspect-[2/1] bg-gray-200 rounded-lg w-full"></div>
-          </div>
-
-          {/* Third Row - Complex Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* Left Column */}
-            <div className="grid gap-6 w-full">
-              <div className="aspect-[3/2] bg-gray-200 rounded-lg w-full"></div>
-              <div className="aspect-[3/2] bg-gray-200 rounded-lg w-full"></div>
-              <div className="aspect-[3/2] bg-gray-200 rounded-lg w-full"></div>
+          {loading ? (
+            <div className="text-center py-12">Loading...</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {infographics.map((infographic) => (
+                <div
+                  key={infographic.id}
+                  className="group cursor-pointer rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow"
+                  onClick={() => setSelectedImage(infographic)}
+                >
+                  <div className="aspect-[3/4] overflow-hidden bg-gray-100">
+                    <img
+                      src={infographic.image_url}
+                      alt={infographic.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-gray-900 line-clamp-2">
+                      {infographic.title}
+                    </h3>
+                  </div>
+                </div>
+              ))}
             </div>
+          )}
 
-            {/* Right Column */}
-            <div className="grid gap-6 w-full">
-              <div className="aspect-[4/3] bg-gray-200 rounded-lg w-full"></div>
-              <div className="aspect-[2/1] bg-gray-200 rounded-lg w-full"></div>
-              <div className="aspect-[3/2] bg-gray-200 rounded-lg w-full"></div>
+          {!loading && infographics.length === 0 && (
+            <div className="text-center py-12 text-gray-500">
+              No infographics available yet.
             </div>
-          </div>
-
-          {/* Fourth Row - 2 Column Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="aspect-[3/4] bg-gray-200 rounded-lg w-full"></div>
-            <div className="aspect-[3/4] bg-gray-200 rounded-lg w-full"></div>
-          </div>
+          )}
         </div>
-      </section>
+      </main>
 
-      {/* CTA Section */}
       <CTASection />
 
-      {/* Footer */}
       <footer className="bg-white pt-12 pb-0 px-6 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-10">
-            {/* Column 1: Logo and Description */}
             <div className="space-y-4">
               <img src={logo} alt="Annual Reports" className="h-10" />
               <p className="text-sm text-gray-700 leading-relaxed">
@@ -76,17 +97,14 @@ const Infographic = () => {
               </div>
             </div>
 
-            {/* Column 2: Navigation Links */}
             <div>
               <ul className="space-y-4 text-base">
                 <li><a href="/" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Home</a></li>
                 <li><a href="/reports" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Work</a></li>
-                <li><a href="#" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Gulf new's</a></li>
-                <li><a href="#" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Infographic</a></li>
+                <li><a href="/statistics" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Statistics</a></li>
               </ul>
             </div>
 
-            {/* Column 3: Contact Information */}
             <div>
               <ul className="space-y-4">
                 <li className="flex items-center gap-3">
@@ -116,7 +134,6 @@ const Infographic = () => {
               </ul>
             </div>
 
-            {/* Column 4: Social Media Icons */}
             <div>
               <div className="flex items-center gap-6">
                 <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="LinkedIn">
@@ -135,12 +152,28 @@ const Infographic = () => {
             </div>
           </div>
 
-          {/* Copyright Bar */}
           <div className="border-t border-gray-300 py-6 text-center">
             <p className="text-sm text-gray-700">@theannualreports - all rights reserved 2025</p>
           </div>
         </div>
       </footer>
+
+      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+        <DialogContent className="max-w-5xl p-0">
+          {selectedImage && (
+            <div className="relative">
+              <img
+                src={selectedImage.image_url}
+                alt={selectedImage.title}
+                className="w-full h-auto max-h-[90vh] object-contain"
+              />
+              <div className="p-6 bg-white">
+                <h2 className="text-2xl font-semibold text-gray-900">{selectedImage.title}</h2>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
