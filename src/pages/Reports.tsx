@@ -118,19 +118,6 @@ const Reports = () => {
   const handleItemClick = (item: ContentItem) => {
     if (item.content_type === "youtube" && item.youtube_url) {
       handleVideoClick(item.youtube_url);
-      return;
-    }
-
-    if (item.content_type === "pdf") {
-      const url = item.english_pdf_url || item.arabic_pdf_url;
-      if (url) window.open(url, "_blank", "noopener,noreferrer");
-      return;
-    }
-
-    if (item.content_type === "flipbook") {
-      const url = item.english_flipbook_url || item.arabic_flipbook_url;
-      if (url) window.open(url, "_blank", "noopener,noreferrer");
-      return;
     }
   };
 
@@ -251,73 +238,79 @@ const Reports = () => {
                 const arUrl = item.arabic_pdf_url || item.arabic_flipbook_url || null;
                 
                 return (
-                  <div 
-                    key={item.id} 
-                    className={`group ${aspectClass} bg-gray-200 rounded-lg hover:shadow-xl transition-all overflow-hidden relative cursor-pointer`}
-                    onClick={() => handleItemClick(item)}
-                    role="button"
-                    aria-label={`${item.title} ${item.content_type}`}
-                  >
-                    {item.cover_image_url ? (
-                      <img 
-                        src={item.cover_image_url} 
-                        alt={`${item.title} cover image`}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-400">
-                        <span className="text-gray-600 text-lg font-semibold px-4 text-center">
-                          {item.title}
-                        </span>
-                      </div>
-                    )}
-                    
-                    {/* Play button overlay for YouTube videos */}
-                    {isYouTube && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors">
-                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <Play className="w-8 h-8 text-red-600 fill-red-600 ml-1" />
+                  <div key={item.id} className="flex flex-col">
+                    <div 
+                      className={`group ${aspectClass} bg-gray-200 rounded-lg hover:shadow-xl transition-all overflow-hidden relative ${isYouTube ? 'cursor-pointer' : ''}`}
+                      {...(isYouTube ? { 
+                        onClick: () => handleItemClick(item),
+                        role: "button",
+                        "aria-label": `Play ${item.title}`
+                      } : {})}
+                    >
+                      {item.cover_image_url ? (
+                        <img 
+                          src={item.cover_image_url} 
+                          alt={`${item.title} cover image`}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-400">
+                          <span className="text-gray-600 text-sm">No image</span>
+                        </div>
+                      )}
+                      
+                      {/* Play button overlay for YouTube videos only */}
+                      {isYouTube && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-colors">
+                          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Play className="w-8 h-8 text-red-600 fill-red-600 ml-1" />
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
+                        <h3 className="text-white font-semibold text-sm line-clamp-2">{item.title}</h3>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs text-white/80">{item.year}</span>
+                          {item.category_name && (
+                            <>
+                              <span className="text-white/50">•</span>
+                              <span className="text-xs text-white/80">{item.category_name}</span>
+                            </>
+                          )}
                         </div>
                       </div>
-                    )}
+                    </div>
 
-                    {/* Quick actions for PDFs/Flipbooks */}
+                    {/* Language links below image for PDFs/Flipbooks */}
                     {(item.content_type === "pdf" || item.content_type === "flipbook") && (enUrl || arUrl) && (
-                      <div className="absolute bottom-3 inset-x-0 flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex justify-center items-center gap-2 text-sm font-semibold mt-2">
                         {enUrl && (
                           <a
                             href={enUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="px-3 py-1 rounded-full bg-white/90 text-gray-900 text-xs font-semibold"
+                            className="text-[hsl(var(--accent))] hover:underline"
+                            aria-label={`Open English ${item.content_type}`}
                           >
-                            Open EN
+                            EN
                           </a>
                         )}
+                        {enUrl && arUrl && <span className="text-gray-400">|</span>}
                         {arUrl && (
                           <a
                             href={arUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="px-3 py-1 rounded-full bg-white/90 text-gray-900 text-xs font-semibold"
+                            className="text-[hsl(var(--accent))] hover:underline"
+                            aria-label={`Open Arabic ${item.content_type}`}
                           >
-                            Open AR
+                            AR
                           </a>
                         )}
                       </div>
                     )}
-                    
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-4 text-white">
-                      <h3 className="text-lg font-bold mb-2 text-center">{item.title}</h3>
-                      <p className="text-sm mb-1">{item.year}</p>
-                      <p className="text-xs uppercase tracking-wider">{item.content_type}</p>
-                      {item.category_name && (
-                        <p className="text-xs mt-2 px-3 py-1 bg-white/20 rounded-full">{item.category_name}</p>
-                      )}
-                    </div>
                   </div>
                 );
               })}
