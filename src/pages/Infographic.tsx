@@ -3,8 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import CTASection from "@/components/CTASection";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
-import { Linkedin, Facebook, Instagram, Youtube, Share2 } from "lucide-react";
+import { Linkedin, Facebook, Instagram, Youtube, Share2, ChevronLeft, ChevronRight, X } from "lucide-react";
 
 type Infographic = {
   id: string;
@@ -14,7 +15,7 @@ type Infographic = {
 
 const Infographic = () => {
   const [infographics, setInfographics] = useState<Infographic[]>([]);
-  const [selectedImage, setSelectedImage] = useState<Infographic | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,6 +37,20 @@ const Infographic = () => {
       setLoading(false);
     }
   };
+
+  const handlePrevious = () => {
+    if (selectedIndex !== null && selectedIndex > 0) {
+      setSelectedIndex(selectedIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (selectedIndex !== null && selectedIndex < infographics.length - 1) {
+      setSelectedIndex(selectedIndex + 1);
+    }
+  };
+
+  const selectedImage = selectedIndex !== null ? infographics[selectedIndex] : null;
 
   return (
     <div className="min-h-screen bg-white">
@@ -66,7 +81,7 @@ const Infographic = () => {
                     <div
                       key={infographic.id}
                       className="w-full group cursor-pointer rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
-                      onClick={() => setSelectedImage(infographic)}
+                      onClick={() => setSelectedIndex(index)}
                     >
                       <div className="overflow-hidden bg-gray-50">
                         <img
@@ -87,7 +102,7 @@ const Infographic = () => {
                         <div
                           key={item.id}
                           className="group cursor-pointer rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
-                          onClick={() => setSelectedImage(item)}
+                          onClick={() => setSelectedIndex(index + (position - 1))}
                         >
                           <div className="overflow-hidden bg-gray-50">
                             <img
@@ -194,17 +209,52 @@ const Infographic = () => {
         </div>
       </footer>
 
-      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent className="max-w-5xl p-0">
+      <Dialog open={selectedIndex !== null} onOpenChange={() => setSelectedIndex(null)}>
+        <DialogContent className="max-w-5xl p-0 overflow-hidden">
           {selectedImage && (
-            <div className="relative">
-              <img
-                src={selectedImage.image_url}
-                alt={selectedImage.title}
-                className="w-full h-auto max-h-[90vh] object-contain"
-              />
+            <div className="relative bg-black">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-4 right-4 z-50 text-white hover:bg-white/20"
+                onClick={() => setSelectedIndex(null)}
+              >
+                <X className="h-6 w-6" />
+              </Button>
+              
+              <div className="relative flex items-center justify-center min-h-[60vh] max-h-[85vh]">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute left-4 z-40 text-white hover:bg-white/20 disabled:opacity-30"
+                  onClick={handlePrevious}
+                  disabled={selectedIndex === 0}
+                >
+                  <ChevronLeft className="h-8 w-8" />
+                </Button>
+
+                <img
+                  src={selectedImage.image_url}
+                  alt={selectedImage.title}
+                  className="w-full h-auto max-h-[85vh] object-contain"
+                />
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-4 z-40 text-white hover:bg-white/20 disabled:opacity-30"
+                  onClick={handleNext}
+                  disabled={selectedIndex === infographics.length - 1}
+                >
+                  <ChevronRight className="h-8 w-8" />
+                </Button>
+              </div>
+
               <div className="p-6 bg-white">
                 <h2 className="text-2xl font-semibold text-gray-900">{selectedImage.title}</h2>
+                <p className="text-sm text-gray-500 mt-2">
+                  {selectedIndex !== null && `${selectedIndex + 1} / ${infographics.length}`}
+                </p>
               </div>
             </div>
           )}
