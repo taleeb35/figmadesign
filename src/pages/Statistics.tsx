@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ExternalLink, Linkedin, Facebook, Instagram, Youtube, Menu } from "lucide-react";
+import { ExternalLink, Linkedin, Facebook, Instagram, Youtube, Menu, X } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import CTASection from "@/components/CTASection";
 import logo from "@/assets/logo.png";
@@ -26,6 +28,7 @@ const Statistics = () => {
   const [categories, setCategories] = useState<ContentCategory[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState<Statistic | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -128,7 +131,8 @@ const Statistics = () => {
                       <img 
                         src={stat.image_url} 
                         alt={stat.title} 
-                        className="w-full h-48 object-cover rounded-md mb-4"
+                        className="w-full object-contain rounded-md mb-4 cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => setSelectedImage(stat)}
                       />
                       <h3 className="font-semibold text-lg mb-2">{stat.title}</h3>
                       <p className="text-sm text-muted-foreground mb-3">Year: {stat.year}</p>
@@ -154,6 +158,30 @@ const Statistics = () => {
       </section>
 
       <CTASection />
+
+      {/* Image Preview Dialog */}
+      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+        <DialogContent className="max-w-4xl p-0">
+          {selectedImage && (
+            <div className="relative bg-black">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-4 right-4 z-50 text-white hover:bg-white/20"
+                onClick={() => setSelectedImage(null)}
+              >
+                <X className="h-6 w-6" />
+              </Button>
+              
+              <img
+                src={selectedImage.image_url}
+                alt={selectedImage.title}
+                className="w-full h-auto max-h-[85vh] object-contain"
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Footer */}
       <footer className="bg-white pt-12 pb-0 px-6 md:px-12 lg:px-24">
