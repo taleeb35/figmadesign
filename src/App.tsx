@@ -9,6 +9,7 @@ import Statistics from "./pages/Statistics";
 import AboutUs from "./pages/AboutUs";
 import Infographic from "./pages/Infographic";
 import Content from "./pages/Content";
+import FAQ from "./pages/FAQ";
 import AdminLogin from "./pages/AdminLogin";
 import AdminForgotPassword from "./pages/AdminForgotPassword";
 import AdminResetPassword from "./pages/AdminResetPassword";
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/about" element={<AboutUs />} />
           <Route path="/infographic" element={<Infographic />} />
           <Route path="/content" element={<Content />} />
+          <Route path="/faq" element={<FAQ />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
           <Route path="/admin/reset-password" element={<AdminResetPassword />} />
