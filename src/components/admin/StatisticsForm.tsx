@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { X } from "lucide-react";
 import type { StatisticItem } from "./StatisticsManager";
@@ -29,6 +30,7 @@ const StatisticsForm = ({ item, onClose }: StatisticsFormProps) => {
   const [externalLink, setExternalLink] = useState(item?.external_link || "");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState(item?.image_url || "");
+  const [showImagePreview, setShowImagePreview] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -160,7 +162,15 @@ const StatisticsForm = ({ item, onClose }: StatisticsFormProps) => {
               required={!item}
             />
             {imageUrl && !imageFile && (
-              <p className="text-sm text-muted-foreground mt-1">Current image uploaded</p>
+              <div className="mt-2">
+                <img
+                  src={imageUrl}
+                  alt="Current image"
+                  className="w-32 h-32 object-cover rounded border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
+                  onClick={() => setShowImagePreview(true)}
+                />
+                <p className="text-sm text-muted-foreground mt-1">Click to preview</p>
+              </div>
             )}
           </div>
 
@@ -202,6 +212,29 @@ const StatisticsForm = ({ item, onClose }: StatisticsFormProps) => {
           </div>
         </form>
       </CardContent>
+
+      <Dialog open={showImagePreview} onOpenChange={setShowImagePreview}>
+        <DialogContent className="max-w-4xl p-0">
+          {imageUrl && (
+            <div className="relative bg-black">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-4 right-4 z-50 text-white hover:bg-white/20"
+                onClick={() => setShowImagePreview(false)}
+              >
+                <X className="h-6 w-6" />
+              </Button>
+              
+              <img
+                src={imageUrl}
+                alt={title || "Preview"}
+                className="w-full h-auto max-h-[85vh] object-contain"
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
