@@ -55,23 +55,56 @@ const Infographic = () => {
           {loading ? (
             <div className="text-center py-12">Loading...</div>
           ) : (
-            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
-              {infographics.map((infographic) => (
-                <div
-                  key={infographic.id}
-                  className="break-inside-avoid mb-4 group cursor-pointer rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
-                  onClick={() => setSelectedImage(infographic)}
-                >
-                  <div className="overflow-hidden bg-gray-50">
-                    <img
-                      src={infographic.image_url}
-                      alt={infographic.title}
-                      className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                    />
-                  </div>
-                </div>
-              ))}
+            <div className="space-y-4">
+              {infographics.map((infographic, index) => {
+                const position = index % 5;
+                
+                // Pattern: landscape (0), then 4 squares (1-4), then landscape (5), etc.
+                if (position === 0) {
+                  // Landscape image (full width)
+                  return (
+                    <div
+                      key={infographic.id}
+                      className="w-full group cursor-pointer rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
+                      onClick={() => setSelectedImage(infographic)}
+                    >
+                      <div className="overflow-hidden bg-gray-50 aspect-[16/9]">
+                        <img
+                          src={infographic.image_url}
+                          alt={infographic.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                      </div>
+                    </div>
+                  );
+                } else if (position === 1) {
+                  // Start of 2x2 grid - render grid container with this and next 3 items
+                  const gridItems = infographics.slice(index, index + 4);
+                  return (
+                    <div key={`grid-${infographic.id}`} className="grid grid-cols-2 gap-4">
+                      {gridItems.map((item) => (
+                        <div
+                          key={item.id}
+                          className="group cursor-pointer rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
+                          onClick={() => setSelectedImage(item)}
+                        >
+                          <div className="overflow-hidden bg-gray-50 aspect-square">
+                            <img
+                              src={item.image_url}
+                              alt={item.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              loading="lazy"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                }
+                // Skip positions 2, 3, 4 as they're rendered in the grid above
+                return null;
+              })}
             </div>
           )}
 
