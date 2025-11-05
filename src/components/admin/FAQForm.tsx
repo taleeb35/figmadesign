@@ -22,7 +22,6 @@ export function FAQForm({ item, onClose }: FAQFormProps) {
   const { toast } = useToast();
   const [question, setQuestion] = useState(item?.question || "");
   const [answer, setAnswer] = useState(item?.answer || "");
-  const [displayOrder, setDisplayOrder] = useState(item?.display_order || 0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,7 +35,6 @@ export function FAQForm({ item, onClose }: FAQFormProps) {
           .update({
             question,
             answer,
-            display_order: displayOrder,
           })
           .eq("id", item.id);
 
@@ -47,10 +45,20 @@ export function FAQForm({ item, onClose }: FAQFormProps) {
           description: "FAQ updated successfully",
         });
       } else {
+        // Get max display_order for new FAQs
+        const { data: maxData } = await supabase
+          .from("faqs")
+          .select("display_order")
+          .order("display_order", { ascending: false })
+          .limit(1)
+          .single();
+
+        const nextOrder = (maxData?.display_order || 0) + 1;
+
         const { error } = await supabase.from("faqs").insert({
           question,
           answer,
-          display_order: displayOrder,
+          display_order: nextOrder,
         });
 
         if (error) throw error;
@@ -95,18 +103,6 @@ export function FAQForm({ item, onClose }: FAQFormProps) {
           onChange={(e) => setAnswer(e.target.value)}
           placeholder="Enter answer"
           rows={6}
-          required
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="displayOrder">Display Order</Label>
-        <Input
-          id="displayOrder"
-          type="number"
-          value={displayOrder}
-          onChange={(e) => setDisplayOrder(parseInt(e.target.value))}
-          placeholder="Enter display order"
           required
         />
       </div>
