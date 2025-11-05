@@ -1,4 +1,6 @@
 import Header from "@/components/Header";
+import CTASection from "@/components/CTASection";
+import Footer from "@/components/Footer";
 
 const PrivacyPolicy = () => {
   return (
@@ -136,6 +138,12 @@ const PrivacyPolicy = () => {
           </section>
         </div>
       </main>
+
+      {/* CTA Section */}
+      <CTASection />
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
