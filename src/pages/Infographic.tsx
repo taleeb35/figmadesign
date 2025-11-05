@@ -68,11 +68,11 @@ const Infographic = () => {
                       className="w-full group cursor-pointer rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
                       onClick={() => setSelectedImage(infographic)}
                     >
-                      <div className="overflow-hidden bg-gray-50 aspect-[16/9]">
+                      <div className="overflow-hidden bg-gray-50">
                         <img
                           src={infographic.image_url}
                           alt={infographic.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300"
                           loading="lazy"
                         />
                       </div>
@@ -89,11 +89,11 @@ const Infographic = () => {
                           className="group cursor-pointer rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
                           onClick={() => setSelectedImage(item)}
                         >
-                          <div className="overflow-hidden bg-gray-50 aspect-square">
+                          <div className="overflow-hidden bg-gray-50">
                             <img
                               src={item.image_url}
                               alt={item.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300"
                               loading="lazy"
                             />
                           </div>
