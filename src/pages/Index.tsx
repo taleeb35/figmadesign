@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Trophy, Plus, Linkedin, Facebook, Instagram, Youtube, FileText } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import ClientLogos from "@/components/ClientLogos";
 import CTASection from "@/components/CTASection";
@@ -10,15 +11,27 @@ import heroImage from "@/assets/hero-image.png";
 
 const Index = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  type FAQItem = { id: string; question: string; answer: string; display_order: number };
+  const [faqs, setFaqs] = useState<FAQItem[]>([]);
+  const [loadingFaq, setLoadingFaq] = useState(true);
 
-  const faqItems = [
-    { question: "What is the Annual Reports?" },
-    { question: "How do you handle sensitive or confidential data?" },
-    { question: "How long does the annual report process take?" },
-    { question: "What is the typical end product? Is it digital, print, or both?" },
-    { question: "what kind of historical data depth can you manage?" },
-    { question: "How do you ensure the final report reflects Company Vision?" },
-  ];
+  useEffect(() => {
+    const fetchFAQs = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("faqs")
+          .select("*")
+          .order("display_order", { ascending: true });
+        if (error) throw error;
+        setFaqs(data || []);
+      } catch (err) {
+        console.error("Error loading FAQs on home:", err);
+      } finally {
+        setLoadingFaq(false);
+      }
+    };
+    fetchFAQs();
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -165,25 +178,31 @@ const Index = () => {
             <p className="text-gray-600">Question? Look here</p>
           </div>
 
-          <div className="space-y-3">
-            {faqItems.map((item, i) => (
-              <Collapsible
-                key={i}
-                open={openFaq === i}
-                onOpenChange={() => setOpenFaq(openFaq === i ? null : i)}
-              >
-                <div className={`bg-white rounded-xl border-2 transition-all ${openFaq === i ? 'border-blue-500' : 'border-gray-200'}`}>
-                  <CollapsibleTrigger className="flex items-center justify-between w-full text-left py-4 px-6">
-                    <span className="text-base font-normal">{item.question}</span>
-                    <Plus className={`w-6 h-6 flex-shrink-0 ml-4 transition-all ${openFaq === i ? 'rotate-45 text-blue-500' : 'text-[hsl(var(--accent))]'}`} />
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="px-6 pb-4">
-                    <p className="text-gray-600 text-sm">Answer content goes here. This is placeholder text for the FAQ answer.</p>
-                  </CollapsibleContent>
-                </div>
-              </Collapsible>
-            ))}
-          </div>
+{loadingFaq ? (
+            <div className="text-center text-gray-500">Loading FAQs...</div>
+          ) : faqs.length === 0 ? (
+            <div className="text-center text-gray-500">No FAQs available.</div>
+          ) : (
+            <div className="space-y-3">
+              {faqs.map((item, i) => (
+                <Collapsible
+                  key={item.id}
+                  open={openFaq === i}
+                  onOpenChange={() => setOpenFaq(openFaq === i ? null : i)}
+                >
+                  <div className={`bg-white rounded-xl border-2 transition-all ${openFaq === i ? 'border-blue-500' : 'border-gray-200'}`}>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full text-left py-4 px-6">
+                      <span className="text-base font-normal">{item.question}</span>
+                      <Plus className={`w-6 h-6 flex-shrink-0 ml-4 transition-all ${openFaq === i ? 'rotate-45 text-blue-500' : 'text-[hsl(var(--accent))]'}`} />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="px-6 pb-4">
+                      <p className="text-gray-600 text-sm">{item.answer}</p>
+                    </CollapsibleContent>
+                  </div>
+                </Collapsible>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
