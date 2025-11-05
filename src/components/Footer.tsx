@@ -80,7 +80,7 @@ const Footer = () => {
 
         {/* Copyright Bar */}
         <div className="border-t border-gray-300 py-6 text-center">
-          <p className="text-sm text-gray-700">@theannualreports - all rights reserved 2025</p>
+          <p className="text-sm text-gray-700">@Theannualreports.com - All rights reserved 2025</p>
         </div>
       </div>
     </footer>
