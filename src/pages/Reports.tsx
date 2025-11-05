@@ -18,6 +18,10 @@ type ContentItem = {
   category_id?: string;
   category_name?: string;
   youtube_url?: string;
+  english_pdf_url?: string;
+  arabic_pdf_url?: string;
+  english_flipbook_url?: string;
+  arabic_flipbook_url?: string;
   created_at: string;
 };
 
@@ -109,6 +113,25 @@ const Reports = () => {
 
   const handleCloseVideo = () => {
     setSelectedVideo(null);
+  };
+
+  const handleItemClick = (item: ContentItem) => {
+    if (item.content_type === "youtube" && item.youtube_url) {
+      handleVideoClick(item.youtube_url);
+      return;
+    }
+
+    if (item.content_type === "pdf") {
+      const url = item.english_pdf_url || item.arabic_pdf_url;
+      if (url) window.open(url, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    if (item.content_type === "flipbook") {
+      const url = item.english_flipbook_url || item.arabic_flipbook_url;
+      if (url) window.open(url, "_blank", "noopener,noreferrer");
+      return;
+    }
   };
 
   const availableYears = [...new Set(items.map(item => item.year))].sort((a, b) => b - a);
@@ -224,18 +247,23 @@ const Reports = () => {
               {filteredAndSortedItems.map((item) => {
                 const isYouTube = item.content_type === "youtube";
                 const aspectClass = isYouTube ? "aspect-video" : "aspect-[3/4]";
+                const enUrl = item.english_pdf_url || item.english_flipbook_url || null;
+                const arUrl = item.arabic_pdf_url || item.arabic_flipbook_url || null;
                 
                 return (
                   <div 
                     key={item.id} 
                     className={`group ${aspectClass} bg-gray-200 rounded-lg hover:shadow-xl transition-all overflow-hidden relative cursor-pointer`}
-                    onClick={() => isYouTube && item.youtube_url && handleVideoClick(item.youtube_url)}
+                    onClick={() => handleItemClick(item)}
+                    role="button"
+                    aria-label={`${item.title} ${item.content_type}`}
                   >
                     {item.cover_image_url ? (
                       <img 
                         src={item.cover_image_url} 
-                        alt={item.title}
+                        alt={`${item.title} cover image`}
                         className="w-full h-full object-cover"
+                        loading="lazy"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-400">
@@ -251,6 +279,34 @@ const Reports = () => {
                         <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                           <Play className="w-8 h-8 text-red-600 fill-red-600 ml-1" />
                         </div>
+                      </div>
+                    )}
+
+                    {/* Quick actions for PDFs/Flipbooks */}
+                    {(item.content_type === "pdf" || item.content_type === "flipbook") && (enUrl || arUrl) && (
+                      <div className="absolute bottom-3 inset-x-0 flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {enUrl && (
+                          <a
+                            href={enUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="px-3 py-1 rounded-full bg-white/90 text-gray-900 text-xs font-semibold"
+                          >
+                            Open EN
+                          </a>
+                        )}
+                        {arUrl && (
+                          <a
+                            href={arUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="px-3 py-1 rounded-full bg-white/90 text-gray-900 text-xs font-semibold"
+                          >
+                            Open AR
+                          </a>
+                        )}
                       </div>
                     )}
                     
