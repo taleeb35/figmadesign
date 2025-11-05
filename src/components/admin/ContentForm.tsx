@@ -222,7 +222,10 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
               onChange={(e) => setCoverImageFile(e.target.files?.[0] || null)}
             />
             {coverImageUrl && !coverImageFile && (
-              <p className="text-sm text-muted-foreground mt-1">Current image uploaded</p>
+              <div className="mt-2">
+                <p className="text-sm text-muted-foreground mb-2">Current image:</p>
+                <img src={coverImageUrl} alt="Cover preview" className="max-w-xs h-32 object-cover rounded border" />
+              </div>
             )}
           </div>
 
@@ -237,7 +240,13 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
                   onChange={(e) => setEnglishPdfFile(e.target.files?.[0] || null)}
                 />
                 {englishPdfUrl && !englishPdfFile && (
-                  <p className="text-sm text-muted-foreground mt-1">Current file uploaded</p>
+                  <div className="mt-2">
+                    <p className="text-sm text-muted-foreground">Current file: 
+                      <a href={englishPdfUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-1">
+                        View English PDF
+                      </a>
+                    </p>
+                  </div>
                 )}
               </div>
               <div>
@@ -249,7 +258,13 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
                   onChange={(e) => setArabicPdfFile(e.target.files?.[0] || null)}
                 />
                 {arabicPdfUrl && !arabicPdfFile && (
-                  <p className="text-sm text-muted-foreground mt-1">Current file uploaded</p>
+                  <div className="mt-2">
+                    <p className="text-sm text-muted-foreground">Current file: 
+                      <a href={arabicPdfUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-1">
+                        View Arabic PDF
+                      </a>
+                    </p>
+                  </div>
                 )}
               </div>
             </>
