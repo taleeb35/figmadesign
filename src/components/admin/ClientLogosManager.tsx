@@ -73,17 +73,31 @@ export function ClientLogosManager() {
     if (!editingLogo) return;
 
     try {
-      const { error } = editingLogo.id
-        ? await supabase.from("client_logos").update(editingLogo).eq("id", editingLogo.id)
-        : await supabase.from("client_logos").insert([editingLogo]);
-
-      if (error) throw error;
+      if (editingLogo.id && editingLogo.id !== "") {
+        // Update existing logo
+        const { error } = await supabase.from("client_logos").update({
+          name: editingLogo.name,
+          logo_url: editingLogo.logo_url,
+          display_order: editingLogo.display_order
+        }).eq("id", editingLogo.id);
+        if (error) throw error;
+      } else {
+        // Insert new logo (don't include id field)
+        const { error } = await supabase.from("client_logos").insert([{
+          name: editingLogo.name,
+          logo_url: editingLogo.logo_url,
+          display_order: editingLogo.display_order
+        }]);
+        if (error) throw error;
+      }
+      
       toast.success("Client logo saved successfully");
       fetchLogos();
       setOpen(false);
       setEditingLogo(null);
     } catch (error: any) {
-      toast.error("Failed to save client logo");
+      console.error("Logo save error:", error);
+      toast.error("Failed to save client logo: " + error.message);
     }
   };
 

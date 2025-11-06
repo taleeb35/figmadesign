@@ -77,15 +77,37 @@ export function HomeHeroManager() {
 
     setSaving(true);
     try {
-      const { error } = hero.id
-        ? await supabase.from("home_hero").update(hero).eq("id", hero.id)
-        : await supabase.from("home_hero").insert([hero]);
-
-      if (error) throw error;
+      if (hero.id && hero.id !== "") {
+        // Update existing hero
+        const { error } = await supabase.from("home_hero").update({
+          main_title: hero.main_title,
+          subtitle: hero.subtitle,
+          description: hero.description,
+          cta_button_text: hero.cta_button_text,
+          cta_button_link: hero.cta_button_link,
+          background_image_url: hero.background_image_url,
+          video_url: hero.video_url
+        }).eq("id", hero.id);
+        if (error) throw error;
+      } else {
+        // Insert new hero (don't include id field)
+        const { error } = await supabase.from("home_hero").insert([{
+          main_title: hero.main_title,
+          subtitle: hero.subtitle,
+          description: hero.description,
+          cta_button_text: hero.cta_button_text,
+          cta_button_link: hero.cta_button_link,
+          background_image_url: hero.background_image_url,
+          video_url: hero.video_url
+        }]);
+        if (error) throw error;
+      }
+      
       toast.success("Hero section saved successfully");
       fetchHero();
     } catch (error: any) {
-      toast.error("Failed to save hero section");
+      console.error("Hero save error:", error);
+      toast.error("Failed to save hero section: " + error.message);
     } finally {
       setSaving(false);
     }
