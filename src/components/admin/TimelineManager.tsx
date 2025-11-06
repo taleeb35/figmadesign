@@ -47,17 +47,37 @@ export function TimelineManager() {
     if (!editingItem) return;
 
     try {
-      const { error } = editingItem.id
-        ? await supabase.from("timeline_items").update(editingItem).eq("id", editingItem.id)
-        : await supabase.from("timeline_items").insert([editingItem]);
-
-      if (error) throw error;
+      if (editingItem.id && editingItem.id !== "") {
+        // Update existing item
+        const { error } = await supabase
+          .from("timeline_items")
+          .update({
+            year: Number(editingItem.year),
+            title: editingItem.title,
+            description: editingItem.description,
+            display_order: Number(editingItem.display_order),
+          })
+          .eq("id", editingItem.id);
+        if (error) throw error;
+      } else {
+        // Insert new item (exclude id to let DB generate it)
+        const { error } = await supabase.from("timeline_items").insert([
+          {
+            year: Number(editingItem.year),
+            title: editingItem.title,
+            description: editingItem.description,
+            display_order: Number(editingItem.display_order),
+          },
+        ]);
+        if (error) throw error;
+      }
       toast.success("Timeline item saved successfully");
       fetchItems();
       setOpen(false);
       setEditingItem(null);
     } catch (error: any) {
-      toast.error("Failed to save timeline item");
+      console.error("Timeline save error:", error);
+      toast.error("Failed to save timeline item: " + error.message);
     }
   };
 

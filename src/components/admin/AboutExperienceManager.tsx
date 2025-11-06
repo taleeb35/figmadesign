@@ -51,11 +51,39 @@ export function AboutExperienceManager() {
 
     setSaving(true);
     try {
-      const { error } = experience.id
-        ? await supabase.from("about_experience").update(experience).eq("id", experience.id)
-        : await supabase.from("about_experience").insert([experience]);
+      if (experience.id && experience.id !== "") {
+        const { error } = await supabase
+          .from("about_experience")
+          .update({
+            years_text: experience.years_text,
+            title: experience.title,
+            description: experience.description,
+            stat1_value: experience.stat1_value,
+            stat1_label: experience.stat1_label,
+            stat2_value: experience.stat2_value,
+            stat2_label: experience.stat2_label,
+            stat3_value: experience.stat3_value,
+            stat3_label: experience.stat3_label,
+          })
+          .eq("id", experience.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("about_experience").insert([
+          {
+            years_text: experience.years_text,
+            title: experience.title,
+            description: experience.description,
+            stat1_value: experience.stat1_value,
+            stat1_label: experience.stat1_label,
+            stat2_value: experience.stat2_value,
+            stat2_label: experience.stat2_label,
+            stat3_value: experience.stat3_value,
+            stat3_label: experience.stat3_label,
+          },
+        ]);
+        if (error) throw error;
+      }
 
-      if (error) throw error;
       toast.success("Experience section saved successfully");
       fetchExperience();
     } catch (error: any) {

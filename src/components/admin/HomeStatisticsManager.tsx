@@ -45,17 +45,34 @@ export function HomeStatisticsManager() {
     if (!editingStat) return;
 
     try {
-      const { error } = editingStat.id
-        ? await supabase.from("home_statistics").update(editingStat).eq("id", editingStat.id)
-        : await supabase.from("home_statistics").insert([editingStat]);
+      if (editingStat.id && editingStat.id !== "") {
+        const { error } = await supabase
+          .from("home_statistics")
+          .update({
+            title: editingStat.title,
+            value: editingStat.value,
+            display_order: Number(editingStat.display_order),
+          })
+          .eq("id", editingStat.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("home_statistics").insert([
+          {
+            title: editingStat.title,
+            value: editingStat.value,
+            display_order: Number(editingStat.display_order),
+          },
+        ]);
+        if (error) throw error;
+      }
 
-      if (error) throw error;
       toast.success("Statistic saved successfully");
       fetchStats();
       setOpen(false);
       setEditingStat(null);
     } catch (error: any) {
-      toast.error("Failed to save statistic");
+      console.error("Home statistics save error:", error);
+      toast.error("Failed to save statistic: " + error.message);
     }
   };
 

@@ -76,17 +76,38 @@ export function PortfolioManager() {
     if (!editingItem) return;
 
     try {
-      const { error } = editingItem.id
-        ? await supabase.from("portfolio_items").update(editingItem).eq("id", editingItem.id)
-        : await supabase.from("portfolio_items").insert([editingItem]);
+      if (editingItem.id && editingItem.id !== "") {
+        const { error } = await supabase
+          .from("portfolio_items")
+          .update({
+            title: editingItem.title,
+            description: editingItem.description,
+            image_url: editingItem.image_url,
+            external_link: editingItem.external_link,
+            display_order: Number(editingItem.display_order),
+          })
+          .eq("id", editingItem.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("portfolio_items").insert([
+          {
+            title: editingItem.title,
+            description: editingItem.description,
+            image_url: editingItem.image_url,
+            external_link: editingItem.external_link,
+            display_order: Number(editingItem.display_order),
+          },
+        ]);
+        if (error) throw error;
+      }
 
-      if (error) throw error;
       toast.success("Portfolio item saved successfully");
       fetchItems();
       setOpen(false);
       setEditingItem(null);
     } catch (error: any) {
-      toast.error("Failed to save portfolio item");
+      console.error("Portfolio save error:", error);
+      toast.error("Failed to save portfolio item: " + error.message);
     }
   };
 

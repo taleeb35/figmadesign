@@ -55,17 +55,35 @@ export function CompanyValuesManager() {
     if (!editingValue) return;
 
     try {
-      const { error } = editingValue.id
-        ? await supabase.from("company_values").update(editingValue).eq("id", editingValue.id)
-        : await supabase.from("company_values").insert([editingValue]);
-
-      if (error) throw error;
+      if (editingValue.id && editingValue.id !== "") {
+        const { error } = await supabase
+          .from("company_values")
+          .update({
+            title: editingValue.title,
+            description: editingValue.description,
+            icon_name: editingValue.icon_name,
+            display_order: Number(editingValue.display_order),
+          })
+          .eq("id", editingValue.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("company_values").insert([
+          {
+            title: editingValue.title,
+            description: editingValue.description,
+            icon_name: editingValue.icon_name,
+            display_order: Number(editingValue.display_order),
+          },
+        ]);
+        if (error) throw error;
+      }
       toast.success("Company value saved successfully");
       fetchValues();
       setOpen(false);
       setEditingValue(null);
     } catch (error: any) {
-      toast.error("Failed to save company value");
+      console.error("Company value save error:", error);
+      toast.error("Failed to save company value: " + error.message);
     }
   };
 

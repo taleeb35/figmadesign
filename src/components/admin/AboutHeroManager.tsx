@@ -43,11 +43,25 @@ export function AboutHeroManager() {
 
     setSaving(true);
     try {
-      const { error } = hero.id
-        ? await supabase.from("about_hero").update(hero).eq("id", hero.id)
-        : await supabase.from("about_hero").insert([hero]);
-
-      if (error) throw error;
+      if (hero.id && hero.id !== "") {
+        const { error } = await supabase
+          .from("about_hero")
+          .update({
+            subtitle: hero.subtitle,
+            main_title: hero.main_title,
+          })
+          .eq("id", hero.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("about_hero").insert([
+          {
+            subtitle: hero.subtitle,
+            main_title: hero.main_title,
+          },
+        ]);
+        if (error) throw error;
+      }
+ 
       toast.success("About hero section saved successfully");
       fetchHero();
     } catch (error: any) {

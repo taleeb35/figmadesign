@@ -44,11 +44,25 @@ export function AboutAdvantageManager() {
 
     setSaving(true);
     try {
-      const { error } = advantage.id
-        ? await supabase.from("about_advantage").update(advantage).eq("id", advantage.id)
-        : await supabase.from("about_advantage").insert([advantage]);
-
-      if (error) throw error;
+      if (advantage.id && advantage.id !== "") {
+        const { error } = await supabase
+          .from("about_advantage")
+          .update({
+            title: advantage.title,
+            description: advantage.description,
+          })
+          .eq("id", advantage.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("about_advantage").insert([
+          {
+            title: advantage.title,
+            description: advantage.description,
+          },
+        ]);
+        if (error) throw error;
+      }
+ 
       toast.success("Advantage section saved successfully");
       fetchAdvantage();
     } catch (error: any) {

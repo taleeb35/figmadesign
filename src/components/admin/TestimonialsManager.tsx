@@ -76,17 +76,38 @@ export function TestimonialsManager() {
     if (!editingTestimonial) return;
 
     try {
-      const { error } = editingTestimonial.id
-        ? await supabase.from("testimonials").update(editingTestimonial).eq("id", editingTestimonial.id)
-        : await supabase.from("testimonials").insert([editingTestimonial]);
+      if (editingTestimonial.id && editingTestimonial.id !== "") {
+        const { error } = await supabase
+          .from("testimonials")
+          .update({
+            quote: editingTestimonial.quote,
+            author_name: editingTestimonial.author_name,
+            author_position: editingTestimonial.author_position,
+            author_image_url: editingTestimonial.author_image_url,
+            display_order: Number(editingTestimonial.display_order),
+          })
+          .eq("id", editingTestimonial.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("testimonials").insert([
+          {
+            quote: editingTestimonial.quote,
+            author_name: editingTestimonial.author_name,
+            author_position: editingTestimonial.author_position,
+            author_image_url: editingTestimonial.author_image_url,
+            display_order: Number(editingTestimonial.display_order),
+          },
+        ]);
+        if (error) throw error;
+      }
 
-      if (error) throw error;
       toast.success("Testimonial saved successfully");
       fetchTestimonials();
       setOpen(false);
       setEditingTestimonial(null);
     } catch (error: any) {
-      toast.error("Failed to save testimonial");
+      console.error("Testimonial save error:", error);
+      toast.error("Failed to save testimonial: " + error.message);
     }
   };
 
