@@ -15,6 +15,7 @@ interface HomeHero {
   cta_button_text: string;
   cta_button_link: string;
   background_image_url: string | null;
+  video_url: string | null;
 }
 
 export function HomeHeroManager() {
@@ -106,7 +107,7 @@ export function HomeHeroManager() {
             value={hero?.subtitle || ""}
             onChange={(e) => setHero(prev => prev ? { ...prev, subtitle: e.target.value } : {
               id: "", main_title: "", subtitle: e.target.value, description: "",
-              cta_button_text: "View our reports", cta_button_link: "/reports", background_image_url: null
+              cta_button_text: "View our reports", cta_button_link: "/reports", background_image_url: null, video_url: null
             })}
             required
           />
@@ -119,7 +120,7 @@ export function HomeHeroManager() {
             value={hero?.main_title || ""}
             onChange={(e) => setHero(prev => prev ? { ...prev, main_title: e.target.value } : {
               id: "", main_title: e.target.value, subtitle: "", description: "",
-              cta_button_text: "View our reports", cta_button_link: "/reports", background_image_url: null
+              cta_button_text: "View our reports", cta_button_link: "/reports", background_image_url: null, video_url: null
             })}
             required
           />
@@ -132,7 +133,7 @@ export function HomeHeroManager() {
             value={hero?.description || ""}
             onChange={(e) => setHero(prev => prev ? { ...prev, description: e.target.value } : {
               id: "", main_title: "", subtitle: "", description: e.target.value,
-              cta_button_text: "View our reports", cta_button_link: "/reports", background_image_url: null
+              cta_button_text: "View our reports", cta_button_link: "/reports", background_image_url: null, video_url: null
             })}
             required
           />
@@ -145,7 +146,7 @@ export function HomeHeroManager() {
             value={hero?.cta_button_text || ""}
             onChange={(e) => setHero(prev => prev ? { ...prev, cta_button_text: e.target.value } : {
               id: "", main_title: "", subtitle: "", description: "",
-              cta_button_text: e.target.value, cta_button_link: "/reports", background_image_url: null
+              cta_button_text: e.target.value, cta_button_link: "/reports", background_image_url: null, video_url: null
             })}
             required
           />
@@ -158,10 +159,27 @@ export function HomeHeroManager() {
             value={hero?.cta_button_link || ""}
             onChange={(e) => setHero(prev => prev ? { ...prev, cta_button_link: e.target.value } : {
               id: "", main_title: "", subtitle: "", description: "",
-              cta_button_text: "View our reports", cta_button_link: e.target.value, background_image_url: null
+              cta_button_text: "View our reports", cta_button_link: e.target.value, background_image_url: null, video_url: null
             })}
             required
           />
+        </div>
+
+        <div>
+          <Label htmlFor="video_url">Hero Video URL (YouTube or direct video URL)</Label>
+          <Input
+            id="video_url"
+            placeholder="https://www.youtube.com/embed/... or video file URL"
+            value={hero?.video_url || ""}
+            onChange={(e) => setHero(prev => prev ? { ...prev, video_url: e.target.value } : {
+              id: "", main_title: "", subtitle: "", description: "",
+              cta_button_text: "View our reports", cta_button_link: "/reports", 
+              background_image_url: null, video_url: e.target.value
+            })}
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            For YouTube: Use embed URL format (e.g., https://www.youtube.com/embed/VIDEO_ID)
+          </p>
         </div>
 
         <div>

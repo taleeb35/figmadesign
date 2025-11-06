@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Trophy, Plus, FileText } from "lucide-react";
+import { Trophy, Plus, FileText, Loader2 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,31 +7,92 @@ import Header from "@/components/Header";
 import ClientLogos from "@/components/ClientLogos";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
-import heroImage from "@/assets/hero-image.png";
+
+interface HomeHero {
+  id: string;
+  main_title: string;
+  subtitle: string;
+  description: string;
+  cta_button_text: string;
+  cta_button_link: string;
+  video_url: string | null;
+}
+
+interface HomeStatistic {
+  id: string;
+  title: string;
+  value: string;
+  display_order: number;
+}
+
+interface TimelineItem {
+  id: string;
+  year: number;
+  title: string;
+  description: string;
+  display_order: number;
+}
 
 const Index = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   type FAQItem = { id: string; question: string; answer: string; display_order: number };
   const [faqs, setFaqs] = useState<FAQItem[]>([]);
   const [loadingFaq, setLoadingFaq] = useState(true);
+  
+  const [hero, setHero] = useState<HomeHero | null>(null);
+  const [statistics, setStatistics] = useState<HomeStatistic[]>([]);
+  const [timeline, setTimeline] = useState<TimelineItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchFAQs = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("faqs")
-          .select("*")
-          .order("display_order", { ascending: true });
-        if (error) throw error;
-        setFaqs(data || []);
-      } catch (err) {
-        console.error("Error loading FAQs on home:", err);
-      } finally {
-        setLoadingFaq(false);
-      }
-    };
+    fetchContent();
     fetchFAQs();
   }, []);
+
+  const fetchContent = async () => {
+    try {
+      const [heroRes, statsRes, timelineRes] = await Promise.all([
+        supabase.from("home_hero").select("*").maybeSingle(),
+        supabase.from("home_statistics").select("*").order("display_order"),
+        supabase.from("timeline_items").select("*").order("display_order"),
+      ]);
+
+      if (heroRes.error) throw heroRes.error;
+      if (statsRes.error) throw statsRes.error;
+      if (timelineRes.error) throw timelineRes.error;
+
+      setHero(heroRes.data);
+      setStatistics(statsRes.data || []);
+      setTimeline(timelineRes.data || []);
+    } catch (error) {
+      console.error("Error loading home content:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchFAQs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("faqs")
+        .select("*")
+        .order("display_order", { ascending: true });
+      if (error) throw error;
+      setFaqs(data || []);
+    } catch (err) {
+      console.error("Error loading FAQs on home:", err);
+    } finally {
+      setLoadingFaq(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -42,40 +103,58 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
+              {hero?.subtitle && (
+                <p className="text-sm uppercase tracking-wider text-gray-300 mb-4">{hero.subtitle}</p>
+              )}
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                We Present your Achievement<br />to the <span className="text-[hsl(var(--accent))]">World</span>
+                {hero?.main_title || "We Present your Achievement to the World"}
               </h1>
               <p className="text-gray-300 mb-8 leading-relaxed max-w-xl">
-                Elevate the business's value, build your customers' trust, and showcase your company in numbers. We transform your achievements into compelling visual stories that resonate with your audience and amplify your impact in the world.
+                {hero?.description || "Elevate the business's value, build your customers' trust, and showcase your company in numbers."}
               </p>
               <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 text-lg rounded-full">
-                Book a Meeting
+                {hero?.cta_button_text || "Book a Meeting"}
               </Button>
 
+              {/* Statistics Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mt-12">
-                <div>
-                  <div className="text-3xl font-bold">12+</div>
-                  <div className="text-sm text-gray-400">Years of experience</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold">20+</div>
-                  <div className="text-sm text-gray-400">Company Partners</div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Trophy className="w-10 h-10 text-[hsl(var(--trophy-gold))]" fill="currentColor" />
-                  <div>
-                    <div className="text-xs font-semibold">No. 1</div>
-                    <div className="text-xs text-gray-400">Digital Agency of the Year</div>
+                {statistics.map((stat) => (
+                  <div key={stat.id}>
+                    <div className="text-3xl font-bold">{stat.value}</div>
+                    <div className="text-sm text-gray-400">{stat.title}</div>
                   </div>
-                </div>
+                ))}
               </div>
             </div>
+            
+            {/* Video Section */}
             <div className="hidden lg:block">
-              <img src={heroImage} alt="Annual Reports Analytics" className="w-full h-auto rounded-2xl shadow-2xl" />
+              {hero?.video_url ? (
+                <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl bg-white">
+                  {hero.video_url.includes('youtube.com') || hero.video_url.includes('youtu.be') ? (
+                    <iframe
+                      src={hero.video_url}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <video
+                      src={hero.video_url}
+                      controls
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
+              ) : (
+                <div className="w-full aspect-video rounded-2xl bg-white/10 flex items-center justify-center">
+                  <p className="text-gray-400">No video uploaded</p>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Client Logos Scrolling */}
+          {/* Client Logos */}
           <ClientLogos />
         </div>
         
@@ -147,21 +226,16 @@ const Index = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { year: "2010", text: "Data Specialization: Focused on extracting data integrity and structure in complex Gulf markets." },
-              { year: "2015", text: "Strategic Consolidation: Refined our services to directly link deep data analysis with C-suite objectives." },
-              { year: "2020", text: "Visual Intelligence: Defined the benchmark for concise, high-impact visualization in regional reports." },
-              { year: "2025", text: "Report Leaders: Solidified our position as the region's definitive reporting partner for the Gulf's top leaders." },
-            ].map((item, i) => (
-              <div key={i} className="relative">
+            {timeline.map((item, i) => (
+              <div key={item.id} className="relative">
                 <div className="bg-gray-100 rounded-2xl p-6 pt-8 text-center min-h-[200px] flex flex-col items-center">
                   <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-14 h-14 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center text-white shadow-lg">
                     <FileText className="w-7 h-7" />
                   </div>
                   <div className="text-3xl font-bold mb-3 mt-2">{item.year}</div>
-                  <p className="text-sm text-gray-700 leading-relaxed">{item.text}</p>
+                  <p className="text-sm text-gray-700 leading-relaxed">{item.description}</p>
                 </div>
-                {i < 3 && (
+                {i < timeline.length - 1 && (
                   <div className="hidden lg:block absolute top-16 -right-4 w-8 h-0.5 bg-[hsl(var(--accent))]"></div>
                 )}
               </div>
@@ -178,7 +252,7 @@ const Index = () => {
             <p className="text-gray-600">Question? Look here</p>
           </div>
 
-{loadingFaq ? (
+          {loadingFaq ? (
             <div className="text-center text-gray-500">Loading FAQs...</div>
           ) : faqs.length === 0 ? (
             <div className="text-center text-gray-500">No FAQs available.</div>

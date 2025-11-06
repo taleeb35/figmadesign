@@ -12,6 +12,8 @@ import StatisticsManager from "@/components/admin/StatisticsManager";
 import InfographicsManager from "@/components/admin/InfographicsManager";
 import PasswordReset from "@/components/admin/PasswordReset";
 import { FAQManager } from "@/components/admin/FAQManager";
+import HomePage from "@/pages/admin/HomePage";
+import AboutPage from "@/pages/admin/AboutPage";
 
 // Admin dashboard with sidebar navigation
 
@@ -101,6 +103,8 @@ const AdminDashboard = () => {
           <main className="container mx-auto px-4 py-8 flex-1">
             <Routes>
               <Route path="/" element={<ContentManager />} />
+              <Route path="/home" element={<HomePage />} />
+              <Route path="/about" element={<AboutPage />} />
               <Route path="/statistics" element={<StatisticsManager />} />
               <Route path="/infographics" element={<InfographicsManager />} />
               <Route path="/content" element={<ContentCategoryManager />} />
