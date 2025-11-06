@@ -14,6 +14,171 @@ export type Database = {
   }
   public: {
     Tables: {
+      about_advantage: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description: string
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      about_experience: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          stat1_label: string
+          stat1_value: string
+          stat2_label: string
+          stat2_value: string
+          stat3_label: string
+          stat3_value: string
+          title: string
+          updated_at: string
+          years_text: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description: string
+          id?: string
+          stat1_label: string
+          stat1_value: string
+          stat2_label: string
+          stat2_value: string
+          stat3_label: string
+          stat3_value: string
+          title: string
+          updated_at?: string
+          years_text: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          stat1_label?: string
+          stat1_value?: string
+          stat2_label?: string
+          stat2_value?: string
+          stat3_label?: string
+          stat3_value?: string
+          title?: string
+          updated_at?: string
+          years_text?: string
+        }
+        Relationships: []
+      }
+      about_hero: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          main_title: string
+          subtitle: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          main_title: string
+          subtitle: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          main_title?: string
+          subtitle?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      client_logos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          display_order: number
+          id: string
+          logo_url: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          id?: string
+          logo_url: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          id?: string
+          logo_url?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      company_values: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string
+          display_order: number
+          icon_name: string
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description: string
+          display_order?: number
+          icon_name: string
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          display_order?: number
+          icon_name?: string
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       content_categories: {
         Row: {
           created_at: string
@@ -124,6 +289,75 @@ export type Database = {
         }
         Relationships: []
       }
+      home_hero: {
+        Row: {
+          background_image_url: string | null
+          created_at: string
+          created_by: string | null
+          cta_button_link: string
+          cta_button_text: string
+          description: string
+          id: string
+          main_title: string
+          subtitle: string
+          updated_at: string
+        }
+        Insert: {
+          background_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          cta_button_link?: string
+          cta_button_text?: string
+          description: string
+          id?: string
+          main_title: string
+          subtitle: string
+          updated_at?: string
+        }
+        Update: {
+          background_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          cta_button_link?: string
+          cta_button_text?: string
+          description?: string
+          id?: string
+          main_title?: string
+          subtitle?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      home_statistics: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          display_order: number
+          id: string
+          title: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          id?: string
+          title: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          id?: string
+          title?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       infographics: {
         Row: {
           created_at: string
@@ -144,6 +378,42 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          id?: string
+          image_url?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      portfolio_items: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          display_order: number
+          external_link: string | null
+          id: string
+          image_url: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          display_order?: number
+          external_link?: string | null
+          id?: string
+          image_url: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          display_order?: number
+          external_link?: string | null
           id?: string
           image_url?: string
           title?: string
@@ -215,6 +485,75 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      testimonials: {
+        Row: {
+          author_image_url: string | null
+          author_name: string
+          author_position: string
+          created_at: string
+          created_by: string | null
+          display_order: number
+          id: string
+          quote: string
+          updated_at: string
+        }
+        Insert: {
+          author_image_url?: string | null
+          author_name: string
+          author_position: string
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          id?: string
+          quote: string
+          updated_at?: string
+        }
+        Update: {
+          author_image_url?: string | null
+          author_name?: string
+          author_position?: string
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          id?: string
+          quote?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      timeline_items: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string
+          display_order: number
+          id: string
+          title: string
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description: string
+          display_order?: number
+          id?: string
+          title: string
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          display_order?: number
+          id?: string
+          title?: string
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
