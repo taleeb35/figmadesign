@@ -109,7 +109,6 @@ export function HomeHeroManager() {
               id: "", main_title: "", subtitle: e.target.value, description: "",
               cta_button_text: "View our reports", cta_button_link: "/reports", background_image_url: null, video_url: null
             })}
-            required
           />
         </div>
 
@@ -122,7 +121,6 @@ export function HomeHeroManager() {
               id: "", main_title: e.target.value, subtitle: "", description: "",
               cta_button_text: "View our reports", cta_button_link: "/reports", background_image_url: null, video_url: null
             })}
-            required
           />
         </div>
 
@@ -135,7 +133,6 @@ export function HomeHeroManager() {
               id: "", main_title: "", subtitle: "", description: e.target.value,
               cta_button_text: "View our reports", cta_button_link: "/reports", background_image_url: null, video_url: null
             })}
-            required
           />
         </div>
 
@@ -148,7 +145,6 @@ export function HomeHeroManager() {
               id: "", main_title: "", subtitle: "", description: "",
               cta_button_text: e.target.value, cta_button_link: "/reports", background_image_url: null, video_url: null
             })}
-            required
           />
         </div>
 
@@ -161,7 +157,6 @@ export function HomeHeroManager() {
               id: "", main_title: "", subtitle: "", description: "",
               cta_button_text: "View our reports", cta_button_link: e.target.value, background_image_url: null, video_url: null
             })}
-            required
           />
         </div>
 

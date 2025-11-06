@@ -294,12 +294,12 @@ export type Database = {
           background_image_url: string | null
           created_at: string
           created_by: string | null
-          cta_button_link: string
-          cta_button_text: string
-          description: string
+          cta_button_link: string | null
+          cta_button_text: string | null
+          description: string | null
           id: string
-          main_title: string
-          subtitle: string
+          main_title: string | null
+          subtitle: string | null
           updated_at: string
           video_url: string | null
         }
@@ -307,12 +307,12 @@ export type Database = {
           background_image_url?: string | null
           created_at?: string
           created_by?: string | null
-          cta_button_link?: string
-          cta_button_text?: string
-          description: string
+          cta_button_link?: string | null
+          cta_button_text?: string | null
+          description?: string | null
           id?: string
-          main_title: string
-          subtitle: string
+          main_title?: string | null
+          subtitle?: string | null
           updated_at?: string
           video_url?: string | null
         }
@@ -320,12 +320,12 @@ export type Database = {
           background_image_url?: string | null
           created_at?: string
           created_by?: string | null
-          cta_button_link?: string
-          cta_button_text?: string
-          description?: string
+          cta_button_link?: string | null
+          cta_button_text?: string | null
+          description?: string | null
           id?: string
-          main_title?: string
-          subtitle?: string
+          main_title?: string | null
+          subtitle?: string | null
           updated_at?: string
           video_url?: string | null
         }
