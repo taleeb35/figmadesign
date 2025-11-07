@@ -51,7 +51,7 @@ const ClientLogos = () => {
             <img 
               src={logo.logo_url} 
               alt={logo.name} 
-              className="h-16 opacity-70 hover:opacity-100 transition-all" 
+              className="h-16 hover:opacity-100 transition-all" 
             />
           </div>
         ))}
