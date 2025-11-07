@@ -208,7 +208,7 @@ const Index = () => {
                 <img 
                     src="/laptop.webp" 
                     alt="Laptop Video Frame" 
-                    className="w-full max-w-lg h-auto" 
+                    className="w-full max-w-lg h-auto laptop_img" 
                     loading="lazy"
                 />
             </div>
