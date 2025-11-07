@@ -266,39 +266,7 @@ const Index = () => {
     </div>
 </section>
       
-      {/* Story Timeline Section */}
-      <section className="py-20 px-6 md:px-12 lg:px-24 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Our Story</h2>
-            <p className="text-gray-600">From Data Analysts to Report Leaders</p>
-          </div>
-
-          <div className="relative overflow-x-auto pb-8">
-            <div className="flex gap-8 min-w-max px-4 md:justify-center">
-              {timeline.map((item, index) => (
-                <div key={item.id} className="relative flex flex-col items-center w-64">
-                  {/* Red circle icon */}
-                  <div className="w-12 h-12 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center mb-4 z-10 shadow-lg">
-                    <FileText className="w-6 h-6 text-white" />
-                  </div>
-                  
-                  {/* Connecting line */}
-                  {index < timeline.length - 1 && (
-                    <div className="absolute top-6 left-[calc(50%+24px)] w-[calc(100%+32px-48px)] h-0.5 bg-[hsl(var(--accent))]" />
-                  )}
-                  
-                  {/* Card */}
-                  <div className="bg-muted rounded-lg p-6 w-full shadow-md">
-                    <div className="text-2xl font-bold mb-3">{item.year}</div>
-                    <p className="text-sm text-foreground/80 leading-relaxed">{item.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       {/* FAQ Section */}
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
