@@ -157,9 +157,10 @@ All colors MUST be HSL.
     width: 80%;
     margin: 0 auto;
     top: 50%;
+    height: 5px !important;
 }
 
-p.leading-relaxed {
+.timeline-card p {
   color: #000 !important;
 }
  .timeline-card {
