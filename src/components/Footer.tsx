@@ -30,6 +30,28 @@ const Footer = () => {
     };
 
     fetchSettings();
+
+    // Subscribe to realtime changes
+    const channel = supabase
+      .channel('footer_settings_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'footer_settings'
+        },
+        (payload) => {
+          if (payload.new) {
+            setSettings(payload.new as FooterSettings);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return (
