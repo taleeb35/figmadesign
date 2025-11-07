@@ -131,15 +131,13 @@ export function HomeHeroManager() {
 
         <div>
           <Label htmlFor="description">Description</Label>
-          <textarea
-                  id="description"
-                  value={hero?.description || ""} // Value prop remains the same
-                  onChange={(e) => setHero(prev => prev ? { ...prev, description: e.target.value } : {
-                      id: "", main_title: "", description: e.target.value, video_url: null
-                  })}
-                  rows={4} // Optional: Sets the visible height to 4 lines
-                  // cols={50} // Optional: Sets the visible width
-              />
+          <Input
+            id="description"
+            value={hero?.description || ""}
+            onChange={(e) => setHero(prev => prev ? { ...prev, description: e.target.value } : {
+              id: "", main_title: "", description: e.target.value, video_url: null
+            })}
+          />
         </div>
 
         <div>
