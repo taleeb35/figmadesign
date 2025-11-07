@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Trophy, Plus, FileText, Loader2 } from "lucide-react";
+import { Trophy, Plus, FileText, Loader2 , BarChart3} from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
