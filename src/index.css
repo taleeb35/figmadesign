@@ -152,3 +152,8 @@ All colors MUST be HSL.
         /* Important: The 144px offset applied in JSX must be maintained for all media queries */
     }
 }
+
+.absolute.top-\[26px\].left-0.right-0.h-0\.5.bg-red-600.z-0.timeline-connector {
+    width: 80%;
+    margin: 0 auto;
+}
