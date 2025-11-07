@@ -166,3 +166,6 @@ All colors MUST be HSL.
  .timeline-card {
     text-align: center;
 }
+.timeline-icon {
+    border: 4px solid #d41121 !important;
+} 
