@@ -202,7 +202,7 @@ img.w-6.h-6.timeline-custom-icon {
     border-radius: 2px; /* Slight screen edge rounding */
 }
 .laptop_img {
-  width: 100% !important;
+  max-width: 100% !important;
 }
 .mp-top {
     padding-top: 40px;
