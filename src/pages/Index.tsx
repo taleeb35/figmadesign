@@ -189,7 +189,7 @@ const Index = () => {
       
 <section className="py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
     <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center authority">
+        <div className="grid lg:grid-cols-2 gap-12 items-center authority gapzero">
             
             {/* Text Content Column */}
             <div>
