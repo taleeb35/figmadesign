@@ -186,47 +186,55 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Annual Report Section (Video Player) */}
-      <section className="py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center authority">
+      // Annual Report Section (Video Player with Image Frame)
+<section className="py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
+    <div className="max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-12 items-center authority">
+            
             {/* Text Content Column */}
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Introducing the Annual report’s Service
-              </h2>
-              <p className="text-gray-600 mb-8 leading-relaxed Process">
-                See the Process: From Data Complexity to Executive Clarity.
-              </p>
+                <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                    Introducing the Annual report’s Service
+                </h2>
+                <p className="text-gray-600 mb-8 leading-relaxed Process">
+                    See the Process: From Data Complexity to Executive Clarity.
+                </p>
             </div>
 
-            {/* Video Player Column */}
+            {/* Video Player Column - Using laptop.webp as the frame */}
             <div className="flex justify-center">
-              {hero?.video_url ? (
-                <div className="relative w-full max-w-md aspect-video rounded-xl overflow-hidden shadow-2xl">
-                  {/* The actual iframe/video placeholder */}
-                  <iframe
-                    className="absolute top-0 left-0 w-full h-full"
-                    src={getYouTubeEmbedUrl(hero.video_url)}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                  
-                  {/* You can optionally add a div here to match the laptop visual from the design */}
-                  <div className="absolute inset-0 pointer-events-none">
-                    {/*  */}
-                  </div>
-                </div>
-              ) : (
-                <div className="w-full max-w-md aspect-video rounded-xl bg-gray-300 flex items-center justify-center text-gray-700">
-                  Video link missing from Hero content.
-                </div>
-              )}
+                {hero?.video_url ? (
+                    <div className="relative w-full max-w-lg mx-auto laptop-frame">
+                        
+                        {/* Laptop frame image (Placed in public folder) */}
+                        <img 
+                            src="/laptop.webp" 
+                            alt="Laptop Frame" 
+                            className="w-full h-auto z-0 pointer-events-none" 
+                            loading="lazy"
+                        />
+                        
+                        {/* Video Screen Area - Positioned absolutely over the screen gap */}
+                        <div className="absolute inset-0 z-10 video-screen-area">
+                            <iframe
+                                className="w-full h-full"
+                                src={getYouTubeEmbedUrl(hero.video_url)}
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            />
+                        </div>
+
+                    </div>
+                ) : (
+                    <div className="w-full max-w-md aspect-video rounded-xl bg-gray-300 flex items-center justify-center text-gray-700">
+                        Video link missing.
+                    </div>
+                )}
             </div>
-          </div>
         </div>
-      </section>
+    </div>
+</section>
 
 
       {/* Story Timeline Section */}
