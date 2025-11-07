@@ -1,244 +1,283 @@
-import { Heart, Lightbulb, Users, Zap, Check, Quote } from "lucide-react";
-import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Check } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import CTASection from "@/components/CTASection";
-import logo from "@/assets/logo.png";
+import Footer from "@/components/Footer";
+import { Loader2 } from "lucide-react";
+
+interface AboutHero {
+  subtitle: string;
+  main_title: string;
+}
+
+interface AboutExperience {
+  title: string;
+  description: string;
+  years_text: string;
+  stat1_value: string;
+  stat1_label: string;
+  stat2_value: string;
+  stat2_label: string;
+  stat3_value: string;
+  stat3_label: string;
+  image_url: string | null;
+}
+
+interface AboutAdvantage {
+  title: string;
+  description: string;
+  image_url: string | null;
+  point1: string;
+  point2: string;
+  point3: string;
+  point4: string;
+  point5: string;
+  point6: string;
+}
+
+interface CompanyValue {
+  id: string;
+  title: string;
+  description: string;
+  icon_name: string;
+  display_order: number;
+}
+
+interface Testimonial {
+  quote: string;
+  author_name: string;
+  author_position: string;
+  author_image_url: string | null;
+}
 
 const AboutUs = () => {
+  const [loading, setLoading] = useState(true);
+  const [hero, setHero] = useState<AboutHero | null>(null);
+  const [experience, setExperience] = useState<AboutExperience | null>(null);
+  const [advantage, setAdvantage] = useState<AboutAdvantage | null>(null);
+  const [values, setValues] = useState<CompanyValue[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+
+  useEffect(() => {
+    fetchContent();
+  }, []);
+
+  const fetchContent = async () => {
+    try {
+      const [heroData, expData, advData, valuesData, testimonialsData] = await Promise.all([
+        supabase.from("about_hero").select("*").maybeSingle(),
+        supabase.from("about_experience").select("*").maybeSingle(),
+        supabase.from("about_advantage").select("*").maybeSingle(),
+        supabase.from("company_values").select("*").order("display_order"),
+        supabase.from("testimonials").select("*").order("display_order").limit(1)
+      ]);
+
+      if (heroData.data) setHero(heroData.data);
+      if (expData.data) setExperience(expData.data);
+      if (advData.data) setAdvantage(advData.data);
+      if (valuesData.data) setValues(valuesData.data);
+      if (testimonialsData.data) setTestimonials(testimonialsData.data);
+    } catch (error) {
+      console.error("Error fetching content:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getIconComponent = (iconName: string) => {
+    const icons: Record<string, any> = {
+      Heart: () => <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>,
+      Lightbulb: () => <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>,
+      Users: () => <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>,
+      Zap: () => <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
+    };
+    return icons[iconName] ? icons[iconName]() : icons.Heart();
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
 
-      {/* Hero Banner - Dark Gray */}
+      {/* Hero Banner */}
       <section className="bg-gray-700 py-16 md:py-20 text-center">
-        <p className="text-gray-400 text-lg mb-2">About us</p>
-        <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-bold">What set us apart?</h1>
+        <p className="text-gray-400 text-lg mb-2">{hero?.subtitle || "About us"}</p>
+        <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-bold">
+          {hero?.main_title || "What set us apart?"}
+        </h1>
       </section>
 
       {/* Our Experience Section */}
-      <section className="py-16 md:py-20 px-6 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-4xl font-bold text-[hsl(var(--accent))] mb-6">Our Experience</h2>
-              <p className="text-gray-800 leading-relaxed mb-8">
-                Experience is the foundation of authority. For more than ten years, we have specialized in transforming vast, unstructured data into crystal-clear annual reports that drive executive action.
-              </p>
-              <div className="grid grid-cols-3 gap-8">
-                <div>
-                  <div className="text-5xl font-bold text-gray-800 mb-2">150+</div>
-                  <div className="text-gray-700 font-semibold">Report</div>
-                </div>
-                <div>
-                  <div className="text-5xl font-bold text-gray-800 mb-2">15+</div>
-                  <div className="text-gray-700 font-semibold">Years</div>
-                </div>
-                <div>
-                  <div className="text-5xl font-bold text-gray-800 mb-2">400+</div>
-                  <div className="text-gray-700 font-semibold">Infographic</div>
+      {experience && (
+        <section className="py-16 md:py-20 px-6 md:px-12 lg:px-24">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-4xl font-bold text-[hsl(var(--accent))] mb-6">{experience.title}</h2>
+                <p className="text-gray-800 leading-relaxed mb-8">{experience.description}</p>
+                <div className="grid grid-cols-3 gap-8">
+                  <div>
+                    <div className="text-5xl font-bold text-gray-800 mb-2">{experience.stat1_value}</div>
+                    <div className="text-gray-700 font-semibold">{experience.stat1_label}</div>
+                  </div>
+                  <div>
+                    <div className="text-5xl font-bold text-gray-800 mb-2">{experience.stat2_value}</div>
+                    <div className="text-gray-700 font-semibold">{experience.stat2_label}</div>
+                  </div>
+                  <div>
+                    <div className="text-5xl font-bold text-gray-800 mb-2">{experience.stat3_value}</div>
+                    <div className="text-gray-700 font-semibold">{experience.stat3_label}</div>
+                  </div>
                 </div>
               </div>
+              {experience.image_url ? (
+                <img 
+                  src={experience.image_url} 
+                  alt={experience.title} 
+                  className="aspect-[4/3] w-full object-cover rounded-lg shadow-md"
+                />
+              ) : (
+                <div className="aspect-[4/3] bg-gray-200 rounded-lg shadow-md"></div>
+              )}
             </div>
-            <div className="aspect-[4/3] bg-gray-200 rounded-lg shadow-md"></div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Our Advantage Section */}
-      <section className="py-16 md:py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="aspect-[4/3] bg-gray-200 rounded-lg shadow-md"></div>
-            <div>
-              <h2 className="text-4xl font-bold text-[hsl(var(--accent))] mb-6">Our Advantage</h2>
-              <p className="text-gray-800 leading-relaxed mb-8">
-                Our advantage extends far beyond simple design or automation. We are not a software tool; we are your strategic reporting partner. Our team combines over a decade of deep regional expertise with a proprietary analytical methodology,
-              </p>
-              <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-gray-600" />
-                  <span className="text-[hsl(var(--accent))] font-semibold">Specialization</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-gray-600" />
-                  <span className="text-[hsl(var(--accent))] font-semibold">Clarity</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-gray-600" />
-                  <span className="text-[hsl(var(--accent))] font-semibold">Strategy</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-gray-600" />
-                  <span className="text-[hsl(var(--accent))] font-semibold">Transparency</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-gray-600" />
-                  <span className="text-[hsl(var(--accent))] font-semibold">Creativity</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-gray-600" />
-                  <span className="text-[hsl(var(--accent))] font-semibold">Impact</span>
+      {advantage && (
+        <section className="py-16 md:py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {advantage.image_url ? (
+                <img 
+                  src={advantage.image_url} 
+                  alt={advantage.title} 
+                  className="aspect-[4/3] w-full object-cover rounded-lg shadow-md"
+                />
+              ) : (
+                <div className="aspect-[4/3] bg-gray-200 rounded-lg shadow-md"></div>
+              )}
+              <div>
+                <h2 className="text-4xl font-bold text-[hsl(var(--accent))] mb-6">{advantage.title}</h2>
+                <p className="text-gray-800 leading-relaxed mb-8">{advantage.description}</p>
+                <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                  {advantage.point1 && (
+                    <div className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-gray-600" />
+                      <span className="text-[hsl(var(--accent))] font-semibold">{advantage.point1}</span>
+                    </div>
+                  )}
+                  {advantage.point2 && (
+                    <div className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-gray-600" />
+                      <span className="text-[hsl(var(--accent))] font-semibold">{advantage.point2}</span>
+                    </div>
+                  )}
+                  {advantage.point3 && (
+                    <div className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-gray-600" />
+                      <span className="text-[hsl(var(--accent))] font-semibold">{advantage.point3}</span>
+                    </div>
+                  )}
+                  {advantage.point4 && (
+                    <div className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-gray-600" />
+                      <span className="text-[hsl(var(--accent))] font-semibold">{advantage.point4}</span>
+                    </div>
+                  )}
+                  {advantage.point5 && (
+                    <div className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-gray-600" />
+                      <span className="text-[hsl(var(--accent))] font-semibold">{advantage.point5}</span>
+                    </div>
+                  )}
+                  {advantage.point6 && (
+                    <div className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-gray-600" />
+                      <span className="text-[hsl(var(--accent))] font-semibold">{advantage.point6}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* What Makes us Different Section */}
-      <section className="py-16 md:py-20 px-6 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-2">What Makes us</h2>
-            <h2 className="text-4xl md:text-5xl font-bold text-[hsl(var(--accent))]">Different!</h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)] transition-shadow">
-              <Heart className="w-12 h-12 text-[hsl(var(--accent))] mx-auto mb-4" strokeWidth={1.5} />
-              <h3 className="text-xl font-bold mb-3">Passion</h3>
-              <p className="text-sm text-gray-700 leading-relaxed">
-                We are driven by genuine passion for our mission, ensuring every solution is delivered with uncompromising commitment.
-              </p>
+      {values.length > 0 && (
+        <section className="py-16 md:py-20 px-6 md:px-12 lg:px-24">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-12">
+              <h2 className="text-4xl md:text-5xl font-bold mb-2">What Makes us</h2>
+              <h2 className="text-4xl md:text-5xl font-bold text-[hsl(var(--accent))]">Different!</h2>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)] transition-shadow">
-              <Lightbulb className="w-12 h-12 text-[hsl(var(--accent))] mx-auto mb-4" strokeWidth={1.5} />
-              <h3 className="text-xl font-bold mb-3">Innovation</h3>
-              <p className="text-sm text-gray-700 leading-relaxed">
-                We are relentless in our pursuit of the next great idea, Ensuring our clients always maintain a market-leading advantage.
-              </p>
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)] transition-shadow">
-              <Users className="w-12 h-12 text-[hsl(var(--accent))] mx-auto mb-4" strokeWidth={1.5} />
-              <h3 className="text-xl font-bold mb-3">Collaboration</h3>
-              <p className="text-sm text-gray-700 leading-relaxed">
-                We treat every client relationship as a strategic collaboration, bringing diverse expertise together to co-create comprehensive, solutions.
-              </p>
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)] transition-shadow">
-              <Zap className="w-12 h-12 text-[hsl(var(--accent))] mx-auto mb-4" strokeWidth={1.5} />
-              <h3 className="text-xl font-bold mb-3">Excellence</h3>
-              <p className="text-sm text-gray-700 leading-relaxed">
-                standard we apply to everything we do. From the smallest detail to the largest outcome, we are committed to rigorous quality
-              </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {values.map((value) => (
+                <div key={value.id} className="bg-white border border-gray-200 rounded-lg p-6 text-center shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.15)] transition-shadow">
+                  <div className="text-[hsl(var(--accent))]">
+                    {getIconComponent(value.icon_name)}
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">{value.title}</h3>
+                  <p className="text-sm text-gray-700 leading-relaxed">{value.description}</p>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Testimonial Section */}
-      <section className="py-16 md:py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
-        <div className="max-w-5xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden border-t-4 border-[hsl(var(--accent))]">
-            <div className="p-8 md:p-12">
-              <div className="grid md:grid-cols-[200px_1fr] gap-8 items-start">
-                <div className="flex justify-center md:justify-start">
-                  <div className="w-40 h-40 rounded-full bg-gray-200 border-4 border-pink-200"></div>
-                </div>
-                <div>
-                  <Quote className="w-8 h-8 text-[hsl(var(--accent))] mb-4" />
-                  <p className="text-gray-800 leading-relaxed mb-6 text-lg">
-                    " When we began our journey over a decade ago as Data Specialists, we saw a fundamental need in the Middle East Gulf: to translate monumental achievement into unassailable, straightforward clarity. Raw data, no matter how vast, is only potential. Our mission has always been to transform that potential into your most trusted and high-impact asset—the Annual Report. "
-                  </p>
-                  <div>
-                    <p className="font-bold text-gray-900 text-lg">Radwan Takieddin</p>
-                    <p className="text-sm text-gray-600">CEO & Founder</p>
+      {testimonials.length > 0 && (
+        <section className="py-16 md:py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
+          <div className="max-w-5xl mx-auto">
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="bg-white rounded-2xl shadow-lg overflow-hidden border-t-4 border-[hsl(var(--accent))]">
+                <div className="p-8 md:p-12">
+                  <div className="grid md:grid-cols-[200px_1fr] gap-8 items-start">
+                    <div className="flex justify-center md:justify-start">
+                      {testimonial.author_image_url ? (
+                        <img 
+                          src={testimonial.author_image_url} 
+                          alt={testimonial.author_name}
+                          className="w-40 h-40 rounded-full object-cover border-4 border-pink-200"
+                        />
+                      ) : (
+                        <div className="w-40 h-40 rounded-full bg-gray-200 border-4 border-pink-200"></div>
+                      )}
+                    </div>
+                    <div>
+                      <svg className="w-8 h-8 text-[hsl(var(--accent))] mb-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                      </svg>
+                      <p className="text-gray-800 leading-relaxed mb-6 text-lg">
+                        {testimonial.quote}
+                      </p>
+                      <div>
+                        <p className="font-bold text-gray-900 text-lg">{testimonial.author_name}</p>
+                        <p className="text-sm text-gray-600">{testimonial.author_position}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* CTA Section */}
       <CTASection />
-
-      {/* Footer */}
-      <footer className="bg-white pt-12 pb-0 px-6 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-10">
-            {/* Column 1: Logo and Description */}
-            <div className="space-y-4">
-              <img src={logo} alt="Annual Reports" className="h-10" />
-              <p className="text-sm text-gray-700 leading-relaxed">
-                The Annual Reports, Bespoke data analysis and visual reports for Gulf area governments and corporations since 2010.
-              </p>
-              <div className="flex items-center gap-2 text-xs text-gray-700">
-                <a href="#" className="hover:text-[hsl(var(--accent))]">Privacy Policy</a>
-                <span>|</span>
-                <a href="#" className="hover:text-[hsl(var(--accent))]">Terms & Conditions</a>
-              </div>
-            </div>
-
-            {/* Column 2: Navigation Links */}
-            <div>
-              <ul className="space-y-4 text-base">
-                <li><a href="/" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Home</a></li>
-                <li><a href="/reports" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Work</a></li>
-                <li><a href="#" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Gulf new's</a></li>
-                <li><a href="#" className="font-bold text-gray-900 hover:text-[hsl(var(--accent))]">Infographic</a></li>
-              </ul>
-            </div>
-
-            {/* Column 3: Contact Information */}
-            <div>
-              <ul className="space-y-4">
-                <li className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
-                    </svg>
-                  </div>
-                  <span className="text-base font-semibold text-gray-900">+971856784543</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                    </svg>
-                  </div>
-                  <span className="text-base font-semibold text-gray-900">info@annualreport.net</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                    </svg>
-                  </div>
-                  <span className="text-base font-semibold text-gray-900">JLT, Dubai, 123 adress street</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 4: Social Media Icons */}
-            <div>
-              <div className="flex items-center gap-6">
-                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="LinkedIn">
-                  <Linkedin className="w-5 h-5 text-white" strokeWidth={2.5} />
-                </a>
-                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="Facebook">
-                  <Facebook className="w-5 h-5 text-white" strokeWidth={2.5} />
-                </a>
-                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="Instagram">
-                  <Instagram className="w-5 h-5 text-white" strokeWidth={2.5} />
-                </a>
-                <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="YouTube">
-                  <Youtube className="w-5 h-5 text-white" strokeWidth={2.5} />
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Copyright Bar */}
-          <div className="border-t border-gray-300 py-6 text-center">
-            <p className="text-sm text-gray-700">@theannualreports - all rights reserved 2025</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

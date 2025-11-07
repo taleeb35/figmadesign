@@ -20,6 +20,13 @@ export type Database = {
           created_by: string | null
           description: string
           id: string
+          image_url: string | null
+          point1: string | null
+          point2: string | null
+          point3: string | null
+          point4: string | null
+          point5: string | null
+          point6: string | null
           title: string
           updated_at: string
         }
@@ -28,6 +35,13 @@ export type Database = {
           created_by?: string | null
           description: string
           id?: string
+          image_url?: string | null
+          point1?: string | null
+          point2?: string | null
+          point3?: string | null
+          point4?: string | null
+          point5?: string | null
+          point6?: string | null
           title: string
           updated_at?: string
         }
@@ -36,6 +50,13 @@ export type Database = {
           created_by?: string | null
           description?: string
           id?: string
+          image_url?: string | null
+          point1?: string | null
+          point2?: string | null
+          point3?: string | null
+          point4?: string | null
+          point5?: string | null
+          point6?: string | null
           title?: string
           updated_at?: string
         }
@@ -47,6 +68,7 @@ export type Database = {
           created_by: string | null
           description: string
           id: string
+          image_url: string | null
           stat1_label: string
           stat1_value: string
           stat2_label: string
@@ -62,6 +84,7 @@ export type Database = {
           created_by?: string | null
           description: string
           id?: string
+          image_url?: string | null
           stat1_label: string
           stat1_value: string
           stat2_label: string
@@ -77,6 +100,7 @@ export type Database = {
           created_by?: string | null
           description?: string
           id?: string
+          image_url?: string | null
           stat1_label?: string
           stat1_value?: string
           stat2_label?: string

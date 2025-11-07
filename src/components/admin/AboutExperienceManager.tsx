@@ -18,12 +18,14 @@ interface AboutExperience {
   stat2_label: string;
   stat3_value: string;
   stat3_label: string;
+  image_url: string | null;
 }
 
 export function AboutExperienceManager() {
   const [experience, setExperience] = useState<AboutExperience | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchExperience();
@@ -42,6 +44,35 @@ export function AboutExperienceManager() {
       toast.error("Failed to load experience section");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('content-files')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('content-files')
+        .getPublicUrl(filePath);
+
+      setExperience(prev => prev ? { ...prev, image_url: publicUrl } : null);
+      toast.success("Image uploaded successfully");
+    } catch (error: any) {
+      toast.error("Failed to upload image");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -64,6 +95,7 @@ export function AboutExperienceManager() {
             stat2_label: experience.stat2_label,
             stat3_value: experience.stat3_value,
             stat3_label: experience.stat3_label,
+            image_url: experience.image_url,
           })
           .eq("id", experience.id);
         if (error) throw error;
@@ -79,6 +111,7 @@ export function AboutExperienceManager() {
             stat2_label: experience.stat2_label,
             stat3_value: experience.stat3_value,
             stat3_label: experience.stat3_label,
+            image_url: experience.image_url,
           },
         ]);
         if (error) throw error;
@@ -100,7 +133,7 @@ export function AboutExperienceManager() {
   const defaultExperience: AboutExperience = {
     id: "", years_text: "", title: "", description: "",
     stat1_value: "", stat1_label: "", stat2_value: "", stat2_label: "",
-    stat3_value: "", stat3_label: ""
+    stat3_value: "", stat3_label: "", image_url: null
   };
 
   return (
@@ -200,6 +233,21 @@ export function AboutExperienceManager() {
               required
             />
           </div>
+        </div>
+
+        <div>
+          <Label htmlFor="image">Image</Label>
+          <Input
+            id="image"
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            disabled={uploading}
+          />
+          {uploading && <p className="text-sm text-muted-foreground mt-2">Uploading...</p>}
+          {experience?.image_url && (
+            <img src={experience.image_url} alt="Experience" className="mt-2 w-32 h-32 object-cover rounded" />
+          )}
         </div>
 
         <Button type="submit" disabled={saving}>
