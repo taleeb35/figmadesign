@@ -186,30 +186,43 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Annual Report Section */}
+      {/* Annual Report Section (Video Player) */}
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-center authority">
+            {/* Text Content Column */}
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                'The Annual Report:<br />Transformed from Data to Authority
+                Introducing the Annual report’s Service
               </h2>
-              <p className="text-gray-600 mb-8 leading-relaxed">
-                We create impactful, visually-balanced reports that transform data into authority. Our designs redefine reporting, positioning annual reports as essential, strategic documents that build trust and drive business growth for civil and government sectors alike.
+              <p className="text-gray-600 mb-8 leading-relaxed Process">
+                See the Process: From Data Complexity to Executive Clarity.
               </p>
-              <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 rounded-full">
-                Watch Video
-              </Button>
             </div>
+
+            {/* Video Player Column */}
             <div className="flex justify-center">
-              <div className="relative">
-                <div className="w-full max-w-md aspect-[16/10] bg-gray-800 rounded-lg shadow-2xl border-8 border-gray-900 flex items-center justify-center">
-                  <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center">
-                    <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-white border-b-8 border-b-transparent ml-1"></div>
+              {hero?.video_url ? (
+                <div className="relative w-full max-w-md aspect-video rounded-xl overflow-hidden shadow-2xl">
+                  {/* The actual iframe/video placeholder */}
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full"
+                    src={getYouTubeEmbedUrl(hero.video_url)}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                  
+                  {/* You can optionally add a div here to match the laptop visual from the design */}
+                  <div className="absolute inset-0 pointer-events-none">
+                    {/*  */}
                   </div>
                 </div>
-                <div className="absolute -bottom-4 left-0 right-0 h-8 bg-gray-300 rounded-b-lg"></div>
-              </div>
+              ) : (
+                <div className="w-full max-w-md aspect-video rounded-xl bg-gray-300 flex items-center justify-center text-gray-700">
+                  Video link missing from Hero content.
+                </div>
+              )}
             </div>
           </div>
         </div>
