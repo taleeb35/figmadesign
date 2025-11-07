@@ -45,7 +45,7 @@ const ClientLogos = () => {
 
   return (
     <div className="mt-16 clients_logo">
-      <div className="flex justify-center items-center gap-12 flex-wrap clients_logo_div">
+      <div className="flex justify-center items-center gap-12 clients_logo_div">
         {logos.map((logo) => (
           <div key={logo.id} className="flex-shrink-0">
             <img 
