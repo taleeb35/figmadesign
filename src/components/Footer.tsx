@@ -57,11 +57,8 @@ const Footer = () => {
                 <span className="text-base font-semibold text-gray-900">JLT, Dubai, 123 adress street</span>
               </li>
             </ul>
-          </div>
 
-          {/* Column 4: Social Media Icons */}
-          <div>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-6 mp-top">
               <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="LinkedIn">
                 <Linkedin className="w-5 h-5 text-white" strokeWidth={2.5} />
               </a>
@@ -75,6 +72,11 @@ const Footer = () => {
                 <Youtube className="w-5 h-5 text-white" strokeWidth={2.5} />
               </a>
             </div>
+          </div>
+
+          {/* Column 4: Social Media Icons */}
+          <div>
+            
           </div>
         </div>
 
