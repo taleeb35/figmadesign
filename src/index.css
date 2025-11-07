@@ -158,3 +158,10 @@ All colors MUST be HSL.
     margin: 0 auto;
     top: 50%;
 }
+
+p.leading-relaxed {
+  color: #000 !important;
+}
+ .timeline-card {
+    text-align: center;
+}
