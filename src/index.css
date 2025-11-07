@@ -175,3 +175,29 @@ All colors MUST be HSL.
 img.w-6.h-6.timeline-custom-icon {
     filter: brightness(0) invert(1);
 }
+
+/* --- CUSTOM LAPTOP VIDEO FRAME STYLES --- */
+
+.laptop-frame {
+    /* Ensures the parent container is the reference point for absolute positioning */
+    position: relative; 
+    
+    /* Important: We define the video screen area based on the laptop.webp image dimensions.
+       These percentages are approximated visually from the provided design image 
+       (image_75d661.png) to fit the screen area.
+    */
+}
+
+.laptop-frame .video-screen-area {
+    /* Position and size the iframe precisely over the screen area of the laptop image */
+    position: absolute;
+    top: 5.5%;    /* Push down from the top edge */
+    left: 8.5%;   /* Push in from the left edge */
+    width: 83%;   /* Width of the screen area */
+    height: 77%;  /* Height of the screen area */
+    
+    /* Optional: Hide the initial default YouTube video controls until clicked 
+       if you were using a JS overlay, but for this setup, the iframe loads directly. */
+    overflow: hidden;
+    border-radius: 2px; /* Slight screen edge rounding */
+}
