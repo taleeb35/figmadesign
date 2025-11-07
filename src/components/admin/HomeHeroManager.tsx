@@ -115,7 +115,7 @@ export function HomeHeroManager() {
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="main_title">Main Title (You can use HTML like &lt;span className="text-red-500"&gt;Word&lt;/span&gt;)</Label>
+          <Label htmlFor="main_title">Main Title</Label>
           <Input
             id="main_title"
             value={hero?.main_title || ""}
@@ -131,13 +131,15 @@ export function HomeHeroManager() {
 
         <div>
           <Label htmlFor="description">Description</Label>
-          <Input
-            id="description"
-            value={hero?.description || ""}
-            onChange={(e) => setHero(prev => prev ? { ...prev, description: e.target.value } : {
-              id: "", main_title: "", description: e.target.value, video_url: null
-            })}
-          />
+          <textarea
+                  id="description"
+                  value={hero?.description || ""} // Value prop remains the same
+                  onChange={(e) => setHero(prev => prev ? { ...prev, description: e.target.value } : {
+                      id: "", main_title: "", description: e.target.value, video_url: null
+                  })}
+                  rows={4} // Optional: Sets the visible height to 4 lines
+                  // cols={50} // Optional: Sets the visible width
+              />
         </div>
 
         <div>
