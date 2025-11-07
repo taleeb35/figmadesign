@@ -112,35 +112,42 @@ All colors MUST be HSL.
 
 /* --- CUSTOM TIMELINE STYLES --- */
 
-/* Ensures the connector line has proper bounds */
 .timeline-connector {
     /* Uses custom red color from Tailwind palette */
-    background-color: hsl(var(--accent)); 
+    background-color: hsl(var(--accent)) !important; /* !important to override default color */
 }
 
 .timeline-icon {
+    /* Sets the background color to the accent color (red) */
+    background-color: hsl(var(--accent)) !important; 
+    /* Adds the required white border */
+    border: 4px solid white !important; 
     /* Ensures the icon sits exactly half its height above the line top */
-    background-color: hsl(var(--accent)); 
-    border: 4px solid white; /* Adds the required white border around the icon */
 }
 
 .timeline-card {
-    /* Sets the background and text color to match the muted aesthetic */
-    background-color: hsl(var(--muted)); 
+    /* Sets the background to muted (light gray) */
+    background-color: hsl(var(--muted)) !important; 
+    /* Adds padding and rounded corners */
+    border-radius: 0.75rem !important; 
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); 
-    text-align: left; /* Aligns text left within the card */
-    padding-top: 40px !important; /* Push text down so year/title are vertically aligned with the icon */
-    margin-top: -30px; /* Pull the card up slightly under the icon */
+    text-align: left; 
+    
+    /* Pushes text down so year/title are visually aligned with the icon */
+    padding-top: 40px !important; 
+    /* Pull the card up slightly under the icon for overlapping look */
+    margin-top: -30px; 
 }
 
-.timeline-card .text-2xl {
-    color: hsl(var(--foreground)); /* Ensure Year is dark */
+/* Ensure foreground color is applied to the title */
+.timeline-card h3 {
+    color: hsl(var(--foreground)); 
 }
 
 /* Fix for horizontal scrolling on smaller screens */
 @media (max-width: 767px) {
     .timeline-connector {
-        /* On small screens, extend the line far right to support scrolling */
-        width: 1000px; /* Arbitrarily large width */
+        /* Extends the line to accommodate the horizontally scrolling content */
+        width: 1000px; 
     }
 }
