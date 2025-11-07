@@ -202,35 +202,15 @@ const Index = () => {
             </div>
 
             {/* Video Player Column - Using laptop.webp as the frame */}
+            {/* STATIC IMAGE COLUMN */}
             <div className="flex justify-center">
-                {hero?.video_url ? (
-                    <div className="relative w-full max-w-lg mx-auto laptop-frame">
-                        
-                        {/* Laptop frame image (Placed in public folder) */}
-                        <img 
-                            src="/laptop.webp" 
-                            alt="Laptop Frame" 
-                            className="w-full h-auto z-0 pointer-events-none" 
-                            loading="lazy"
-                        />
-                        
-                        {/* Video Screen Area - Positioned absolutely over the screen gap */}
-                        <div className="absolute inset-0 z-10 video-screen-area">
-                            <iframe
-                                className="w-full h-full"
-                                src={getYouTubeEmbedUrl(hero.video_url)}
-                                frameBorder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                            />
-                        </div>
-
-                    </div>
-                ) : (
-                    <div className="w-full max-w-md aspect-video rounded-xl bg-gray-300 flex items-center justify-center text-gray-700">
-                        Video link missing.
-                    </div>
-                )}
+                {/* Display only the static laptop image from the public folder */}
+                <img 
+                    src="/laptop.webp" 
+                    alt="Laptop Video Frame" 
+                    className="w-full max-w-lg h-auto" 
+                    loading="lazy"
+                />
             </div>
         </div>
     </div>
