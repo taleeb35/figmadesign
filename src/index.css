@@ -207,3 +207,6 @@ img.w-6.h-6.timeline-custom-icon {
 .mp-top {
     padding-top: 40px;
 }
+.gapzero {
+  gap:0;
+}
