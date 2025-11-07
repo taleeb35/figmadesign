@@ -291,41 +291,26 @@ export type Database = {
       }
       home_hero: {
         Row: {
-          background_image_url: string | null
           created_at: string
           created_by: string | null
-          cta_button_link: string | null
-          cta_button_text: string | null
-          description: string | null
           id: string
           main_title: string | null
-          subtitle: string | null
           updated_at: string
           video_url: string | null
         }
         Insert: {
-          background_image_url?: string | null
           created_at?: string
           created_by?: string | null
-          cta_button_link?: string | null
-          cta_button_text?: string | null
-          description?: string | null
           id?: string
           main_title?: string | null
-          subtitle?: string | null
           updated_at?: string
           video_url?: string | null
         }
         Update: {
-          background_image_url?: string | null
           created_at?: string
           created_by?: string | null
-          cta_button_link?: string | null
-          cta_button_text?: string | null
-          description?: string | null
           id?: string
           main_title?: string | null
-          subtitle?: string | null
           updated_at?: string
           video_url?: string | null
         }

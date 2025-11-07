@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -10,11 +9,6 @@ import { Loader2 } from "lucide-react";
 interface HomeHero {
   id: string;
   main_title: string;
-  subtitle: string;
-  description: string;
-  cta_button_text: string;
-  cta_button_link: string;
-  background_image_url: string | null;
   video_url: string | null;
 }
 
@@ -22,7 +16,7 @@ export function HomeHeroManager() {
   const [hero, setHero] = useState<HomeHero | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
 
   useEffect(() => {
     fetchHero();
@@ -44,30 +38,35 @@ export function HomeHeroManager() {
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploading(true);
+    setUploadingVideo(true);
     try {
       const fileExt = file.name.split(".").pop();
       const fileName = `${Math.random()}.${fileExt}`;
-      const { error: uploadError, data } = await supabase.storage
+      const filePath = `hero-videos/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
         .from("content-files")
-        .upload(fileName, file);
+        .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
         .from("content-files")
-        .getPublicUrl(fileName);
+        .getPublicUrl(filePath);
 
-      setHero(prev => prev ? { ...prev, background_image_url: publicUrl } : null);
-      toast.success("Image uploaded successfully");
+      setHero((prev) => prev ? { ...prev, video_url: publicUrl } : {
+        id: "", main_title: "", video_url: publicUrl
+      });
+
+      toast.success("Video uploaded successfully");
     } catch (error: any) {
-      toast.error("Failed to upload image");
+      toast.error("Failed to upload video");
     } finally {
-      setUploading(false);
+      setUploadingVideo(false);
     }
   };
 
@@ -81,11 +80,6 @@ export function HomeHeroManager() {
         // Update existing hero
         const { error } = await supabase.from("home_hero").update({
           main_title: hero.main_title,
-          subtitle: hero.subtitle,
-          description: hero.description,
-          cta_button_text: hero.cta_button_text,
-          cta_button_link: hero.cta_button_link,
-          background_image_url: hero.background_image_url,
           video_url: hero.video_url
         }).eq("id", hero.id);
         if (error) throw error;
@@ -93,11 +87,6 @@ export function HomeHeroManager() {
         // Insert new hero (don't include id field)
         const { error } = await supabase.from("home_hero").insert([{
           main_title: hero.main_title,
-          subtitle: hero.subtitle,
-          description: hero.description,
-          cta_button_text: hero.cta_button_text,
-          cta_button_link: hero.cta_button_link,
-          background_image_url: hero.background_image_url,
           video_url: hero.video_url
         }]);
         if (error) throw error;
@@ -123,94 +112,52 @@ export function HomeHeroManager() {
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="subtitle">Subtitle</Label>
-          <Input
-            id="subtitle"
-            value={hero?.subtitle || ""}
-            onChange={(e) => setHero(prev => prev ? { ...prev, subtitle: e.target.value } : {
-              id: "", main_title: "", subtitle: e.target.value, description: "",
-              cta_button_text: "View our reports", cta_button_link: "/reports", background_image_url: null, video_url: null
-            })}
-          />
-        </div>
-
-        <div>
           <Label htmlFor="main_title">Main Title</Label>
           <Input
             id="main_title"
             value={hero?.main_title || ""}
             onChange={(e) => setHero(prev => prev ? { ...prev, main_title: e.target.value } : {
-              id: "", main_title: e.target.value, subtitle: "", description: "",
-              cta_button_text: "View our reports", cta_button_link: "/reports", background_image_url: null, video_url: null
+              id: "", main_title: e.target.value, video_url: null
             })}
+            required
           />
         </div>
 
         <div>
-          <Label htmlFor="description">Description</Label>
-          <Textarea
-            id="description"
-            value={hero?.description || ""}
-            onChange={(e) => setHero(prev => prev ? { ...prev, description: e.target.value } : {
-              id: "", main_title: "", subtitle: "", description: e.target.value,
-              cta_button_text: "View our reports", cta_button_link: "/reports", background_image_url: null, video_url: null
-            })}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="cta_button_text">CTA Button Text</Label>
+          <Label htmlFor="video_upload">Upload Video</Label>
           <Input
-            id="cta_button_text"
-            value={hero?.cta_button_text || ""}
-            onChange={(e) => setHero(prev => prev ? { ...prev, cta_button_text: e.target.value } : {
-              id: "", main_title: "", subtitle: "", description: "",
-              cta_button_text: e.target.value, cta_button_link: "/reports", background_image_url: null, video_url: null
-            })}
+            id="video_upload"
+            type="file"
+            accept="video/*"
+            onChange={handleVideoUpload}
+            disabled={uploadingVideo}
           />
+          {uploadingVideo && <p className="text-sm text-gray-500 mt-1">Uploading video...</p>}
+          {hero?.video_url && (
+            <div className="mt-2">
+              <p className="text-sm text-gray-600 mb-2">Current video:</p>
+              <video
+                src={hero.video_url}
+                controls
+                className="w-full max-w-md rounded"
+              />
+            </div>
+          )}
         </div>
 
         <div>
-          <Label htmlFor="cta_button_link">CTA Button Link</Label>
-          <Input
-            id="cta_button_link"
-            value={hero?.cta_button_link || ""}
-            onChange={(e) => setHero(prev => prev ? { ...prev, cta_button_link: e.target.value } : {
-              id: "", main_title: "", subtitle: "", description: "",
-              cta_button_text: "View our reports", cta_button_link: e.target.value, background_image_url: null, video_url: null
-            })}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="video_url">Hero Video URL (YouTube or direct video URL)</Label>
+          <Label htmlFor="video_url">Or enter Video URL (YouTube embed or direct video URL)</Label>
           <Input
             id="video_url"
             placeholder="https://www.youtube.com/embed/... or video file URL"
             value={hero?.video_url || ""}
             onChange={(e) => setHero(prev => prev ? { ...prev, video_url: e.target.value } : {
-              id: "", main_title: "", subtitle: "", description: "",
-              cta_button_text: "View our reports", cta_button_link: "/reports", 
-              background_image_url: null, video_url: e.target.value
+              id: "", main_title: "", video_url: e.target.value
             })}
           />
           <p className="text-xs text-muted-foreground mt-1">
             For YouTube: Use embed URL format (e.g., https://www.youtube.com/embed/VIDEO_ID)
           </p>
-        </div>
-
-        <div>
-          <Label htmlFor="background_image">Background Image</Label>
-          <Input
-            id="background_image"
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            disabled={uploading}
-          />
-          {hero?.background_image_url && (
-            <img src={hero.background_image_url} alt="Background" className="mt-2 h-32 object-cover rounded" />
-          )}
         </div>
 
         <Button type="submit" disabled={saving}>

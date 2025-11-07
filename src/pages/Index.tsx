@@ -11,10 +11,6 @@ import Footer from "@/components/Footer";
 interface HomeHero {
   id: string;
   main_title: string;
-  subtitle: string;
-  description: string;
-  cta_button_text: string;
-  cta_button_link: string;
   video_url: string | null;
 }
 
@@ -101,18 +97,9 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              {hero?.subtitle && (
-                <p className="text-sm uppercase tracking-wider text-gray-300 mb-4">{hero.subtitle}</p>
-              )}
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                 {hero?.main_title || "We Present your Achievement to the World"}
               </h1>
-              <p className="text-gray-300 mb-8 leading-relaxed max-w-xl">
-                {hero?.description || "Elevate the business's value, build your customers' trust, and showcase your company in numbers."}
-              </p>
-              <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 text-lg rounded-full">
-                {hero?.cta_button_text || "Book a Meeting"}
-              </Button>
 
               {/* Statistics Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mt-12">
@@ -247,8 +234,6 @@ const Index = () => {
                                 {/* 2. Content Card */}
                                 <div className="bg-gray-100 rounded-xl p-6 w-full shadow-lg timeline-card">
                                     <div className="text-2xl font-bold mb-3 text-foreground">{item.year}</div>
-                                    {/* You need to fetch item.title to match the image, not just description */}
-                                    <h3 className="text-base font-semibold mb-2">{item.title}</h3>
                                     <p className="text-sm text-gray-700 leading-relaxed">{item.description}</p>
                                 </div>
                             </div>
