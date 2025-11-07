@@ -28,9 +28,7 @@ interface HomeStatistic {
 interface TimelineItem {
   id: string;
   year: number;
-  title: string;
   description: string;
-  display_order: number;
 }
 
 const Index = () => {
@@ -54,7 +52,7 @@ const Index = () => {
       const [heroRes, statsRes, timelineRes] = await Promise.all([
         supabase.from("home_hero").select("*").maybeSingle(),
         supabase.from("home_statistics").select("*").order("display_order"),
-        supabase.from("timeline_items").select("*").order("display_order"),
+        supabase.from("timeline_items").select("*").order("year"),
       ]);
 
       if (heroRes.error) throw heroRes.error;
@@ -222,24 +220,31 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">Our Story</h2>
-            <p className="text-gray-600">From Data Analysts to Report Leaders.</p>
+            <p className="text-gray-600">From Data Analysts to Report Leaders</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {timeline.map((item, i) => (
-              <div key={item.id} className="relative">
-                <div className="bg-gray-100 rounded-2xl p-6 pt-8 text-center min-h-[200px] flex flex-col items-center">
-                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-14 h-14 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center text-white shadow-lg">
-                    <FileText className="w-7 h-7" />
+          <div className="relative overflow-x-auto pb-8">
+            <div className="flex gap-8 min-w-max px-4 md:justify-center">
+              {timeline.map((item, index) => (
+                <div key={item.id} className="relative flex flex-col items-center w-64">
+                  {/* Red circle icon */}
+                  <div className="w-12 h-12 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center mb-4 z-10 shadow-lg">
+                    <FileText className="w-6 h-6 text-white" />
                   </div>
-                  <div className="text-3xl font-bold mb-3 mt-2">{item.year}</div>
-                  <p className="text-sm text-gray-700 leading-relaxed">{item.description}</p>
+                  
+                  {/* Connecting line */}
+                  {index < timeline.length - 1 && (
+                    <div className="absolute top-6 left-[calc(50%+24px)] w-[calc(100%+32px-48px)] h-0.5 bg-[hsl(var(--accent))]" />
+                  )}
+                  
+                  {/* Card */}
+                  <div className="bg-muted rounded-lg p-6 w-full shadow-md">
+                    <div className="text-2xl font-bold mb-3">{item.year}</div>
+                    <p className="text-sm text-foreground/80 leading-relaxed">{item.description}</p>
+                  </div>
                 </div>
-                {i < timeline.length - 1 && (
-                  <div className="hidden lg:block absolute top-16 -right-4 w-8 h-0.5 bg-[hsl(var(--accent))]"></div>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>

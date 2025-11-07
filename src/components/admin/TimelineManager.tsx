@@ -11,9 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 interface TimelineItem {
   id: string;
   year: number;
-  title: string;
   description: string;
-  display_order: number;
 }
 
 export function TimelineManager() {
@@ -31,7 +29,7 @@ export function TimelineManager() {
       const { data, error } = await supabase
         .from("timeline_items")
         .select("*")
-        .order("display_order");
+        .order("year");
 
       if (error) throw error;
       setItems(data || []);
@@ -53,9 +51,7 @@ export function TimelineManager() {
           .from("timeline_items")
           .update({
             year: Number(editingItem.year),
-            title: editingItem.title,
             description: editingItem.description,
-            display_order: Number(editingItem.display_order),
           })
           .eq("id", editingItem.id);
         if (error) throw error;
@@ -64,9 +60,7 @@ export function TimelineManager() {
         const { error } = await supabase.from("timeline_items").insert([
           {
             year: Number(editingItem.year),
-            title: editingItem.title,
             description: editingItem.description,
-            display_order: Number(editingItem.display_order),
           },
         ]);
         if (error) throw error;
@@ -104,7 +98,7 @@ export function TimelineManager() {
         <h2 className="text-2xl font-bold">Timeline Items</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => setEditingItem({ id: "", year: new Date().getFullYear(), title: "", description: "", display_order: items.length })}>
+            <Button onClick={() => setEditingItem({ id: "", year: new Date().getFullYear(), description: "" })}>
               <Plus className="h-4 w-4 mr-2" /> Add Item
             </Button>
           </DialogTrigger>
@@ -124,31 +118,13 @@ export function TimelineManager() {
                 />
               </div>
               <div>
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  value={editingItem?.title || ""}
-                  onChange={(e) => setEditingItem(prev => prev ? { ...prev, title: e.target.value } : null)}
-                  required
-                />
-              </div>
-              <div>
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
                   value={editingItem?.description || ""}
                   onChange={(e) => setEditingItem(prev => prev ? { ...prev, description: e.target.value } : null)}
                   required
-                />
-              </div>
-              <div>
-                <Label htmlFor="display_order">Display Order</Label>
-                <Input
-                  id="display_order"
-                  type="number"
-                  value={editingItem?.display_order || 0}
-                  onChange={(e) => setEditingItem(prev => prev ? { ...prev, display_order: parseInt(e.target.value) } : null)}
-                  required
+                  rows={4}
                 />
               </div>
               <Button type="submit">Save</Button>
@@ -161,12 +137,10 @@ export function TimelineManager() {
         {items.map((item) => (
           <div key={item.id} className="flex items-start justify-between p-4 border rounded">
             <div className="flex-1">
-              <div className="flex items-center gap-4">
+              <div className="flex items-start gap-4">
                 <span className="text-3xl font-bold text-primary">{item.year}</span>
-                <div>
-                  <h3 className="font-semibold text-lg">{item.title}</h3>
+                <div className="flex-1">
                   <p className="text-muted-foreground">{item.description}</p>
-                  <p className="text-xs text-muted-foreground mt-2">Order: {item.display_order}</p>
                 </div>
               </div>
             </div>

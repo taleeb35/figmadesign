@@ -530,9 +530,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           description: string
-          display_order: number
           id: string
-          title: string
           updated_at: string
           year: number
         }
@@ -540,9 +538,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description: string
-          display_order?: number
           id?: string
-          title: string
           updated_at?: string
           year: number
         }
@@ -550,9 +546,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string
-          display_order?: number
           id?: string
-          title?: string
           updated_at?: string
           year?: number
         }
