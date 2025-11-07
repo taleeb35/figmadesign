@@ -313,6 +313,51 @@ export type Database = {
         }
         Relationships: []
       }
+      footer_settings: {
+        Row: {
+          address: string
+          created_at: string
+          created_by: string | null
+          description: string
+          email: string
+          facebook_url: string | null
+          id: string
+          instagram_url: string | null
+          linkedin_url: string | null
+          phone: string
+          updated_at: string
+          youtube_url: string | null
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          email: string
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          phone: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          email?: string
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          phone?: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
       home_hero: {
         Row: {
           created_at: string

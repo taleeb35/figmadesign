@@ -14,6 +14,7 @@ import PasswordReset from "@/components/admin/PasswordReset";
 import { FAQManager } from "@/components/admin/FAQManager";
 import HomePage from "@/pages/admin/HomePage";
 import AboutPage from "@/pages/admin/AboutPage";
+import FooterSettingsManager from "@/components/admin/FooterSettingsManager";
 
 // Admin dashboard with sidebar navigation
 
@@ -109,6 +110,7 @@ const AdminDashboard = () => {
               <Route path="/infographics" element={<InfographicsManager />} />
               <Route path="/content" element={<ContentCategoryManager />} />
               <Route path="/faq" element={<FAQManager />} />
+              <Route path="/footer" element={<FooterSettingsManager />} />
               <Route path="/settings" element={<PasswordReset />} />
             </Routes>
           </main>

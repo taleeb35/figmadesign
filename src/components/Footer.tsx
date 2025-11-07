@@ -1,7 +1,37 @@
 import { Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 
+interface FooterSettings {
+  description: string;
+  phone: string;
+  email: string;
+  address: string;
+  linkedin_url: string | null;
+  facebook_url: string | null;
+  instagram_url: string | null;
+  youtube_url: string | null;
+}
+
 const Footer = () => {
+  const [settings, setSettings] = useState<FooterSettings | null>(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const { data } = await supabase
+        .from("footer_settings")
+        .select("*")
+        .single();
+      
+      if (data) {
+        setSettings(data);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
   return (
     <footer className="bg-white pt-12 pb-0 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto">
@@ -10,7 +40,7 @@ const Footer = () => {
           <div className="space-y-4">
             <img src={logo} alt="Annual Reports" className="h-10" />
             <p className="text-sm text-gray-700 leading-relaxed">
-              The Annual Reports, Bespoke data analysis and visual reports for Gulf area governments and corporations since 2010.
+              {settings?.description || "The Annual Reports, Bespoke data analysis and visual reports for Gulf area governments and corporations since 2010."}
             </p>
             <div className="flex items-center gap-2 text-xs text-gray-700">
               <a href="/privacy-policy" className="hover:text-[hsl(var(--accent))]">Privacy Policy</a>
@@ -38,7 +68,9 @@ const Footer = () => {
                     <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
                   </svg>
                 </div>
-                <span className="text-base font-semibold text-gray-900">+971856784543</span>
+                <a href={`tel:${settings?.phone || '+971856784543'}`} className="text-base font-semibold text-gray-900 hover:text-[hsl(var(--accent))]">
+                  {settings?.phone || "+971856784543"}
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center flex-shrink-0">
@@ -46,7 +78,9 @@ const Footer = () => {
                     <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                   </svg>
                 </div>
-                <span className="text-base font-semibold text-gray-900">info@annualreport.net</span>
+                <a href={`mailto:${settings?.email || 'info@annualreport.net'}`} className="text-base font-semibold text-gray-900 hover:text-[hsl(var(--accent))]">
+                  {settings?.email || "info@annualreport.net"}
+                </a>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center flex-shrink-0">
@@ -54,21 +88,47 @@ const Footer = () => {
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                   </svg>
                 </div>
-                <span className="text-base font-semibold text-gray-900">JLT, Dubai, 123 adress street</span>
+                <span className="text-base font-semibold text-gray-900">
+                  {settings?.address || "JLT, Dubai, 123 adress street"}
+                </span>
               </li>
             </ul>
 
             <div className="flex items-center gap-6 mp-top">
-              <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="LinkedIn">
+              <a 
+                href={settings?.linkedin_url || "#"} 
+                className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" 
+                aria-label="LinkedIn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Linkedin className="w-5 h-5 text-white" strokeWidth={2.5} />
               </a>
-              <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="Facebook">
+              <a 
+                href={settings?.facebook_url || "#"} 
+                className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" 
+                aria-label="Facebook"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Facebook className="w-5 h-5 text-white" strokeWidth={2.5} />
               </a>
-              <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="Instagram">
+              <a 
+                href={settings?.instagram_url || "#"} 
+                className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" 
+                aria-label="Instagram"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Instagram className="w-5 h-5 text-white" strokeWidth={2.5} />
               </a>
-              <a href="#" className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" aria-label="YouTube">
+              <a 
+                href={settings?.youtube_url || "#"} 
+                className="w-10 h-10 bg-[hsl(var(--accent))] rounded-full flex items-center justify-center hover:opacity-90 transition-opacity" 
+                aria-label="YouTube"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Youtube className="w-5 h-5 text-white" strokeWidth={2.5} />
               </a>
             </div>
