@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
@@ -131,12 +132,13 @@ export function HomeHeroManager() {
 
         <div>
           <Label htmlFor="description">Description</Label>
-          <Input
+          <Textarea
             id="description"
             value={hero?.description || ""}
             onChange={(e) => setHero(prev => prev ? { ...prev, description: e.target.value } : {
               id: "", main_title: "", description: e.target.value, video_url: null
             })}
+            className="min-h-[120px] w-full"
           />
         </div>
 
