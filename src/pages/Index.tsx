@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 interface HomeHero {
   id: string;
   main_title: string;
+  description: string;
   video_url: string | null;
 }
 
@@ -97,9 +98,15 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                {hero?.main_title || "We Present your Achievement to the World"}
-              </h1>
+              <h1 
+                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
+                dangerouslySetInnerHTML={{ 
+                  __html: hero?.main_title || "We Present your Achievement to the World" 
+                }}
+              />
+              <p className="text-gray-300 mb-8 leading-relaxed max-w-xl">
+                {hero?.description || "Elevate the business's value, build your customers' trust, and showcase your company in numbers."}
+              </p>
 
               {/* Statistics Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mt-12">

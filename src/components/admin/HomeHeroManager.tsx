@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 interface HomeHero {
   id: string;
   main_title: string;
+  description: string;
   video_url: string | null;
 }
 
@@ -59,7 +60,7 @@ export function HomeHeroManager() {
         .getPublicUrl(filePath);
 
       setHero((prev) => prev ? { ...prev, video_url: publicUrl } : {
-        id: "", main_title: "", video_url: publicUrl
+        id: "", main_title: "", description: "", video_url: publicUrl
       });
 
       toast.success("Video uploaded successfully");
@@ -80,6 +81,7 @@ export function HomeHeroManager() {
         // Update existing hero
         const { error } = await supabase.from("home_hero").update({
           main_title: hero.main_title,
+          description: hero.description,
           video_url: hero.video_url
         }).eq("id", hero.id);
         if (error) throw error;
@@ -87,6 +89,7 @@ export function HomeHeroManager() {
         // Insert new hero (don't include id field)
         const { error } = await supabase.from("home_hero").insert([{
           main_title: hero.main_title,
+          description: hero.description,
           video_url: hero.video_url
         }]);
         if (error) throw error;
@@ -112,14 +115,28 @@ export function HomeHeroManager() {
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="main_title">Main Title</Label>
+          <Label htmlFor="main_title">Main Title (You can use HTML like &lt;span className="text-red-500"&gt;Word&lt;/span&gt;)</Label>
           <Input
             id="main_title"
             value={hero?.main_title || ""}
             onChange={(e) => setHero(prev => prev ? { ...prev, main_title: e.target.value } : {
-              id: "", main_title: e.target.value, video_url: null
+              id: "", main_title: e.target.value, description: "", video_url: null
             })}
             required
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Example: We Present your Achievement to the &lt;span className="text-red-500"&gt;World&lt;/span&gt;
+          </p>
+        </div>
+
+        <div>
+          <Label htmlFor="description">Description</Label>
+          <Input
+            id="description"
+            value={hero?.description || ""}
+            onChange={(e) => setHero(prev => prev ? { ...prev, description: e.target.value } : {
+              id: "", main_title: "", description: e.target.value, video_url: null
+            })}
           />
         </div>
 
@@ -152,7 +169,7 @@ export function HomeHeroManager() {
             placeholder="https://www.youtube.com/embed/... or video file URL"
             value={hero?.video_url || ""}
             onChange={(e) => setHero(prev => prev ? { ...prev, video_url: e.target.value } : {
-              id: "", main_title: "", video_url: e.target.value
+              id: "", main_title: "", description: "", video_url: e.target.value
             })}
           />
           <p className="text-xs text-muted-foreground mt-1">
