@@ -230,41 +230,45 @@ const Index = () => {
 
 
       {/* Story Timeline Section */}
-<section className="py-20 px-6 md:px-12 lg:px-24 bg-white">
-    <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Our Story</h2>
-            <p className="text-gray-600">From Data Analysts to Report Leaders</p>
-        </div>
-
-        {/* Timeline Container */}
-        <div className="relative overflow-x-auto pb-8">
-            {/* Horizontal Connector Line (Runs the length of the container) */}
-            <div className="absolute top-[26px] left-0 right-0 h-0.5 bg-red-600 z-0 timeline-connector" />
-            
-            <div className="flex gap-8 min-w-max px-4 md:justify-center">
-                {timeline.map((item, index) => (
-                    <div key={item.id} className="relative flex flex-col items-center w-64 md:w-56 lg:w-64 flex-shrink-0">
-                        
-                        {/* 1. Icon Bubble (Always on top of the line) */}
-                        <div className="w-12 h-12 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center mb-4 z-10 shadow-lg timeline-icon">
-                            {/* Using BarChart3 icon for the analytics look from image_30b368.png */}
-                            <BarChart3 className="w-6 h-6 text-white" /> 
-                        </div>
-                        
-                        {/* 2. Content Card */}
-                        <div className="bg-gray-100 rounded-xl p-6 w-full shadow-lg timeline-card">
-                            <div className="text-2xl font-bold mb-3 text-foreground">{item.year}</div>
-                            {/* You need to fetch item.title to match the image, not just description */}
-                            <h3 className="text-base font-semibold mb-2">{item.title}</h3>
-                            <p className="text-sm text-gray-700 leading-relaxed">{item.description}</p>
-                        </div>
+        <section className="py-20 px-6 md:px-12 lg:px-24 bg-white">
+            <div className="max-w-7xl mx-auto">
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl md:text-5xl font-bold mb-4">Our Story</h2>
+                    <p className="text-gray-600">From Data Analysts to Report Leaders</p>
+                </div>
+        
+                {/* Timeline Container */}
+                <div className="relative overflow-x-auto pb-8">
+                    {/* Horizontal Connector Line (Runs the length of the container) */}
+                    <div className="absolute top-[26px] left-0 right-0 h-0.5 bg-red-600 z-0 timeline-connector" />
+                    
+                    <div className="flex gap-8 min-w-max px-4 md:justify-center">
+                        {timeline.map((item, index) => (
+                            <div key={item.id} className="relative flex flex-col items-center w-64 md:w-56 lg:w-64 flex-shrink-0">
+                                
+                                {/* 1. Icon Bubble (Always on top of the line) */}
+                                <div className="w-12 h-12 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center mb-4 z-10 shadow-lg timeline-icon">
+                                    {/* REPLACEMENT: Using <img> tag for the external icon image */}
+                                    <img 
+                                       src="/fluent_data-trending-32-regular.png" // Assumes the file is placed in the 'public' directory
+                                       alt="Data Trending Icon" 
+                                       className="w-6 h-6 timeline-custom-icon"
+                                    /> 
+                                </div>
+                                
+                                {/* 2. Content Card */}
+                                <div className="bg-gray-100 rounded-xl p-6 w-full shadow-lg timeline-card">
+                                    <div className="text-2xl font-bold mb-3 text-foreground">{item.year}</div>
+                                    {/* You need to fetch item.title to match the image, not just description */}
+                                    <h3 className="text-base font-semibold mb-2">{item.title}</h3>
+                                    <p className="text-sm text-gray-700 leading-relaxed">{item.description}</p>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                ))}
+                </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
       
       
 
