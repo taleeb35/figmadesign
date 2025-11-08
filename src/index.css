@@ -253,7 +253,7 @@ img.w-6.h-6.timeline-custom-icon {
 		.bg-white.work .object-cover {
 		    object-fit: contain !important;
 		}
-		 svg {
+		 .for_mobile svg {
 		    width: 2rem;
 		    height: 2rem;
 		}
