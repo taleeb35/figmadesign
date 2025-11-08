@@ -258,6 +258,9 @@ img.w-6.h-6.timeline-custom-icon {
             height: 30px !important;
 		}
         .reports_div .object-cover {
-    object-fit: contain !important;
-}
+    		object-fit: contain !important;
+		}
+		.statistics {
+		     padding-left: 0px !important;
+		}
 }
