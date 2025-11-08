@@ -238,3 +238,23 @@ img.w-6.h-6.timeline-custom-icon {
     padding-bottom: 2rem
 }
 	
+@media only screen and (max-width: 767px) {
+			.leading-tight {
+		    font-size: 26px !important;
+		}
+		.first_section {
+		    padding-top: 1rem !important;
+		    padding-bottom: 0rem !important !important;
+		}
+		.bg-white.work {
+		    padding-top: 1rem !important;
+		    padding-bottom: 1rem !important;
+		}
+		.bg-white.work .object-cover {
+		    object-fit: contain !important;
+		}
+		 svg {
+		    width: 2rem;
+		    height: 2rem;
+		}
+}
