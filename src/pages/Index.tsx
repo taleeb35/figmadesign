@@ -409,11 +409,11 @@ const Index = () => {
                 >
                   <div className={`bg-white rounded-xl border-2 transition-all ${openFaq === i ? 'border-blue-500' : 'border-gray-200'}`}>
                     <CollapsibleTrigger className="flex items-center justify-between w-full text-left py-4 px-6">
-                      <span className="text-base font-normal">{item.question}</span>
+                      <span className="text-base font-normal faq_title">{item.question}</span>
                       <Plus className={`w-6 h-6 flex-shrink-0 ml-4 transition-all ${openFaq === i ? 'rotate-45 text-blue-500' : 'text-[hsl(var(--accent))]'}`} />
                     </CollapsibleTrigger>
                     <CollapsibleContent className="px-6 pb-4">
-                      <p className="text-gray-600 text-sm">{item.answer}</p>
+                      <p className="text-gray-600 text-sm faq_p">{item.answer}</p>
                     </CollapsibleContent>
                   </div>
                 </Collapsible>
