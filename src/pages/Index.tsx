@@ -152,11 +152,11 @@ const Index = () => {
               </p>
 
               {/* CTA Buttons */}
-              <div className="flex flex-wrap gap-4 mb-12">
-                <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 rounded-full text-base font-medium">
+              <div className="flex flex-col sm:flex-row gap-4 mb-12">
+                <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 rounded-full text-base font-medium w-full sm:w-auto">
                   Book a Meeting
                 </Button>
-                <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 rounded-full text-base font-medium">
+                <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 rounded-full text-base font-medium w-full sm:w-auto">
                   Watch a video
                 </Button>
               </div>
@@ -222,7 +222,7 @@ const Index = () => {
             <h2 className="text-4xl md:text-5xl font-bold">Work</h2>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {workItems.map((item) => {
               const enUrl = item.english_pdf_url || item.english_flipbook_url || null;
               const arUrl = item.arabic_pdf_url || item.arabic_flipbook_url || null;
