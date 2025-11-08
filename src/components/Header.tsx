@@ -7,7 +7,7 @@ const Header = () => {
   return (
     <header className="bg-[hsl(var(--dark-blue))] sticky top-0 z-50 py-4 pad-tb for_mobile">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
-        <div className="bg-white rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
+        <div className="bg-white rounded-full px-6 py-3 flex items-center justify-between shadow-lg zero_margin">
           <div className="flex items-center">
             <img src={logo} alt="Annual Reports" className="h-8 md:h-10 sixty" />
           </div>
