@@ -263,4 +263,11 @@ img.w-6.h-6.timeline-custom-icon {
 		.statistics , .infographic {
 		     padding-left: 0px !important;
 		}
+        .zero_margin {
+			    padding-top: 5px !important;
+			    padding-bottom: 5px !important;
+			}
+.sixty {
+    height: 40px !important;
+}
 }
