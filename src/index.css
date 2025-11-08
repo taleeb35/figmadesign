@@ -216,3 +216,6 @@ img.w-6.h-6.timeline-custom-icon {
 .top-0 {
     padding-top: 3rem !important;
 }
+.leading-tight {
+    font-size: 44px !important;
+}
