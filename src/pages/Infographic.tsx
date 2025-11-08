@@ -59,7 +59,7 @@ const Infographic = () => {
       {/* Banner Section */}
       <section className="px-6 md:px-12 lg:px-24 py-8 infographic">
         <div className="bg-[#C62828] rounded-r-lg py-6 px-8 inline-flex items-center gap-6">
-          <h1 className="text-white text-4xl font-bold lowercase">Infographic</h1>
+          <h1 className="text-white text-4xl font-bold">Infographic</h1>
           <Share2 className="text-white w-10 h-10" strokeWidth={2.5} />
         </div>
       </section>
