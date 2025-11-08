@@ -133,8 +133,8 @@ const Index = () => {
                   ) : (
                     <video
                       src={hero.video_url}
-                      controls autoplay
-                      className="w-full h-full object-cover"
+                      controls
+                      className="w-full h-full object-cover" autoplay muted
                     />
                   )}
                 </div>
