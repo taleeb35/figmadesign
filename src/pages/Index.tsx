@@ -28,6 +28,13 @@ interface TimelineItem {
   description: string;
 }
 
+interface HomeServiceSection {
+  id: string;
+  title: string;
+  subtitle: string;
+  video_url: string | null;
+}
+
 const Index = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   type FAQItem = { id: string; question: string; answer: string; display_order: number };
@@ -37,6 +44,7 @@ const Index = () => {
   const [hero, setHero] = useState<HomeHero | null>(null);
   const [statistics, setStatistics] = useState<HomeStatistic[]>([]);
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
+  const [serviceSection, setServiceSection] = useState<HomeServiceSection | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -46,19 +54,22 @@ const Index = () => {
 
   const fetchContent = async () => {
     try {
-      const [heroRes, statsRes, timelineRes] = await Promise.all([
+      const [heroRes, statsRes, timelineRes, serviceSectionRes] = await Promise.all([
         supabase.from("home_hero").select("*").maybeSingle(),
         supabase.from("home_statistics").select("*").order("display_order"),
         supabase.from("timeline_items").select("*").order("year"),
+        supabase.from("home_service_section").select("*").maybeSingle(),
       ]);
 
       if (heroRes.error) throw heroRes.error;
       if (statsRes.error) throw statsRes.error;
       if (timelineRes.error) throw timelineRes.error;
+      if (serviceSectionRes.error) throw serviceSectionRes.error;
 
       setHero(heroRes.data);
       setStatistics(statsRes.data || []);
       setTimeline(timelineRes.data || []);
+      setServiceSection(serviceSectionRes.data);
     } catch (error) {
       console.error("Error loading home content:", error);
     } finally {
@@ -134,7 +145,10 @@ const Index = () => {
                     <video
                       src={hero.video_url}
                       controls
-                      className="w-full h-full object-cover" autoplay muted loop
+                      className="w-full h-full object-cover"
+                      autoPlay
+                      muted
+                      loop
                     />
                   )}
                 </div>
@@ -180,36 +194,54 @@ const Index = () => {
         </div>
       </section>
 
-      
-<section className="py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
-    <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center authority gapzero">
-            
+      {/* Service Section */}
+      <section className="py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center authority gapzero">
             {/* Text Content Column */}
             <div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                    Introducing the Annual report’s Service
-                </h2>
-                <p className="text-gray-600 mb-8 leading-relaxed Process">
-                    See the Process: From Data Complexity to Executive Clarity.
-                </p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                {serviceSection?.title || "Introducing the Annual report's Service"}
+              </h2>
+              <p className="text-gray-600 mb-8 leading-relaxed Process">
+                {serviceSection?.subtitle || "See the Process: From Data Complexity to Executive Clarity."}
+              </p>
             </div>
 
-            {/* Video Player Column - Using laptop.webp as the frame */}
-            {/* STATIC IMAGE COLUMN */}
+            {/* Video Player Column */}
             <div className="flex justify-center">
-                {/* Display only the static laptop image from the public folder */}
+              {serviceSection?.video_url ? (
+                <div className="relative w-full max-w-lg aspect-video rounded-lg overflow-hidden shadow-xl">
+                  {serviceSection.video_url.includes('youtube.com') || serviceSection.video_url.includes('youtu.be') ? (
+                    <iframe
+                      src={serviceSection.video_url}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <video
+                      src={serviceSection.video_url}
+                      controls
+                      className="w-full h-full object-cover"
+                      autoPlay
+                      muted
+                      loop
+                    />
+                  )}
+                </div>
+              ) : (
                 <img 
-                    src="/laptop.webp" 
-                    alt="Laptop Video Frame" 
-                    className="w-full max-w-lg h-auto laptop_img" 
-                    loading="lazy"
+                  src="/laptop.webp" 
+                  alt="Laptop Video Frame" 
+                  className="w-full max-w-lg h-auto laptop_img" 
+                  loading="lazy"
                 />
+              )}
             </div>
+          </div>
         </div>
-    </div>
-</section>
-
+      </section>
 
       {/* Story Timeline Section */}
         <section className="py-20 px-6 md:px-12 lg:px-24 bg-white">
