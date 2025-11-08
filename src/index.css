@@ -210,3 +210,6 @@ img.w-6.h-6.timeline-custom-icon {
 .gapzero {
   gap:0;
 }
+.sixty {
+  height: 60px !important;
+}
