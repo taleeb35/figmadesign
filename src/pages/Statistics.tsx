@@ -128,7 +128,7 @@ const Statistics = () => {
               ) : filteredStatistics.length === 0 ? (
                 <div className="text-center py-12 text-gray-500">No statistics found</div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                   {filteredStatistics.map((stat) => (
                     <div key={stat.id} className="bg-card rounded-lg border p-4 hover:shadow-lg transition-shadow">
                       <img 
