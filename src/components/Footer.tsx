@@ -60,7 +60,7 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-10">
           {/* Column 1: Logo and Description */}
           <div className="space-y-4">
-            <img src={logo} alt="Annual Reports" className="h-10" />
+            <img src={logo} alt="Annual Reports" className="" />
             <p className="text-sm text-gray-700 leading-relaxed">
               {settings?.description || "The Annual Reports, Bespoke data analysis and visual reports for Gulf area governments and corporations since 2010."}
             </p>
