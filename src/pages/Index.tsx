@@ -191,7 +191,7 @@ const Index = () => {
                 {statistics.map((stat) => (
                   <div key={stat.id}>
                     <div className="text-3xl font-bold">{stat.value}</div>
-                    <div className="text-sm text-gray-400">{stat.title}</div>
+                    <div className="text-sm text-white-400">{stat.title}</div>
                   </div>
                 ))}
               </div>
