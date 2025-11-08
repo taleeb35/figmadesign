@@ -213,3 +213,6 @@ img.w-6.h-6.timeline-custom-icon {
 .sixty {
   height: 60px !important;
 }
+.top-0 {
+    padding-top: 3rem !important;
+}
