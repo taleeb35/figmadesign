@@ -134,7 +134,7 @@ const Index = () => {
                     <video
                       src={hero.video_url}
                       controls
-                      className="w-full h-full object-cover" autoplay muted
+                      className="w-full h-full object-cover" autoplay muted loop
                     />
                   )}
                 </div>
