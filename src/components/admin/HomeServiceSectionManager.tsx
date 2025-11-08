@@ -32,14 +32,14 @@ export function HomeServiceSectionManager() {
   const fetchSection = async () => {
     try {
       const { data, error } = await supabase
-        .from("home_service_section")
+        .from("home_service_section" as any)
         .select("*")
         .maybeSingle();
 
       if (error) throw error;
 
       if (data) {
-        setSection(data);
+        setSection(data as unknown as HomeServiceSection);
       }
     } catch (error) {
       console.error("Error loading service section:", error);
@@ -85,7 +85,7 @@ export function HomeServiceSectionManager() {
     try {
       if (section.id) {
         const { error } = await supabase
-          .from("home_service_section")
+          .from("home_service_section" as any)
           .update({
             title: section.title,
             subtitle: section.subtitle,
@@ -97,7 +97,7 @@ export function HomeServiceSectionManager() {
         if (error) throw error;
       } else {
         const { data, error } = await supabase
-          .from("home_service_section")
+          .from("home_service_section" as any)
           .insert({
             title: section.title,
             subtitle: section.subtitle,
@@ -107,7 +107,7 @@ export function HomeServiceSectionManager() {
           .single();
 
         if (error) throw error;
-        if (data) setSection(data);
+        if (data) setSection(data as unknown as HomeServiceSection);
       }
 
       toast.success("Service section saved successfully");
@@ -194,7 +194,7 @@ export function HomeServiceSectionManager() {
         {section.video_url && (
           <div className="space-y-2">
             <Label>Video Preview</Label>
-            <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
+            <div className="relative w-full max-w-md aspect-video rounded-lg overflow-hidden bg-muted">
               {section.video_url.includes("youtube.com") ||
               section.video_url.includes("youtu.be") ? (
                 <iframe

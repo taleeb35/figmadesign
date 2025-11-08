@@ -58,7 +58,7 @@ const Index = () => {
         supabase.from("home_hero").select("*").maybeSingle(),
         supabase.from("home_statistics").select("*").order("display_order"),
         supabase.from("timeline_items").select("*").order("year"),
-        supabase.from("home_service_section").select("*").maybeSingle(),
+        supabase.from("home_service_section" as any).select("*").maybeSingle(),
       ]);
 
       if (heroRes.error) throw heroRes.error;
@@ -69,7 +69,7 @@ const Index = () => {
       setHero(heroRes.data);
       setStatistics(statsRes.data || []);
       setTimeline(timelineRes.data || []);
-      setServiceSection(serviceSectionRes.data);
+      setServiceSection(serviceSectionRes.data as unknown as HomeServiceSection);
     } catch (error) {
       console.error("Error loading home content:", error);
     } finally {
@@ -208,36 +208,37 @@ const Index = () => {
               </p>
             </div>
 
-            {/* Video Player Column */}
+            {/* Video Player Column - Video inside Laptop */}
             <div className="flex justify-center">
-              {serviceSection?.video_url ? (
-                <div className="relative w-full max-w-lg aspect-video rounded-lg overflow-hidden shadow-xl">
-                  {serviceSection.video_url.includes('youtube.com') || serviceSection.video_url.includes('youtu.be') ? (
-                    <iframe
-                      src={serviceSection.video_url}
-                      className="w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  ) : (
-                    <video
-                      src={serviceSection.video_url}
-                      controls
-                      className="w-full h-full object-cover"
-                      autoPlay
-                      muted
-                      loop
-                    />
-                  )}
-                </div>
-              ) : (
+              <div className="relative w-full max-w-lg">
                 <img 
                   src="/laptop.webp" 
-                  alt="Laptop Video Frame" 
-                  className="w-full max-w-lg h-auto laptop_img" 
+                  alt="Laptop Frame" 
+                  className="w-full h-auto laptop_img relative z-10" 
                   loading="lazy"
                 />
-              )}
+                {serviceSection?.video_url && (
+                  <div className="absolute top-[6%] left-[12%] w-[76%] h-[75%] rounded-sm overflow-hidden">
+                    {serviceSection.video_url.includes('youtube.com') || serviceSection.video_url.includes('youtu.be') ? (
+                      <iframe
+                        src={serviceSection.video_url}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video
+                        src={serviceSection.video_url}
+                        controls
+                        className="w-full h-full object-cover"
+                        autoPlay
+                        muted
+                        loop
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
