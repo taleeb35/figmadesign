@@ -219,3 +219,13 @@ img.w-6.h-6.timeline-custom-icon {
 .leading-tight {
     font-size: 44px !important;
 }
+.faq_p {
+	color: #000 !important;
+    font-size: 15px !important;
+}
+.faq_title {
+	font-weight: 600 !important;
+	font-size: 18px;
+    line-height: 0.5rem;
+    letter-spacing: -1px !important;
+}
