@@ -45,7 +45,8 @@ const ClientLogos = () => {
 
   return (
     <div className="mt-16 clients_logo">
-      <div className="flex justify-center items-center gap-12 clients_logo_div">
+      {/* Desktop: Static centered logos */}
+      <div className="hidden lg:flex justify-center items-center gap-12 clients_logo_div">
         {logos.map((logo) => (
           <div key={logo.id} className="flex-shrink-0">
             <img 
@@ -55,6 +56,32 @@ const ClientLogos = () => {
             />
           </div>
         ))}
+      </div>
+
+      {/* Mobile: Animated scrolling slider */}
+      <div className="lg:hidden overflow-hidden clients_logo_div">
+        <div className="flex gap-8 animate-scroll">
+          {/* First set of logos */}
+          {logos.map((logo) => (
+            <div key={`first-${logo.id}`} className="flex-shrink-0">
+              <img 
+                src={logo.logo_url} 
+                alt={logo.name} 
+                className="h-14" 
+              />
+            </div>
+          ))}
+          {/* Duplicate set for seamless loop */}
+          {logos.map((logo) => (
+            <div key={`second-${logo.id}`} className="flex-shrink-0">
+              <img 
+                src={logo.logo_url} 
+                alt={logo.name} 
+                className="h-14" 
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
