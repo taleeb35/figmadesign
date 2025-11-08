@@ -257,4 +257,7 @@ img.w-6.h-6.timeline-custom-icon {
 		    width: 2rem;
 		    height: 2rem;
 		}
+        .reports_div .object-cover {
+    object-fit: contain !important;
+}
 }
