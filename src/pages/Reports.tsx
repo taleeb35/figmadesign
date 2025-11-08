@@ -230,7 +230,7 @@ const Reports = () => {
           ) : filteredAndSortedItems.length === 0 ? (
             <div className="text-center py-12 text-gray-500">No content found matching your filters.</div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 reports_div">
               {filteredAndSortedItems.map((item) => {
                 const isYouTube = item.content_type === "youtube";
                 const aspectClass = isYouTube ? "aspect-video" : "aspect-[3/4]";
