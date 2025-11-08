@@ -260,7 +260,7 @@ img.w-6.h-6.timeline-custom-icon {
         .reports_div .object-cover {
     		object-fit: contain !important;
 		}
-		.statistics {
+		.statistics , .infographic {
 		     padding-left: 0px !important;
 		}
 }
