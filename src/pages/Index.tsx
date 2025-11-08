@@ -137,7 +137,7 @@ const Index = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="bg-[hsl(var(--dark-blue))] text-white pt-16 pb-24 px-6 md:px-12 lg:px-24 relative overflow-hidden">
+      <section className="bg-[hsl(var(--dark-blue))] text-white pt-16 pb-24 px-6 md:px-12 lg:px-24 relative overflow-hidden first_section">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -240,7 +240,7 @@ const Index = () => {
       </section>
 
       {/* Work Section */}
-      <section className="py-20 px-6 md:px-12 lg:px-24 bg-white">
+      <section className="py-20 px-6 md:px-12 lg:px-24 bg-white work">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-gray-600 mb-2">A taste of our</p>
@@ -327,7 +327,7 @@ const Index = () => {
       </section>
 
       {/* Service Section */}
-      <section className="py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
+      <section className="py-20 px-6 md:px-12 lg:px-24 bg-gray-50 third_section">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center authority gapzero">
             {/* Text Content Column */}
@@ -372,7 +372,7 @@ const Index = () => {
       </section>
 
       {/* Story Timeline Section */}
-        <section className="py-20 px-6 md:px-12 lg:px-24 bg-white">
+        <section className="py-20 px-6 md:px-12 lg:px-24 bg-white fourth_section">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-bold mb-4">Our Story</h2>
@@ -413,7 +413,7 @@ const Index = () => {
       
 
       {/* FAQ Section */}
-      <section className="py-20 px-6 md:px-12 lg:px-24 bg-gray-50">
+      <section className="py-20 px-6 md:px-12 lg:px-24 bg-gray-50 faq_section">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-2">FAQ</h2>
