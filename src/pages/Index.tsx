@@ -222,7 +222,7 @@ const Index = () => {
                   ) : (
                     <video
                       src={serviceSection.video_url}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover" controls
                       autoPlay
                       muted
                       loop
