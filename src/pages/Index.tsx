@@ -35,6 +35,19 @@ interface HomeServiceSection {
   video_url: string | null;
 }
 
+interface ContentItem {
+  id: string;
+  title: string;
+  year: number;
+  content_type: string;
+  cover_image_url?: string;
+  category_name?: string;
+  english_pdf_url?: string;
+  arabic_pdf_url?: string;
+  english_flipbook_url?: string;
+  arabic_flipbook_url?: string;
+}
+
 const Index = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   type FAQItem = { id: string; question: string; answer: string; display_order: number };
@@ -45,6 +58,7 @@ const Index = () => {
   const [statistics, setStatistics] = useState<HomeStatistic[]>([]);
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
   const [serviceSection, setServiceSection] = useState<HomeServiceSection | null>(null);
+  const [workItems, setWorkItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -54,22 +68,40 @@ const Index = () => {
 
   const fetchContent = async () => {
     try {
-      const [heroRes, statsRes, timelineRes, serviceSectionRes] = await Promise.all([
+      const [heroRes, statsRes, timelineRes, serviceSectionRes, workRes] = await Promise.all([
         supabase.from("home_hero").select("*").maybeSingle(),
         supabase.from("home_statistics").select("*").order("display_order"),
         supabase.from("timeline_items").select("*").order("year"),
         supabase.from("home_service_section" as any).select("*").maybeSingle(),
+        supabase
+          .from("content_items")
+          .select(`
+            *,
+            content_categories (
+              name
+            )
+          `)
+          .in("content_type", ["pdf", "flipbook"])
+          .order("created_at", { ascending: false })
+          .limit(6),
       ]);
 
       if (heroRes.error) throw heroRes.error;
       if (statsRes.error) throw statsRes.error;
       if (timelineRes.error) throw timelineRes.error;
       if (serviceSectionRes.error) throw serviceSectionRes.error;
+      if (workRes.error) throw workRes.error;
 
       setHero(heroRes.data);
       setStatistics(statsRes.data || []);
       setTimeline(timelineRes.data || []);
       setServiceSection(serviceSectionRes.data as unknown as HomeServiceSection);
+      
+      const workItemsWithCategories = (workRes.data || []).map(item => ({
+        ...item,
+        category_name: item.content_categories?.name
+      }));
+      setWorkItems(workItemsWithCategories);
     } catch (error) {
       console.error("Error loading home content:", error);
     } finally {
@@ -181,13 +213,78 @@ const Index = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="aspect-[3/4] bg-gray-200 rounded-lg hover:shadow-xl transition-shadow"></div>
-            ))}
+            {workItems.map((item) => {
+              const enUrl = item.english_pdf_url || item.english_flipbook_url || null;
+              const arUrl = item.arabic_pdf_url || item.arabic_flipbook_url || null;
+              
+              return (
+                <div key={item.id} className="flex flex-col">
+                  <div className="group aspect-[3/4] bg-gray-200 rounded-lg hover:shadow-xl transition-all overflow-hidden relative">
+                    {item.cover_image_url ? (
+                      <img 
+                        src={item.cover_image_url} 
+                        alt={`${item.title} cover image`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-400">
+                        <span className="text-gray-600 text-sm">No image</span>
+                      </div>
+                    )}
+                    
+                    <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
+                      <h3 className="text-white font-semibold text-sm line-clamp-2">{item.title}</h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-white/80">{item.year}</span>
+                        {item.category_name && (
+                          <>
+                            <span className="text-white/50">•</span>
+                            <span className="text-xs text-white/80">{item.category_name}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Language links below image */}
+                  {(enUrl || arUrl) && (
+                    <div className="flex justify-center items-center gap-2 text-sm font-semibold mt-2">
+                      {enUrl && (
+                        <a
+                          href={enUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[hsl(var(--accent))] hover:underline"
+                          aria-label={`Open English ${item.content_type}`}
+                        >
+                          EN
+                        </a>
+                      )}
+                      {enUrl && arUrl && <span className="text-gray-400">|</span>}
+                      {arUrl && (
+                        <a
+                          href={arUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[hsl(var(--accent))] hover:underline"
+                          aria-label={`Open Arabic ${item.content_type}`}
+                        >
+                          AR
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           <div className="text-center">
-            <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 rounded-full">
+            <Button 
+              onClick={() => window.location.href = '/reports'}
+              className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 rounded-full"
+            >
               More work
             </Button>
           </div>
