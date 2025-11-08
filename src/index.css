@@ -264,10 +264,13 @@ img.w-6.h-6.timeline-custom-icon {
 		     padding-left: 0px !important;
 		}
         .zero_margin {
-			    padding-top: 5px !important;
-			    padding-bottom: 5px !important;
-			}
-.sixty {
-    height: 40px !important;
-}
+			padding-top: 5px !important;
+			padding-bottom: 5px !important;
+		}
+		.sixty {
+		    height: 40px !important;
+		}
+        .info_div_g .object-cover {
+    		object-fit: contain !important;
+		}
 }
