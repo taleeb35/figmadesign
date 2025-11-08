@@ -161,6 +161,31 @@ const Index = () => {
                 </Button>
               </div>
 
+              {/* Mobile Video */}
+              {hero?.video_url && (
+                <div className="lg:hidden mt-4">
+                  <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl bg-white">
+                    {(hero.video_url.includes('youtube.com') || hero.video_url.includes('youtu.be')) ? (
+                      <iframe
+                        src={hero.video_url}
+                        className="w-full h-full"
+                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        loading="lazy"
+                        title="Hero video"
+                      />
+                    ) : (
+                      <video
+                        src={hero.video_url}
+                        controls
+                        className="w-full h-full object-cover"
+                        playsInline
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Statistics Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mt-12">
                 {statistics.map((stat) => (
