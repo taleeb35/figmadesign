@@ -86,35 +86,38 @@ const Statistics = () => {
       <Header />
 
       {/* Banner Section */}
-      <section className="px-6 md:px-12 lg:px-24 py-8">
-        <div className="bg-[#C62828] rounded-r-lg py-6 px-8 inline-flex items-center gap-6">
-          <h1 className="text-white text-4xl font-bold lowercase">statistics</h1>
-          <Menu className="text-white w-10 h-10" strokeWidth={2.5} />
+      <section className="px-4 md:px-12 lg:px-24 py-6 md:py-8">
+        <div className="bg-[#C62828] rounded-r-lg py-4 px-6 md:py-6 md:px-8 inline-flex items-center gap-4 md:gap-6">
+          <h1 className="text-white text-2xl md:text-4xl font-bold lowercase">statistics</h1>
+          <Menu className="text-white w-8 h-8 md:w-10 md:h-10" strokeWidth={2.5} />
         </div>
       </section>
 
       {/* Content Section */}
-      <section className="py-12 px-6 md:px-12 lg:px-24">
+      <section className="py-6 md:py-12 px-4 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
-          <div className="flex gap-12">
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
             {/* Sidebar Filters */}
-            <aside className="w-48 flex-shrink-0">
-              <div className="space-y-4">
-                {categories.map((category) => (
-                  <div key={category.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={category.id}
-                      checked={selectedCategories.includes(category.id)}
-                      onCheckedChange={() => toggleCategory(category.id)}
-                    />
-                    <label
-                      htmlFor={category.id}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                    >
-                      {category.name}
-                    </label>
-                  </div>
-                ))}
+            <aside className="w-full lg:w-48 flex-shrink-0">
+              <div className="bg-muted/30 rounded-lg p-4 lg:bg-transparent lg:p-0">
+                <h2 className="font-semibold mb-4 lg:hidden">Filter by Category</h2>
+                <div className="grid grid-cols-2 gap-3 lg:grid-cols-1 lg:space-y-4 lg:gap-0">
+                  {categories.map((category) => (
+                    <div key={category.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={category.id}
+                        checked={selectedCategories.includes(category.id)}
+                        onCheckedChange={() => toggleCategory(category.id)}
+                      />
+                      <label
+                        htmlFor={category.id}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                      >
+                        {category.name}
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
             </aside>
 
@@ -125,7 +128,7 @@ const Statistics = () => {
               ) : filteredStatistics.length === 0 ? (
                 <div className="text-center py-12 text-gray-500">No statistics found</div>
               ) : (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                   {filteredStatistics.map((stat) => (
                     <div key={stat.id} className="bg-card rounded-lg border p-4 hover:shadow-lg transition-shadow">
                       <img 
