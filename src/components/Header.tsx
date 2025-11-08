@@ -5,7 +5,7 @@ import logo from "@/assets/logo.png";
 
 const Header = () => {
   return (
-    <header className="bg-[hsl(var(--dark-blue))] sticky top-0 z-50 py-4">
+    <header className="bg-[hsl(var(--dark-blue))] sticky top-0 z-50 py-4 pad-tb">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
         <div className="bg-white rounded-full px-6 py-3 flex items-center justify-between shadow-lg">
           <div className="flex items-center">
