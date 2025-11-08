@@ -11,7 +11,7 @@ export default function HomePage() {
       <h1 className="text-3xl font-bold">Home Page Content</h1>
       
       <Tabs defaultValue="hero" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="hero">Hero</TabsTrigger>
           <TabsTrigger value="stats">Statistics</TabsTrigger>
           <TabsTrigger value="service">Service Section</TabsTrigger>
