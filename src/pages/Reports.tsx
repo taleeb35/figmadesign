@@ -128,7 +128,7 @@ const Reports = () => {
       <Header />
 
       {/* Banner Section */}
-      <section className="w-full border-b-2 border-blue-500">
+      <section className="w-full border-b-2 border-blue-500 reportsBanner">
         <img src={reportsBanner} alt="Reports Banner" className="w-full h-auto" />
       </section>
 
