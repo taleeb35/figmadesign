@@ -151,6 +151,16 @@ const Index = () => {
                 {hero?.description || "Elevate the business's value, build your customers' trust, and showcase your company in numbers."}
               </p>
 
+              {/* CTA Buttons */}
+              <div className="flex flex-wrap gap-4 mb-12">
+                <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 rounded-full text-base font-medium">
+                  Book a Meeting
+                </Button>
+                <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 rounded-full text-base font-medium">
+                  Watch a video
+                </Button>
+              </div>
+
               {/* Statistics Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mt-12">
                 {statistics.map((stat) => (
