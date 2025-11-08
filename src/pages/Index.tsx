@@ -147,7 +147,7 @@ const Index = () => {
                   __html: hero?.main_title || "We Present your Achievement to the World" 
                 }}
               />
-              <p className="text-gray-300 mb-8 leading-relaxed max-w-xl">
+              <p className="text-white-300 mb-8 leading-relaxed max-w-xl">
                 {hero?.description || "Elevate the business's value, build your customers' trust, and showcase your company in numbers."}
               </p>
 
