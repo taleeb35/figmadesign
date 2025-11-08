@@ -213,9 +213,7 @@ img.w-6.h-6.timeline-custom-icon {
 .sixty {
   height: 60px !important;
 }
-.top-0 {
-    padding-top: 3rem !important;
-}
+
 .leading-tight {
     font-size: 44px !important;
 }
@@ -235,3 +233,8 @@ img.w-6.h-6.timeline-custom-icon {
     max-width: 80rem !important;
     border-bottom: 0px !important;
 }
+.pad-tb {
+   padding-top: 2rem !important;
+    padding-bottom: 2rem
+}
+	
