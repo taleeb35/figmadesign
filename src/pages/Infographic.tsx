@@ -76,18 +76,18 @@ const Infographic = () => {
                 
                 // Pattern: landscape (0), then 4 squares (1-4), then landscape (5), etc.
                 if (position === 0) {
-                  // Landscape image (full width)
+                  // Landscape image (reduced height)
                   return (
                     <div
                       key={infographic.id}
                       className="w-full group cursor-pointer rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
                       onClick={() => setSelectedIndex(index)}
                     >
-                      <div className="overflow-hidden bg-gray-50">
+                      <div className="overflow-hidden bg-gray-50 max-h-[400px]">
                         <img
                           src={infographic.image_url}
                           alt={infographic.title}
-                          className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           loading="lazy"
                         />
                       </div>
@@ -98,17 +98,17 @@ const Infographic = () => {
                   const gridItems = infographics.slice(index, index + 4);
                   return (
                     <div key={`grid-${infographic.id}`} className="grid grid-cols-2 gap-4">
-                      {gridItems.map((item) => (
+                      {gridItems.map((item, gridIndex) => (
                         <div
                           key={item.id}
-                          className="group cursor-pointer rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
-                          onClick={() => setSelectedIndex(index + (position - 1))}
+                          className="aspect-square group cursor-pointer rounded-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
+                          onClick={() => setSelectedIndex(index + gridIndex)}
                         >
-                          <div className="overflow-hidden bg-gray-50">
+                          <div className="overflow-hidden bg-gray-50 w-full h-full">
                             <img
                               src={item.image_url}
                               alt={item.title}
-                              className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               loading="lazy"
                             />
                           </div>
@@ -130,6 +130,65 @@ const Infographic = () => {
           )}
         </div>
       </main>
+
+      {/* Image Popup Dialog */}
+      <Dialog open={selectedIndex !== null} onOpenChange={() => setSelectedIndex(null)}>
+        <DialogContent className="max-w-5xl w-full p-0 overflow-hidden bg-black/95">
+          <div className="relative">
+            {selectedImage && (
+              <>
+                <div className="flex items-center justify-center min-h-[60vh] max-h-[80vh] p-8">
+                  <img
+                    src={selectedImage.image_url}
+                    alt={selectedImage.title}
+                    className="max-w-full max-h-full object-contain"
+                  />
+                </div>
+                
+                {/* Navigation Buttons */}
+                {selectedIndex !== null && selectedIndex > 0 && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white rounded-full h-12 w-12"
+                    onClick={handlePrevious}
+                  >
+                    <ChevronLeft className="h-8 w-8" />
+                  </Button>
+                )}
+                
+                {selectedIndex !== null && selectedIndex < infographics.length - 1 && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white rounded-full h-12 w-12"
+                    onClick={handleNext}
+                  >
+                    <ChevronRight className="h-8 w-8" />
+                  </Button>
+                )}
+
+                {/* Close Button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white rounded-full h-10 w-10"
+                  onClick={() => setSelectedIndex(null)}
+                >
+                  <X className="h-6 w-6" />
+                </Button>
+
+                {/* Image Title */}
+                {selectedImage.title && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                    <h3 className="text-white text-xl font-semibold">{selectedImage.title}</h3>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <CTASection />
 
