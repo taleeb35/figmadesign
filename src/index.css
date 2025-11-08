@@ -237,7 +237,9 @@ img.w-6.h-6.timeline-custom-icon {
    padding-top: 2rem !important;
     padding-bottom: 2rem
 }
-	
+.statistics , .infographic {
+    padding-left: 0px;
+}	
 @media only screen and (max-width: 767px) {
 			.leading-tight {
 		    font-size: 26px !important;
