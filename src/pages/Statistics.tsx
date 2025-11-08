@@ -88,7 +88,7 @@ const Statistics = () => {
       {/* Banner Section */}
       <section className="px-4 md:px-12 lg:px-24 py-6 md:py-8 statistics">
         <div className="bg-[#C62828] rounded-r-lg py-4 px-6 md:py-6 md:px-8 inline-flex items-center gap-4 md:gap-6">
-          <h1 className="text-white text-2xl md:text-4xl font-bold lowercase">Statistics</h1>
+          <h1 className="text-white text-2xl md:text-4xl font-bold">Statistics</h1>
           <Menu className="text-white w-8 h-8 md:w-10 md:h-10" strokeWidth={2.5} />
         </div>
       </section>
