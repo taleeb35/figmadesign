@@ -254,8 +254,8 @@ img.w-6.h-6.timeline-custom-icon {
 		    object-fit: contain !important;
 		}
 		 .for_mobile svg {
-		    width: 2rem !important;
-		    height: 2rem !important;
+		    width: 30px !important;
+            height: 30px !important;
 		}
         .reports_div .object-cover {
     object-fit: contain !important;
