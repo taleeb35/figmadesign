@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { X, Upload } from "lucide-react";
 import type { ContentItem } from "./ContentManager";
 import type { ContentCategory } from "./ContentCategoryManager";
+import { CONTENT_TYPE_LABELS } from "@/lib/contentTypeLabels";
 
 type ContentFormProps = {
   item: ContentItem | null;
@@ -167,9 +168,9 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="pdf">PDF</SelectItem>
-                <SelectItem value="flipbook">Flipbook</SelectItem>
-                <SelectItem value="youtube">YouTube</SelectItem>
+                <SelectItem value="pdf">{CONTENT_TYPE_LABELS.PDF}</SelectItem>
+                <SelectItem value="flipbook">{CONTENT_TYPE_LABELS.Flipbook}</SelectItem>
+                <SelectItem value="youtube">{CONTENT_TYPE_LABELS.YouTube}</SelectItem>
               </SelectContent>
             </Select>
           </div>

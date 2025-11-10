@@ -8,6 +8,7 @@ import Header from "@/components/Header";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import reportsBanner from "@/assets/reports-banner.png";
+import { CONTENT_TYPE_LABELS } from "@/lib/contentTypeLabels";
 
 type ContentItem = {
   id: string;
@@ -155,9 +156,9 @@ const Reports = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="pdf">PDF</SelectItem>
-                  <SelectItem value="flipbook">Flipbook</SelectItem>
-                  <SelectItem value="youtube">YouTube</SelectItem>
+                  <SelectItem value="pdf">{CONTENT_TYPE_LABELS.PDF}</SelectItem>
+                  <SelectItem value="flipbook">{CONTENT_TYPE_LABELS.Flipbook}</SelectItem>
+                  <SelectItem value="youtube">{CONTENT_TYPE_LABELS.YouTube}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
