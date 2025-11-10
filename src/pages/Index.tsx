@@ -344,7 +344,7 @@ const Index = () => {
             {/* Video Player Column */}
             <div className="flex justify-center">
               {serviceSection?.video_url ? (
-                <div className="w-full max-w-2xl aspect-video rounded-2xl overflow-hidden shadow-2xl">
+                <div className="w-full max-w-2xl aspect-video home-video rounded-2xl overflow-hidden shadow-2xl">
                   {serviceSection.video_url.includes('youtube.com') || serviceSection.video_url.includes('youtu.be') ? (
                     <iframe
                       src={serviceSection.video_url}
