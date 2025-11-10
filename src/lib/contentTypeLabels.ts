@@ -1,14 +1,14 @@
 // Mapping of database content_type enum values to display labels
 export const CONTENT_TYPE_LABELS: Record<string, string> = {
-  PDF: "PDF",
-  Flipbook: "Interactive",
+  PDF: "PDF Report",
+  Flipbook: "Interactive Report",
   YouTube: "Video Report",
 };
 
 // Reverse mapping for getting enum value from display label
 export const CONTENT_TYPE_VALUES: Record<string, string> = {
-  PDF: "PDF",
-  Interactive: "Flipbook",
+  "PDF Report": "PDF",
+  "Interactive Report": "Flipbook",
   "Video Report": "YouTube",
 };
 
