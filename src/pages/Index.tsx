@@ -211,10 +211,9 @@ const Index = () => {
                   ) : (
                     <video
                       src={hero.video_url}
-                      controls
+                      muted
                       className="w-full h-full object-cover"
                       autoPlay
-                      muted
                       loop
                     />
                   )}
