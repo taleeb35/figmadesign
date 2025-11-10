@@ -113,7 +113,7 @@ const ContentList = ({ items, onEdit, onDelete }: ContentListProps) => {
             <TableRow>
               <TableHead>Title</TableHead>
               <TableHead>Year</TableHead>
-              <TableHead>Type</TableHead>
+              <TableHead>Report Type</TableHead>
               <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>

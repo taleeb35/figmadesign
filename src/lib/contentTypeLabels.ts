@@ -3,6 +3,9 @@ export const CONTENT_TYPE_LABELS: Record<string, string> = {
   PDF: "PDF Report",
   Flipbook: "Interactive Report",
   YouTube: "Video Report",
+  pdf: "PDF Report",
+  flipbook: "Interactive Report",
+  youtube: "Video Report",
 };
 
 // Reverse mapping for getting enum value from display label
