@@ -127,7 +127,7 @@ const ContentList = ({ items, onEdit, onDelete }: ContentListProps) => {
                   <Badge className={getTypeColor(item.content_type)}>
                     <span className="flex items-center gap-1">
                       {getTypeIcon(item.content_type)}
-                      {getContentTypeLabel(item.content_type).toUpperCase()}
+                      {getContentTypeLabel(item.content_type)}
                     </span>
                   </Badge>
                 </TableCell>
