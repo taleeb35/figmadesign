@@ -114,7 +114,6 @@ const ContentList = ({ items, onEdit, onDelete }: ContentListProps) => {
               <TableHead>Title</TableHead>
               <TableHead>Year</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Content</TableHead>
               <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
@@ -130,9 +129,6 @@ const ContentList = ({ items, onEdit, onDelete }: ContentListProps) => {
                       {getContentTypeLabel(item.content_type)}
                     </span>
                   </Badge>
-                </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {item.category_name || "N/A"}
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex gap-2 justify-end">
