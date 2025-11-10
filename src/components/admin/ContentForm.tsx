@@ -19,11 +19,8 @@ type ContentFormProps = {
 const ContentForm = ({ item, onClose }: ContentFormProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState<ContentCategory[]>([]);
   const [contentType, setContentType] = useState<"pdf" | "flipbook" | "youtube">(item?.content_type || "pdf");
-  const [year, setYear] = useState(item?.year?.toString() || new Date().getFullYear().toString());
   const [title, setTitle] = useState(item?.title || "");
-  const [categoryId, setCategoryId] = useState(item?.category_id || "");
   
   // Image field for all types
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
@@ -42,23 +39,6 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
   // YouTube fields
   const [youtubeUrl, setYoutubeUrl] = useState(item?.youtube_url || "");
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("content_categories")
-        .select("*")
-        .order("name");
-
-      if (error) throw error;
-      setCategories(data || []);
-    } catch (error: any) {
-      console.error("Error fetching categories:", error);
-    }
-  };
 
   const uploadFile = async (file: File, path: string): Promise<string> => {
     const { data, error } = await supabase.storage
@@ -84,9 +64,9 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
 
       let dataToSave: any = {
         content_type: contentType,
-        year: parseInt(year),
+        year: new Date().getFullYear(),
         title,
-        category_id: categoryId || null,
+        category_id: null,
         created_by: user.id,
       };
 
@@ -176,19 +156,6 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
           </div>
 
           <div>
-            <Label htmlFor="year">Year</Label>
-            <Input
-              id="year"
-              type="number"
-              value={year}
-              onChange={(e) => setYear(e.target.value)}
-              required
-              min="1900"
-              max="2100"
-            />
-          </div>
-
-          <div>
             <Label htmlFor="title">Title</Label>
             <Input
               id="title"
@@ -196,22 +163,6 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
               onChange={(e) => setTitle(e.target.value)}
               required
             />
-          </div>
-
-          <div>
-            <Label htmlFor="category">Content Category</Label>
-            <Select value={categoryId} onValueChange={setCategoryId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((category) => (
-                  <SelectItem key={category.id} value={category.id}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
           </div>
 
           <div>

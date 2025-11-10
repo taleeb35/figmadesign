@@ -33,11 +33,8 @@ type ContentCategory = {
 
 const Reports = () => {
   const [items, setItems] = useState<ContentItem[]>([]);
-  const [categories, setCategories] = useState<ContentCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<string>("all");
-  const [filterCategory, setFilterCategory] = useState<string>("all");
-  const [filterYear, setFilterYear] = useState<string>("all");
   const [sortOrder, setSortOrder] = useState<string>("latest");
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const videoRef = useRef<HTMLIFrameElement>(null);
@@ -50,30 +47,12 @@ const Reports = () => {
     try {
       setLoading(true);
       
-      // Fetch categories
-      const { data: categoriesData } = await supabase
-        .from("content_categories")
-        .select("*")
-        .order("name");
-      
-      // Fetch content items with categories
+      // Fetch content items
       const { data: itemsData } = await supabase
         .from("content_items")
-        .select(`
-          *,
-          content_categories (
-            name
-          )
-        `);
-
-      setCategories(categoriesData || []);
+        .select("*");
       
-      const itemsWithCategories = (itemsData || []).map(item => ({
-        ...item,
-        category_name: item.content_categories?.name
-      }));
-      
-      setItems(itemsWithCategories);
+      setItems(itemsData || []);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -84,8 +63,6 @@ const Reports = () => {
   const filteredAndSortedItems = items
     .filter(item => {
       if (filterType !== "all" && item.content_type !== filterType) return false;
-      if (filterCategory !== "all" && item.category_id !== filterCategory) return false;
-      if (filterYear !== "all" && item.year.toString() !== filterYear) return false;
       return true;
     })
     .sort((a, b) => {
@@ -122,8 +99,6 @@ const Reports = () => {
     }
   };
 
-  const availableYears = [...new Set(items.map(item => item.year))].sort((a, b) => b - a);
-
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -147,7 +122,7 @@ const Reports = () => {
           <h3 className="text-lg font-bold mb-4">Filter Content by:</h3>
 
           {/* Filter Controls */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-8">
             <div>
               <label className="block text-sm font-semibold mb-2">Type</label>
               <Select value={filterType} onValueChange={setFilterType}>
@@ -159,40 +134,6 @@ const Reports = () => {
                   <SelectItem value="pdf">{CONTENT_TYPE_LABELS.PDF}</SelectItem>
                   <SelectItem value="flipbook">{CONTENT_TYPE_LABELS.Flipbook}</SelectItem>
                   <SelectItem value="youtube">{CONTENT_TYPE_LABELS.YouTube}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold mb-2">Content</label>
-              <Select value={filterCategory} onValueChange={setFilterCategory}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="All content" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Content</SelectItem>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold mb-2">Year</label>
-              <Select value={filterYear} onValueChange={setFilterYear}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="All years" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Years</SelectItem>
-                  {availableYears.map((year) => (
-                    <SelectItem key={year} value={year.toString()}>
-                      {year}
-                    </SelectItem>
-                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -214,8 +155,6 @@ const Reports = () => {
               <Button 
                 onClick={() => {
                   setFilterType("all");
-                  setFilterCategory("all");
-                  setFilterYear("all");
                   setSortOrder("latest");
                 }}
                 className="w-full bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white rounded-full"
@@ -272,15 +211,6 @@ const Reports = () => {
                       
                       <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
                         <h3 className="text-white font-semibold text-sm line-clamp-2">{item.title}</h3>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs text-white/80">{item.year}</span>
-                          {item.category_name && (
-                            <>
-                              <span className="text-white/50">•</span>
-                              <span className="text-xs text-white/80">{item.category_name}</span>
-                            </>
-                          )}
-                        </div>
                       </div>
                     </div>
 
