@@ -164,7 +164,7 @@ const Index = () => {
               {/* Mobile Video */}
               {hero?.video_url && (
                 <div className="lg:hidden mt-4">
-                  <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl bg-white">
+                  <div className="relative w-full aspect-video home-video rounded-2xl overflow-hidden shadow-2xl bg-white">
                     {(hero.video_url.includes('youtube.com') || hero.video_url.includes('youtu.be')) ? (
                       <iframe
                         src={hero.video_url}
@@ -200,7 +200,7 @@ const Index = () => {
             {/* Video Section */}
             <div className="hidden lg:block">
               {hero?.video_url ? (
-                <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl bg-white">
+                <div className="relative w-full aspect-video home-video rounded-2xl overflow-hidden shadow-2xl bg-white">
                   {hero.video_url.includes('youtube.com') || hero.video_url.includes('youtu.be') ? (
                     <iframe
                       src={hero.video_url}
