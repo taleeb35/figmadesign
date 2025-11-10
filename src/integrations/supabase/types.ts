@@ -388,6 +388,36 @@ export type Database = {
         }
         Relationships: []
       }
+      home_service_section: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          subtitle: string
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          subtitle: string
+          title: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          subtitle?: string
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       home_statistics: {
         Row: {
           created_at: string
@@ -441,6 +471,39 @@ export type Database = {
           id?: string
           image_url?: string
           title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      inquiries: {
+        Row: {
+          brief: string
+          company_name: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          phone: string
+          updated_at: string
+        }
+        Insert: {
+          brief: string
+          company_name: string
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          phone: string
+          updated_at?: string
+        }
+        Update: {
+          brief?: string
+          company_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          phone?: string
           updated_at?: string
         }
         Relationships: []

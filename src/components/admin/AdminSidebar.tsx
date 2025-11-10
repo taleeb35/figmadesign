@@ -1,4 +1,4 @@
-import { FileText, Settings, FolderKanban, BarChart3, Image, HelpCircle, Home, Info, Mail } from "lucide-react";
+import { FileText, Settings, FolderKanban, BarChart3, Image, HelpCircle, Home, Info, Mail, MessageSquare } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -18,6 +18,7 @@ const menuItems = [
   { title: "Infographics", url: "/admin/dashboard/infographics", icon: Image },
   { title: "Content Type", url: "/admin/dashboard/content", icon: FolderKanban },
   { title: "FAQ", url: "/admin/dashboard/faq", icon: HelpCircle },
+  { title: "Inquiries", url: "/admin/dashboard/inquiries", icon: MessageSquare },
   { title: "Home Page", url: "/admin/dashboard/home", icon: Home },
   { title: "About Us Page", url: "/admin/dashboard/about", icon: Info },
   { title: "Footer Settings", url: "/admin/dashboard/footer", icon: Mail },

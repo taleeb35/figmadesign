@@ -1,10 +1,22 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import logo from "@/assets/logo.png";
+import ContactDialog from "./ContactDialog";
 
 const Header = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const handleMeetingClick = () => {
+    setSheetOpen(false);
+    setDialogOpen(true);
+  };
+
   return (
+    <>
+      <ContactDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     <header className="bg-[hsl(var(--dark-blue))] sticky top-0 z-50 py-4 pad-tb for_mobile">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
         <div className="bg-white rounded-full px-6 py-3 flex items-center justify-between shadow-lg zero_margin">
@@ -32,11 +44,14 @@ const Header = () => {
           </nav>
 
           <div className="flex items-center gap-4">
-            <Button className="hidden md:block bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-6 rounded-full">
+            <Button 
+              onClick={() => setDialogOpen(true)}
+              className="hidden md:block bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-6 rounded-full"
+            >
               Meeting
             </Button>
 
-            <Sheet>
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden">
                   <Menu className="h-6 w-6" />
@@ -59,7 +74,10 @@ const Header = () => {
                   <a href="/about" className="text-gray-800 hover:text-[hsl(var(--accent))] transition-colors font-medium text-lg">
                     About us
                   </a>
-                  <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-6 rounded-full mt-4">
+                  <Button 
+                    onClick={handleMeetingClick}
+                    className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-6 rounded-full mt-4"
+                  >
                     Meeting
                   </Button>
                 </nav>
@@ -69,6 +87,7 @@ const Header = () => {
         </div>
       </div>
     </header>
+    </>
   );
 };
 
