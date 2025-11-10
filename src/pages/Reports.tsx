@@ -9,6 +9,15 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import reportsBanner from "@/assets/reports-banner.png";
 import { CONTENT_TYPE_LABELS } from "@/lib/contentTypeLabels";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 type ContentItem = {
   id: string;
@@ -37,7 +46,9 @@ const Reports = () => {
   const [filterType, setFilterType] = useState<string>("all");
   const [sortOrder, setSortOrder] = useState<string>("latest");
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const videoRef = useRef<HTMLIFrameElement>(null);
+  const pageSize = 18;
 
   useEffect(() => {
     fetchData();
@@ -78,6 +89,17 @@ const Reports = () => {
       }
     });
 
+  const totalPages = Math.ceil(filteredAndSortedItems.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedItems = filteredAndSortedItems.slice(startIndex, endIndex);
+
+  const resetFilters = () => {
+    setFilterType("all");
+    setSortOrder("latest");
+    setCurrentPage(1);
+  };
+
   const getYouTubeEmbedUrl = (url: string) => {
     const videoId = url.includes("youtube.com") 
       ? url.split("v=")[1]?.split("&")[0]
@@ -114,7 +136,7 @@ const Reports = () => {
           {/* Counter */}
           <div className="flex justify-center mb-6">
             <div className="bg-blue-500 text-white px-4 py-1 rounded text-sm font-semibold">
-              {filteredAndSortedItems.length} Results
+              {filteredAndSortedItems.length} Results (Page {currentPage} of {totalPages || 1})
             </div>
           </div>
 
@@ -153,10 +175,7 @@ const Reports = () => {
 
             <div>
               <Button 
-                onClick={() => {
-                  setFilterType("all");
-                  setSortOrder("latest");
-                }}
+                onClick={resetFilters}
                 className="w-full bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white rounded-full"
               >
                 Reset
@@ -170,8 +189,9 @@ const Reports = () => {
           ) : filteredAndSortedItems.length === 0 ? (
             <div className="text-center py-12 text-gray-500">No content found matching your filters.</div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 reports_div">
-              {filteredAndSortedItems.map((item) => {
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 reports_div">
+                {paginatedItems.map((item) => {
                 const isYouTube = item.content_type === "youtube";
                 const aspectClass = isYouTube ? "aspect-video" : "aspect-[3/4]";
                 const enUrl = item.english_pdf_url || item.english_flipbook_url || null;
@@ -246,6 +266,69 @@ const Reports = () => {
                 );
               })}
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-8">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (currentPage > 1) setCurrentPage(currentPage - 1);
+                        }}
+                        className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                      />
+                    </PaginationItem>
+                    
+                    {[...Array(totalPages)].map((_, i) => {
+                      const page = i + 1;
+                      if (
+                        page === 1 ||
+                        page === totalPages ||
+                        (page >= currentPage - 1 && page <= currentPage + 1)
+                      ) {
+                        return (
+                          <PaginationItem key={page}>
+                            <PaginationLink
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setCurrentPage(page);
+                              }}
+                              isActive={currentPage === page}
+                            >
+                              {page}
+                            </PaginationLink>
+                          </PaginationItem>
+                        );
+                      } else if (page === currentPage - 2 || page === currentPage + 2) {
+                        return (
+                          <PaginationItem key={page}>
+                            <PaginationEllipsis />
+                          </PaginationItem>
+                        );
+                      }
+                      return null;
+                    })}
+                    
+                    <PaginationItem>
+                      <PaginationNext
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                        }}
+                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </>
           )}
         </div>
       </section>

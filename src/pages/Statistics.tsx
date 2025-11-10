@@ -7,6 +7,15 @@ import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface Statistic {
   id: string;
@@ -29,6 +38,8 @@ const Statistics = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<Statistic | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 18;
 
   useEffect(() => {
     fetchData();
@@ -75,11 +86,17 @@ const Statistics = () => {
         ? prev.filter(id => id !== categoryId)
         : [...prev, categoryId]
     );
+    setCurrentPage(1);
   };
 
   const filteredStatistics = selectedCategories.length === 0
     ? statistics
     : statistics.filter(stat => stat.category_id && selectedCategories.includes(stat.category_id));
+
+  const totalPages = Math.ceil(filteredStatistics.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedStatistics = filteredStatistics.slice(startIndex, endIndex);
 
   return (
     <div className="min-h-screen bg-white">
@@ -128,8 +145,9 @@ const Statistics = () => {
               ) : filteredStatistics.length === 0 ? (
                 <div className="text-center py-12 text-gray-500">No statistics found</div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                  {filteredStatistics.map((stat) => (
+                <>
+                  <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {paginatedStatistics.map((stat) => (
                     <div key={stat.id} className="bg-card rounded-lg border p-4 hover:shadow-lg transition-shadow">
                       <img 
                         src={stat.image_url} 
@@ -154,6 +172,69 @@ const Statistics = () => {
                     </div>
                   ))}
                 </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-8">
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious 
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (currentPage > 1) setCurrentPage(currentPage - 1);
+                            }}
+                            className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                          />
+                        </PaginationItem>
+                        
+                        {[...Array(totalPages)].map((_, i) => {
+                          const page = i + 1;
+                          if (
+                            page === 1 ||
+                            page === totalPages ||
+                            (page >= currentPage - 1 && page <= currentPage + 1)
+                          ) {
+                            return (
+                              <PaginationItem key={page}>
+                                <PaginationLink
+                                  href="#"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setCurrentPage(page);
+                                  }}
+                                  isActive={currentPage === page}
+                                >
+                                  {page}
+                                </PaginationLink>
+                              </PaginationItem>
+                            );
+                          } else if (page === currentPage - 2 || page === currentPage + 2) {
+                            return (
+                              <PaginationItem key={page}>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                            );
+                          }
+                          return null;
+                        })}
+                        
+                        <PaginationItem>
+                          <PaginationNext
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                            }}
+                            className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  </div>
+                )}
+              </>
               )}
             </div>
           </div>
