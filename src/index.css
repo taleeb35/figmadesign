@@ -244,6 +244,9 @@ img.w-6.h-6.timeline-custom-icon {
     /* aspect-ratio: 16 / 9; */
     aspect-ratio: 3 / 4 !important;
 }
+.home-video {
+	aspect-ratio: 16 / 9 !important;
+}
 @media only screen and (max-width: 767px) {
 			.leading-tight {
 		    font-size: 26px !important;
