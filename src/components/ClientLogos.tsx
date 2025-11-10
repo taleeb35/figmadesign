@@ -56,6 +56,17 @@ const ClientLogos = () => {
             />
           </div>
         ))}
+
+        {/* Duplicate set for seamless loop */}
+          {logos.map((logo) => (
+            <div key={`second-${logo.id}`} className="flex-shrink-0">
+              <img 
+                src={logo.logo_url} 
+                alt={logo.name} 
+                className="h-14" 
+              />
+            </div>
+          ))}
       </div>
 
       {/* Mobile: Animated scrolling slider */}
