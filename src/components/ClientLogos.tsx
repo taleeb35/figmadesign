@@ -46,7 +46,7 @@ const ClientLogos = () => {
   return (
     <div className="mt-16 clients_logo">
       {/* Desktop: Static centered logos */}
-      <div className="hidden lg:flex justify-center items-center gap-12 clients_logo_div">
+      <div className="hidden lg:flex justify-center items-center gap-12 clients_logo_div animate-scroll">
         {logos.map((logo) => (
           <div key={logo.id} className="flex-shrink-0">
             <img 
