@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Check, ChevronsUpDown } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -18,17 +19,24 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required").max(100),
@@ -220,6 +228,7 @@ const countryCodes = [
 
 export default function ContactDialog({ open, onOpenChange }: ContactDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [countryCodeOpen, setCountryCodeOpen] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -316,25 +325,59 @@ export default function ContactDialog({ open, onOpenChange }: ContactDialogProps
                 control={form.control}
                 name="country_code"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-col">
                     <FormLabel>Code *</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Code" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {countryCodes.map((item) => (
-                          <SelectItem key={`${item.code}-${item.country}`} value={item.code}>
-                            <span className="flex items-center gap-2">
-                              <span>{item.flag}</span>
-                              <span>{item.code}</span>
-                            </span>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Popover open={countryCodeOpen} onOpenChange={setCountryCodeOpen}>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "w-full justify-between",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value
+                              ? countryCodes.find((item) => item.code === field.value)?.flag + " " + field.value
+                              : "Code"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[200px] p-0 bg-background z-50">
+                        <Command>
+                          <CommandInput placeholder="Search country or code..." />
+                          <CommandList>
+                            <CommandEmpty>No country found.</CommandEmpty>
+                            <CommandGroup>
+                              {countryCodes.map((item) => (
+                                <CommandItem
+                                  key={`${item.code}-${item.country}`}
+                                  value={`${item.country} ${item.code}`}
+                                  onSelect={() => {
+                                    form.setValue("country_code", item.code);
+                                    setCountryCodeOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      item.code === field.value ? "opacity-100" : "opacity-0"
+                                    )}
+                                  />
+                                  <span className="flex items-center gap-2">
+                                    <span>{item.flag}</span>
+                                    <span>{item.code}</span>
+                                    <span className="text-muted-foreground">{item.country}</span>
+                                  </span>
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}
