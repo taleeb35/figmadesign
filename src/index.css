@@ -247,6 +247,22 @@ img.w-6.h-6.timeline-custom-icon {
 .home-video {
 	aspect-ratio: 16 / 9 !important;
 }
+img.whatsapp_icon {
+    /* width: 50px; */
+    position: fixed;
+    height: 44px;
+    /* bottom: 65px; */
+    right: 20px;
+    /* background-color: #fff; */
+    color: #FFF;
+    /* border-radius: 50px; */
+    text-align: center;
+    font-size: 30px;
+    /* box-shadow: 2px 2px 3px #999; */
+    z-index: 100;
+    top: 300px;
+    font-size: 20px;
+}
 @media only screen and (max-width: 767px) {
 			.leading-tight {
 		    font-size: 26px !important;
