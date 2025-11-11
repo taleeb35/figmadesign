@@ -89,6 +89,10 @@ const Header = () => {
         </div>
       </div>
     </header>
+
+      <a href="https://api.whatsapp.com/send?phone=971551950951" target="_blank">
+        <img src="/assets/whatsapp.png" class="whatsapp_icon">
+      </a>
     </>
   );
 };
