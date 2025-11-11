@@ -235,57 +235,86 @@ export function InquiriesManager() {
             <DialogTitle>Inquiry Details</DialogTitle>
             <DialogDescription>View and manage inquiry information</DialogDescription>
           </DialogHeader>
-          {selectedInquiry && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Name</p>
-                  <p className="text-base">{selectedInquiry.name}</p>
+          {selectedInquiry && (() => {
+            // Parse brief to extract meeting info
+            const briefText = selectedInquiry.brief || "";
+            const meetingMatch = briefText.match(/Preferred Meeting: (.+?)(?:\n|$)/);
+            const actualBrief = briefText.split("\n\nPreferred Meeting:")[0];
+            const meetingInfo = meetingMatch ? meetingMatch[1] : null;
+            
+            // Split meeting info into date and time
+            let meetingDate = null;
+            let meetingTime = null;
+            if (meetingInfo) {
+              const parts = meetingInfo.split(" at ");
+              meetingDate = parts[0];
+              meetingTime = parts[1];
+            }
+
+            return (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Name</p>
+                    <p className="text-base">{selectedInquiry.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Company</p>
+                    <p className="text-base">{selectedInquiry.company_name}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Email</p>
+                    <p className="text-base">{selectedInquiry.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Phone</p>
+                    <p className="text-base">{selectedInquiry.phone}</p>
+                  </div>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Company</p>
-                  <p className="text-base">{selectedInquiry.company_name}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Brief</p>
+                  <p className="text-base mt-1 whitespace-pre-wrap">{actualBrief}</p>
+                </div>
+                {meetingDate && meetingTime && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Meeting Date</p>
+                      <p className="text-base">{meetingDate}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Meeting Time</p>
+                      <p className="text-base">{meetingTime}</p>
+                    </div>
+                  </div>
+                )}
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">Status</p>
+                  <div className="flex gap-2">
+                    <Button
+                      variant={selectedInquiry.status === "Pending" ? "default" : "outline"}
+                      onClick={() => handleStatusChange("Pending")}
+                      disabled={updateStatusMutation.isPending}
+                    >
+                      Pending
+                    </Button>
+                    <Button
+                      variant={selectedInquiry.status === "Completed" ? "default" : "outline"}
+                      onClick={() => handleStatusChange("Completed")}
+                      disabled={updateStatusMutation.isPending}
+                    >
+                      Completed
+                    </Button>
+                  </div>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Email</p>
-                  <p className="text-base">{selectedInquiry.email}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Phone</p>
-                  <p className="text-base">{selectedInquiry.phone}</p>
+                  <p className="text-sm font-medium text-muted-foreground">Received</p>
+                  <p className="text-base">
+                    {formatDistanceToNow(new Date(selectedInquiry.created_at), { addSuffix: true })}
+                  </p>
                 </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Brief</p>
-                <p className="text-base mt-1">{selectedInquiry.brief}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-2">Status</p>
-                <div className="flex gap-2">
-                  <Button
-                    variant={selectedInquiry.status === "Pending" ? "default" : "outline"}
-                    onClick={() => handleStatusChange("Pending")}
-                    disabled={updateStatusMutation.isPending}
-                  >
-                    Pending
-                  </Button>
-                  <Button
-                    variant={selectedInquiry.status === "Completed" ? "default" : "outline"}
-                    onClick={() => handleStatusChange("Completed")}
-                    disabled={updateStatusMutation.isPending}
-                  >
-                    Completed
-                  </Button>
-                </div>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Received</p>
-                <p className="text-base">
-                  {formatDistanceToNow(new Date(selectedInquiry.created_at), { addSuffix: true })}
-                </p>
-              </div>
-            </div>
-          )}
+            );
+          })()}
         </DialogContent>
       </Dialog>
     </>
