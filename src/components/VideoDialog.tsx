@@ -18,7 +18,7 @@ const VideoDialog = ({ open, onOpenChange, videoUrl }: VideoDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl p-0 bg-black">
+      <DialogContent className="full_pop_video max-w-4xl p-0 bg-black">
         <VisuallyHidden>
           <DialogTitle>Video Player</DialogTitle>
         </VisuallyHidden>
