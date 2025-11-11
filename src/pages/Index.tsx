@@ -356,7 +356,7 @@ const Index = () => {
                   />
                   
                   {/* Video positioned inside laptop screen */}
-                  <div className="absolute top-[4%] left-[12.5%] w-[75%] h-[74%] overflow-hidden rounded-t-lg">
+                  <div className="absolute top-[3.5%] left-[13%] w-[74%] h-[66%] overflow-hidden">
                     {serviceSection.video_url.includes('youtube.com') || serviceSection.video_url.includes('youtu.be') ? (
                       <iframe
                         src={serviceSection.video_url}
@@ -383,7 +383,7 @@ const Index = () => {
                     alt="Laptop mockup" 
                     className="w-full h-auto"
                   />
-                  <div className="absolute top-[4%] left-[12.5%] w-[75%] h-[74%] bg-gray-200 flex items-center justify-center rounded-t-lg">
+                  <div className="absolute top-[3.5%] left-[13%] w-[74%] h-[66%] bg-gray-200 flex items-center justify-center">
                     <p className="text-gray-400 text-sm">No video uploaded</p>
                   </div>
                 </div>
