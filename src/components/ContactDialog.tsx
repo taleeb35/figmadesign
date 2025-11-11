@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, CalendarIcon, Clock } from "lucide-react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { format } from "date-fns";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +33,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -45,6 +55,10 @@ const formSchema = z.object({
   country_code: z.string().min(1, "Country code is required"),
   phone: z.string().min(1, "Phone number is required").max(20),
   brief: z.string().min(1, "Brief is required").max(1000),
+  meeting_date: z.date({
+    required_error: "Meeting date is required",
+  }),
+  meeting_time: z.string().min(1, "Meeting time is required"),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -229,6 +243,7 @@ const countryCodes = [
 export default function ContactDialog({ open, onOpenChange }: ContactDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [countryCodeOpen, setCountryCodeOpen] = useState(false);
+  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -239,24 +254,40 @@ export default function ContactDialog({ open, onOpenChange }: ContactDialogProps
       country_code: "",
       phone: "",
       brief: "",
+      meeting_date: undefined,
+      meeting_time: "",
     },
   });
 
+  const timeSlots = [
+    "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
+    "12:00 PM", "12:30 PM", "01:00 PM", "01:30 PM", "02:00 PM", "02:30 PM",
+    "03:00 PM", "03:30 PM", "04:00 PM", "04:30 PM", "05:00 PM", "05:30 PM",
+  ];
+
   const onSubmit = async (data: FormData) => {
+    if (!captchaValue) {
+      toast.error("Please complete the CAPTCHA verification");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
+      const meetingDateTime = `${format(data.meeting_date, "PPP")} at ${data.meeting_time}`;
+      
       const { error } = await supabase.from("inquiries").insert({
         name: data.name,
         company_name: data.company_name,
         email: data.email,
         phone: `${data.country_code} ${data.phone}`,
-        brief: data.brief,
+        brief: `${data.brief}\n\nPreferred Meeting: ${meetingDateTime}`,
       });
 
       if (error) throw error;
 
       toast.success("Your inquiry has been submitted successfully!");
       form.reset();
+      setCaptchaValue(null);
       onOpenChange(false);
     } catch (error) {
       console.error("Error submitting inquiry:", error);
@@ -320,12 +351,12 @@ export default function ContactDialog({ open, onOpenChange }: ContactDialogProps
               )}
             />
 
-            <div className="grid grid-cols-[140px_1fr] gap-2">
+            <div className="grid grid-cols-[140px_1fr] gap-2 items-start">
               <FormField
                 control={form.control}
                 name="country_code"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col">
+                  <FormItem>
                     <FormLabel>Code *</FormLabel>
                     <Popover open={countryCodeOpen} onOpenChange={setCountryCodeOpen}>
                       <PopoverTrigger asChild>
@@ -334,7 +365,7 @@ export default function ContactDialog({ open, onOpenChange }: ContactDialogProps
                             variant="outline"
                             role="combobox"
                             className={cn(
-                              "w-full justify-between",
+                              "w-full justify-between h-10",
                               !field.value && "text-muted-foreground"
                             )}
                           >
@@ -416,6 +447,89 @@ export default function ContactDialog({ open, onOpenChange }: ContactDialogProps
               )}
             />
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="meeting_date"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Meeting Date *</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal h-10",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) => {
+                            const day = date.getDay();
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            return day === 5 || day === 6 || date <= today;
+                          }}
+                          initialFocus
+                          className="pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="meeting_time"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Meeting Time *</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="h-10">
+                          <SelectValue placeholder="Select time">
+                            {field.value && (
+                              <span className="flex items-center">
+                                <Clock className="mr-2 h-4 w-4" />
+                                {field.value}
+                              </span>
+                            )}
+                          </SelectValue>
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {timeSlots.map((time) => (
+                          <SelectItem key={time} value={time}>
+                            {time}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="flex justify-center">
+              <ReCAPTCHA
+                sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                onChange={(value) => setCaptchaValue(value)}
+              />
+            </div>
+
             <div className="flex justify-end gap-3 pt-2">
               <Button
                 type="button"
@@ -425,7 +539,7 @@ export default function ContactDialog({ open, onOpenChange }: ContactDialogProps
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting || !captchaValue}>
                 {isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             </div>
