@@ -153,7 +153,7 @@ const Index = () => {
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mb-12">
-                <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 rounded-full text-base font-medium w-full sm:w-auto">
+                <Button onClick={() => setDialogOpen(true)} className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 rounded-full text-base font-medium w-full sm:w-auto">
                   Book a Meeting
                 </Button>
                 <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 rounded-full text-base font-medium w-full sm:w-auto">
