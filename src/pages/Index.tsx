@@ -344,30 +344,48 @@ const Index = () => {
               </p>
             </div>
 
-            {/* Video Player Column */}
+            {/* Video Player Column with Laptop Mockup */}
             <div className="flex justify-center">
               {serviceSection?.video_url ? (
-                <div className="w-full max-w-2xl aspect-video home-video rounded-2xl overflow-hidden shadow-2xl">
-                  {serviceSection.video_url.includes('youtube.com') || serviceSection.video_url.includes('youtu.be') ? (
-                    <iframe
-                      src={serviceSection.video_url}
-                      className="w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  ) : (
-                    <video
-                      src={serviceSection.video_url}
-                      className="w-full h-full object-cover" controls
-                      autoPlay
-                      muted
-                      loop
-                    />
-                  )}
+                <div className="relative w-full max-w-2xl">
+                  {/* Laptop mockup image */}
+                  <img 
+                    src="/laptop.webp" 
+                    alt="Laptop mockup" 
+                    className="w-full h-auto relative z-10"
+                  />
+                  
+                  {/* Video positioned inside laptop screen */}
+                  <div className="absolute top-[4%] left-[12.5%] w-[75%] h-[74%] overflow-hidden rounded-t-lg">
+                    {serviceSection.video_url.includes('youtube.com') || serviceSection.video_url.includes('youtu.be') ? (
+                      <iframe
+                        src={serviceSection.video_url}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video
+                        src={serviceSection.video_url}
+                        className="w-full h-full object-cover"
+                        controls
+                        autoPlay
+                        muted
+                        loop
+                      />
+                    )}
+                  </div>
                 </div>
               ) : (
-                <div className="w-full max-w-2xl aspect-video rounded-2xl bg-gray-200 flex items-center justify-center">
-                  <p className="text-gray-400">No video uploaded</p>
+                <div className="relative w-full max-w-2xl">
+                  <img 
+                    src="/laptop.webp" 
+                    alt="Laptop mockup" 
+                    className="w-full h-auto"
+                  />
+                  <div className="absolute top-[4%] left-[12.5%] w-[75%] h-[74%] bg-gray-200 flex items-center justify-center rounded-t-lg">
+                    <p className="text-gray-400 text-sm">No video uploaded</p>
+                  </div>
                 </div>
               )}
             </div>
