@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import ClientLogos from "@/components/ClientLogos";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import ContactDialog from "@/components/ContactDialog";
 
 interface HomeHero {
   id: string;
@@ -60,6 +61,7 @@ const Index = () => {
   const [serviceSection, setServiceSection] = useState<HomeServiceSection | null>(null);
   const [workItems, setWorkItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchContent();
@@ -134,6 +136,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <ContactDialog open={dialogOpen} onOpenChange={setDialogOpen} />
       <Header />
       
       {/* Hero Section */}
