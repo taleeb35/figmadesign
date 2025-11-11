@@ -17,6 +17,10 @@ const Header = () => {
   return (
     <>
       <ContactDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+
+      <a href="https://api.whatsapp.com/send?phone=971553368448" target="_blank">
+    <img src="/wp-content/uploads/2024/06/whatsapp.png" class="whatsapp_icon">
+</a>
     <header className="bg-[hsl(var(--dark-blue))] sticky top-0 z-50 py-4 pad-tb for_mobile">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
         <div className="bg-white rounded-full px-6 py-3 flex items-center justify-between shadow-lg zero_margin">
