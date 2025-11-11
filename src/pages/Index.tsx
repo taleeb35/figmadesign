@@ -8,6 +8,7 @@ import ClientLogos from "@/components/ClientLogos";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import ContactDialog from "@/components/ContactDialog";
+import VideoDialog from "@/components/VideoDialog";
 
 interface HomeHero {
   id: string;
@@ -62,6 +63,7 @@ const Index = () => {
   const [workItems, setWorkItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [videoDialogOpen, setVideoDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchContent();
@@ -137,6 +139,7 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <ContactDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <VideoDialog open={videoDialogOpen} onOpenChange={setVideoDialogOpen} videoUrl={hero?.video_url || null} />
       <Header />
       
       {/* Hero Section */}
@@ -159,7 +162,7 @@ const Index = () => {
                 <Button onClick={() => setDialogOpen(true)} className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 rounded-full text-base font-medium w-full sm:w-auto">
                   Book a Meeting
                 </Button>
-                <Button className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 rounded-full text-base font-medium w-full sm:w-auto">
+                <Button onClick={() => setVideoDialogOpen(true)} className="bg-[hsl(var(--accent))] hover:bg-[hsl(var(--accent))]/90 text-white px-8 py-6 rounded-full text-base font-medium w-full sm:w-auto">
                   Watch a video
                 </Button>
               </div>
