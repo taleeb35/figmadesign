@@ -263,6 +263,9 @@ img.whatsapp_icon {
     top: 400px;
     font-size: 20px;
 }
+.full_pop_video {
+	max-width: 80rem !important;
+}
 @media only screen and (max-width: 767px) {
 			.leading-tight {
 		    font-size: 26px !important;
