@@ -344,48 +344,30 @@ const Index = () => {
               </p>
             </div>
 
-            {/* Video Player Column with Laptop Mockup */}
+            {/* Video Player Column */}
             <div className="flex justify-center">
               {serviceSection?.video_url ? (
-                <div className="relative w-full max-w-2xl">
-                  {/* Laptop mockup image */}
-                  <img 
-                    src="/laptop.webp" 
-                    alt="Laptop mockup" 
-                    className="w-full h-auto relative z-10"
-                  />
-                  
-                  {/* Video positioned inside laptop screen */}
-                  <div className="absolute top-[3.5%] left-[13%] w-[74%] h-[66%] overflow-hidden">
-                    {serviceSection.video_url.includes('youtube.com') || serviceSection.video_url.includes('youtu.be') ? (
-                      <iframe
-                        src={serviceSection.video_url}
-                        className="w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    ) : (
-                      <video
-                        src={serviceSection.video_url}
-                        className="w-full h-full object-cover"
-                        controls
-                        autoPlay
-                        muted
-                        loop
-                      />
-                    )}
-                  </div>
+                <div className="w-full max-w-2xl aspect-video home-video rounded-2xl overflow-hidden shadow-2xl">
+                  {serviceSection.video_url.includes('youtube.com') || serviceSection.video_url.includes('youtu.be') ? (
+                    <iframe
+                      src={serviceSection.video_url}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <video
+                      src={serviceSection.video_url}
+                      className="w-full h-full object-cover" controls
+                      autoPlay
+                      muted
+                      loop
+                    />
+                  )}
                 </div>
               ) : (
-                <div className="relative w-full max-w-2xl">
-                  <img 
-                    src="/laptop.webp" 
-                    alt="Laptop mockup" 
-                    className="w-full h-auto"
-                  />
-                  <div className="absolute top-[3.5%] left-[13%] w-[74%] h-[66%] bg-gray-200 flex items-center justify-center">
-                    <p className="text-gray-400 text-sm">No video uploaded</p>
-                  </div>
+                <div className="w-full max-w-2xl aspect-video rounded-2xl bg-gray-200 flex items-center justify-center">
+                  <p className="text-gray-400">No video uploaded</p>
                 </div>
               )}
             </div>
