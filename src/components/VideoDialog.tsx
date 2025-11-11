@@ -22,7 +22,7 @@ const VideoDialog = ({ open, onOpenChange, videoUrl }: VideoDialogProps) => {
         <VisuallyHidden>
           <DialogTitle>Video Player</DialogTitle>
         </VisuallyHidden>
-        <div className="w-full aspect-video">
+        <div className="w-full aspect-video home-video">
           {isYouTube ? (
             <iframe
               src={`${videoUrl}${videoUrl.includes('?') ? '&' : '?'}autoplay=1`}
@@ -37,6 +37,7 @@ const VideoDialog = ({ open, onOpenChange, videoUrl }: VideoDialogProps) => {
               className="w-full h-full object-cover"
               controls
               autoPlay
+              muted
             />
           )}
         </div>
