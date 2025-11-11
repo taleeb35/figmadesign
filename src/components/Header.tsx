@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import logo from "@/assets/logo.png";
+import whatsapp from "@/assets/whatsapp.png";
 import ContactDialog from "./ContactDialog";
 
 const Header = () => {
@@ -90,8 +91,8 @@ const Header = () => {
       </div>
     </header>
 
-      <a href="https://api.whatsapp.com/send?phone=971551950951" target="_blank">
-        <img src="/assets/whatsapp.png" class="whatsapp_icon">
+      <a href="https://api.whatsapp.com/send?phone=971551950951" target="_blank" rel="noopener noreferrer">
+        <img src={whatsapp} alt="Contact us on WhatsApp" className="whatsapp_icon" />
       </a>
     </>
   );
