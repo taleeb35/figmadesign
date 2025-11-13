@@ -1,0 +1,94 @@
+name: Deploy theannualreports
+
+on:
+  push:
+    branches: [ "main" ]     # change if your default branch is different
+  pull_request:
+    branches: [ "main" ]
+    types: [ "closed" ]        # run when PR to master is merged
+  workflow_dispatch: {}         # allow manual deploy
+
+concurrency:
+  group: deploy-theannualreports
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true) || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 22 on runner (no build here)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "${{ secrets.VPS_PORT }}" -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Sync source to server
+        uses: easingthemes/ssh-deploy@v5.0.3
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.VPS_HOST }}
+          REMOTE_USER: ${{ secrets.VPS_USER }}
+          REMOTE_PORT: ${{ secrets.VPS_PORT }}
+          TARGET: ${{ secrets.VPS_PATH }}
+          SOURCE: .
+          ARGS: "-avzr --delete --exclude='.git' --exclude='node_modules' --exclude='dist' --exclude='.env*'"
+
+      - name: Build on server & start/reload PM2 (Node 22 via nvm)
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          port: ${{ secrets.VPS_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            set -e
+            cd "${{ secrets.VPS_PATH }}"
+
+            # Load nvm & Node 22 for NON-interactive shell
+            export NVM_DIR="$HOME/.nvm"
+            if [ ! -s "$NVM_DIR/nvm.sh" ]; then
+              curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+            fi
+            . "$NVM_DIR/nvm.sh"
+            nvm install 22
+            nvm use 22
+            hash -r
+            echo "Node: $(node -v) npm: $(npm -v)"
+
+            # Vite build needs env at build-time
+            [ -f ".env.production" ] || { echo "ERROR: .env.production missing at ${{ secrets.VPS_PATH }}"; exit 1; }
+
+            # Clean install (lockfile must match your npm version)
+            rm -rf node_modules
+            if ! npm ci; then
+              echo "npm ci failed (lock mismatch). Regenerating lockfile..."
+              npm install --package-lock-only
+              npm ci
+            fi
+
+            # Build the static site
+            npm run build
+
+            # Start or reload preview server on port 3000
+            if pm2 list | grep -q "theannualreports"; then
+              pm2 reload theannualreports
+            else
+              pm2 start ecosystem.config.js
+            fi
+            pm2 save
+
+            # Health probe (non-fatal)
+            (curl -fsS http://127.0.0.1:3000 >/dev/null && echo "Health: OK") || echo "Health: skipped/failed"
