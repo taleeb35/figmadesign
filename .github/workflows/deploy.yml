@@ -44,26 +44,25 @@ jobs:
         run: |
           set -e
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ci_key
-          sed -i 's/\r$//' /tmp/ci_key     # normalize CRLF -> LF
+          sed -i 's/\r$//' /tmp/ci_key
           chmod 600 /tmp/ci_key
           # validate key format (fails if passphrase-protected or not OpenSSH)
           ssh-keygen -y -f /tmp/ci_key > /dev/null
-          # handshake test
+          # handshake test (must print 'handshake-ok')
           ssh -o StrictHostKeyChecking=no -i /tmp/ci_key -p "${{ secrets.VPS_PORT }}" \
             "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" "echo handshake-ok"
 
-      # Use the sanitized key file for rsync (avoids libcrypto issues)
       - name: Rsync source to server (using validated key)
         shell: bash
         run: |
-            set -e
-            RSYNC_SSH="ssh -p ${{ secrets.VPS_PORT }} -i /tmp/ci_key -o StrictHostKeyChecking=no"
-            rsync -avzr --delete \
+          set -e
+          RSYNC_SSH="ssh -p ${{ secrets.VPS_PORT }} -i /tmp/ci_key -o StrictHostKeyChecking=no"
+          rsync -avzr --delete \
             --exclude='.git' --exclude='node_modules' --exclude='dist' --exclude='.env*' \
             -e "$RSYNC_SSH" \
             ./ "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/"
 
-      - name: Build on server & start/reload PM2 (Node 22 via nvm)
+      - name: Build on server & start/reload PM2
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -72,10 +71,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script_stop: true
           script: |
-            set -e
+            set -euo pipefail
             cd "${{ secrets.VPS_PATH }}"
 
-            # nvm / Node 22 for non-interactive shell
+            # Ensure NVM + Node 22 for this non-interactive shell
             export NVM_DIR="$HOME/.nvm"
             if [ ! -s "$NVM_DIR/nvm.sh" ]; then
               curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
@@ -86,32 +85,39 @@ jobs:
             hash -r
             echo "Node: $(node -v) npm: $(npm -v)"
 
-            # Build-time env for Vite
-            [ -f ".env.production" ] || { echo "ERROR: .env.production missing at ${{ secrets.VPS_PATH }}"; exit 1; }
+            # Make sure .env.production exists and has no NODE_ENV
+            if [ ! -f .env.production ]; then
+              echo "ERROR: .env.production missing at ${{ secrets.VPS_PATH }}"; exit 1;
+            fi
+            sed -i '/^NODE_ENV=/d' .env.production || true
 
-            # Clean install; auto-heal if lock mismatches
+            # Clean install (lock-aware), then build
             rm -rf node_modules
             if [ -f package-lock.json ]; then
-              if ! npm ci; then
-                echo "npm ci failed (lock mismatch). Regenerating lockfile..."
-                npm install --package-lock-only
-                npm ci
-              fi
+              npm ci || (npm install --package-lock-only && npm ci)
             else
-              echo "No package-lock.json; generating one..."
               npm install
             fi
-
-            # Build Vite
             npm run build
 
-            # Start or reload PM2 (port 3000); your ecosystem points to npm run preview
+            # Ensure PM2 exists
+            if ! command -v pm2 >/dev/null 2>&1; then
+              npm i -g pm2
+              hash -r
+            fi
+
+            # Ensure start script is executable (in case +x got stripped)
+            [ -f pm2-start.sh ] && chmod +x pm2-start.sh || true
+
+            # Start or reload app (ecosystem uses ./pm2-start.sh, PORT=3000)
             if pm2 list | grep -q "theannualreports"; then
-              pm2 reload theannualreports
+              pm2 reload theannualreports --update-env
             else
               pm2 start ecosystem.config.js
+              pm2 save
             fi
-            pm2 save
 
             # Health probe (non-fatal)
+            pm2 status || true
             (curl -fsS http://127.0.0.1:3000 >/dev/null && echo "Health: OK") || echo "Health: skipped/failed"
+            echo "Deploy OK"
