@@ -53,13 +53,15 @@ jobs:
             "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" "echo handshake-ok"
 
       # Use the sanitized key file for rsync (avoids libcrypto issues)
-      - name: Rsync source to server
+      - name: Rsync source to server (using validated key)
         shell: bash
         run: |
-          rsync -avzr --delete \
+            set -e
+            RSYNC_SSH="ssh -p ${{ secrets.VPS_PORT }} -i /tmp/ci_key -o StrictHostKeyChecking=no"
+            rsync -avzr --delete \
             --exclude='.git' --exclude='node_modules' --exclude='dist' --exclude='.env*' \
-            -e "ssh -p ${ { secrets.VPS_PORT } } -i /tmp/ci_key -o StrictHostKeyChecking=no" \
-            . "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}"
+            -e "$RSYNC_SSH" \
+            ./ "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/"
 
       - name: Build on server & start/reload PM2 (Node 22 via nvm)
         uses: appleboy/ssh-action@v1.2.0
