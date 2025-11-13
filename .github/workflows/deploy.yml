@@ -88,7 +88,7 @@ jobs:
             # Build Vite
             npm run build
 
-            # Start or reload PM2 (serving dist on port 3051)
+            # Start or reload PM2 (serving dist on port 3000)
             if pm2 list | grep -q "theannualreports"; then
               pm2 reload theannualreports
             else
@@ -97,4 +97,4 @@ jobs:
             pm2 save
 
             # Health probe (non-fatal)
-            (curl -fsS http://127.0.0.1:3051 >/dev/null && echo "Health: OK") || echo "Health: skipped/failed"
+            (curl -fsS http://127.0.0.1:3000 >/dev/null && echo "Health: OK") || echo "Health: skipped/failed"
