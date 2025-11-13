@@ -29,8 +29,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      # 🔧 Regenerate package-lock.json with npm 11 (no install)
-      - name: Refresh package-lock.json
+      - name: Refresh package-lock.json (no install)
         run: |
           npm --version
           npm install --package-lock-only
@@ -39,30 +38,28 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -p "${{ secrets.VPS_PORT }}" -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
       - name: Validate SSH private key & handshake
         shell: bash
         run: |
-            set -e
-            echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ci_key
-            # normalize CRLF -> LF
-            sed -i 's/\r$//' /tmp/ci_key
-            chmod 600 /tmp/ci_key
-            # fails if key is not OpenSSH or is passphrase-protected
-            ssh-keygen -y -f /tmp/ci_key > /dev/null
-            # handshake test (fails early if pubkey not installed for this user)
-            ssh -o StrictHostKeyChecking=no -i /tmp/ci_key -p "${{ secrets.VPS_PORT }}" \
+          set -e
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ci_key
+          sed -i 's/\r$//' /tmp/ci_key     # normalize CRLF -> LF
+          chmod 600 /tmp/ci_key
+          # validate key format (fails if passphrase-protected or not OpenSSH)
+          ssh-keygen -y -f /tmp/ci_key > /dev/null
+          # handshake test
+          ssh -o StrictHostKeyChecking=no -i /tmp/ci_key -p "${{ secrets.VPS_PORT }}" \
             "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" "echo handshake-ok"
 
+      # Use the sanitized key file for rsync (avoids libcrypto issues)
       - name: Rsync source to server
-        uses: easingthemes/ssh-deploy@v5.0.3
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.VPS_HOST }}
-          REMOTE_USER: ${{ secrets.VPS_USER }}
-          REMOTE_PORT: ${{ secrets.VPS_PORT }}
-          TARGET: ${{ secrets.VPS_PATH }}
-          SOURCE: .
-          ARGS: "-avzr --delete --exclude='.git' --exclude='node_modules' --exclude='dist' --exclude='.env*'"
+        shell: bash
+        run: |
+          rsync -avzr --delete \
+            --exclude='.git' --exclude='node_modules' --exclude='dist' --exclude='.env*' \
+            -e "ssh -p ${ { secrets.VPS_PORT } } -i /tmp/ci_key -o StrictHostKeyChecking=no" \
+            . "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}"
 
       - name: Build on server & start/reload PM2 (Node 22 via nvm)
         uses: appleboy/ssh-action@v1.2.0
@@ -87,21 +84,26 @@ jobs:
             hash -r
             echo "Node: $(node -v) npm: $(npm -v)"
 
-            # Build-time env required by Vite
+            # Build-time env for Vite
             [ -f ".env.production" ] || { echo "ERROR: .env.production missing at ${{ secrets.VPS_PATH }}"; exit 1; }
 
-            # Clean, strict install; auto-heal if needed
+            # Clean install; auto-heal if lock mismatches
             rm -rf node_modules
-            if ! npm ci; then
-              echo "npm ci failed (lock mismatch). Regenerating lockfile on server..."
-              npm install --package-lock-only
-              npm ci
+            if [ -f package-lock.json ]; then
+              if ! npm ci; then
+                echo "npm ci failed (lock mismatch). Regenerating lockfile..."
+                npm install --package-lock-only
+                npm ci
+              fi
+            else
+              echo "No package-lock.json; generating one..."
+              npm install
             fi
 
             # Build Vite
             npm run build
 
-            # Start or reload PM2 (serving dist on port 3000)
+            # Start or reload PM2 (port 3000); your ecosystem points to npm run preview
             if pm2 list | grep -q "theannualreports"; then
               pm2 reload theannualreports
             else
