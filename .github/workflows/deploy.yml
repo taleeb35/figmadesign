@@ -39,6 +39,19 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -p "${{ secrets.VPS_PORT }}" -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+      - name: Validate SSH private key & handshake
+        shell: bash
+        run: |
+            set -e
+            echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ci_key
+            # normalize CRLF -> LF
+            sed -i 's/\r$//' /tmp/ci_key
+            chmod 600 /tmp/ci_key
+            # fails if key is not OpenSSH or is passphrase-protected
+            ssh-keygen -y -f /tmp/ci_key > /dev/null
+            # handshake test (fails early if pubkey not installed for this user)
+            ssh -o StrictHostKeyChecking=no -i /tmp/ci_key -p "${{ secrets.VPS_PORT }}" \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" "echo handshake-ok"
 
       - name: Rsync source to server
         uses: easingthemes/ssh-deploy@v5.0.3
