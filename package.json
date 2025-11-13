@@ -8,7 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "serve -s dist -l $PORT"
+    "preview": "vite preview --port $PORT --strictPort"
   },
   "dependencies": {
     "serve": "^14.2.1",
