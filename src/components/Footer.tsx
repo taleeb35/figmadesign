@@ -89,7 +89,7 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-center gap-3">
                 
-                <img src={uaeFlag} alt="UAE" className="w-6 h-6 rounded object-cover flex-shrink-0" />
+                <img src={uaeFlag} alt="UAE" className="w-6 h-6 rounded object-cover flex-shrink-0 two" />
                 <a href={`tel:${settings?.phoneuae || '+971856784543'}`} className="text-base font-semibold text-gray-900 hover:text-[hsl(var(--accent))]">
                   {settings?.phoneuae || "+971856784543"}
                 </a>
@@ -97,7 +97,7 @@ const Footer = () => {
 
               <li className="flex items-center gap-3">
                
-                <img src={ksaFlag} alt="KSA" className="w-6 h-6 rounded object-cover flex-shrink-0" />
+                <img src={ksaFlag} alt="KSA" className="w-6 h-6 rounded object-cover flex-shrink-0 two" />
                 <a href={`tel:${settings?.phoneksa || '+971856784543'}`} className="text-base font-semibold text-gray-900 hover:text-[hsl(var(--accent))]">
                   {settings?.phoneksa || "+971856784543"}
                 </a>
