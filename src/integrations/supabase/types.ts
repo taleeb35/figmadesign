@@ -315,7 +315,8 @@ export type Database = {
       }
       footer_settings: {
         Row: {
-          address: string
+          addressksa: string
+          addressuae: string
           created_at: string
           created_by: string | null
           description: string
@@ -330,7 +331,8 @@ export type Database = {
           youtube_url: string | null
         }
         Insert: {
-          address: string
+          addressksa?: string
+          addressuae?: string
           created_at?: string
           created_by?: string | null
           description: string
@@ -345,7 +347,8 @@ export type Database = {
           youtube_url?: string | null
         }
         Update: {
-          address?: string
+          addressksa?: string
+          addressuae?: string
           created_at?: string
           created_by?: string | null
           description?: string

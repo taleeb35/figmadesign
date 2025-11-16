@@ -10,7 +10,8 @@ interface FooterSettings {
   phoneuae: string;
   phoneksa: string;
   email: string;
-  address: string;
+  addressuae: string;
+  addressksa: string;
   linkedin_url: string | null;
   facebook_url: string | null;
   instagram_url: string | null;
@@ -115,13 +116,15 @@ const Footer = () => {
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                  </svg>
-                </div>
+                <img src={uaeFlag} alt="UAE" className="w-6 h-6 rounded object-cover flex-shrink-0 two mt-1" />
                 <span className="text-base font-semibold text-gray-900">
-                  {settings?.address || "JLT, Dubai, 123 adress street"}
+                  {settings?.addressuae || "Business Bay, Dubai, UAE"}
+                </span>
+              </li>
+              <li className="flex items-start gap-3">
+                <img src={ksaFlag} alt="KSA" className="w-6 h-6 rounded object-cover flex-shrink-0 two mt-1" />
+                <span className="text-base font-semibold text-gray-900">
+                  {settings?.addressksa || "Riyadh, Saudi Arabia"}
                 </span>
               </li>
             </ul>

@@ -14,7 +14,8 @@ interface FooterSettings {
   phoneuae: string;
   phoneksa: string;
   email: string;
-  address: string;
+  addressuae: string;
+  addressksa: string;
   linkedin_url: string | null;
   facebook_url: string | null;
   instagram_url: string | null;
@@ -54,7 +55,8 @@ export default function FooterSettingsManager() {
         phoneuae: data.phoneuae,
         phoneksa: data.phoneksa,
         email: data.email,
-        address: data.address,
+        addressuae: data.addressuae,
+        addressksa: data.addressksa,
         linkedin_url: data.linkedin_url || null,
         facebook_url: data.facebook_url || null,
         instagram_url: data.instagram_url || null,
@@ -123,13 +125,24 @@ export default function FooterSettingsManager() {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="address">Address</Label>
-          <Input
-            id="address"
-            {...register("address")}
-            placeholder="JLT, Dubai, 123 address street"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="addressuae">Address (UAE)</Label>
+            <Input
+              id="addressuae"
+              {...register("addressuae")}
+              placeholder="Business Bay, Dubai, UAE"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="addressksa">Address (KSA)</Label>
+            <Input
+              id="addressksa"
+              {...register("addressksa")}
+              placeholder="Riyadh, Saudi Arabia"
+            />
+          </div>
         </div>
 
         <div className="space-y-4">
