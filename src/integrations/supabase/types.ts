@@ -324,7 +324,8 @@ export type Database = {
           id: string
           instagram_url: string | null
           linkedin_url: string | null
-          phone: string
+          phoneksa: string
+          phoneuae: string
           updated_at: string
           youtube_url: string | null
         }
@@ -338,7 +339,8 @@ export type Database = {
           id?: string
           instagram_url?: string | null
           linkedin_url?: string | null
-          phone: string
+          phoneksa?: string
+          phoneuae?: string
           updated_at?: string
           youtube_url?: string | null
         }
@@ -352,7 +354,8 @@ export type Database = {
           id?: string
           instagram_url?: string | null
           linkedin_url?: string | null
-          phone?: string
+          phoneksa?: string
+          phoneuae?: string
           updated_at?: string
           youtube_url?: string | null
         }
