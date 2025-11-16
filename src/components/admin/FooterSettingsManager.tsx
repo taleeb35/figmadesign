@@ -11,7 +11,8 @@ import { Loader2 } from "lucide-react";
 interface FooterSettings {
   id: string;
   description: string;
-  phone: string;
+  phoneuae: string;
+  phoneksa: string;
   email: string;
   address: string;
   linkedin_url: string | null;
