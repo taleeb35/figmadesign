@@ -96,7 +96,7 @@ export default function FooterSettingsManager() {
             <Label htmlFor="phone">Phone Number (UAE)</Label>
             <Input
               id="phone"
-              {...register("phone")}
+              {...register("phoneuae")}
               placeholder="+971856784543"
             />
           </div>
@@ -105,7 +105,7 @@ export default function FooterSettingsManager() {
             <Label htmlFor="phone">Phone Number (KSA)</Label>
             <Input
               id="phone"
-              {...register("phone")}
+              {...register("phoneksa")}
               placeholder="+971856784543"
             />
           </div>
