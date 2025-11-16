@@ -51,7 +51,8 @@ export default function FooterSettingsManager() {
       .from("footer_settings")
       .update({
         description: data.description,
-        phone: data.phone,
+        phoneuae: data.phoneuae,
+        phoneksa: data.phoneksa,
         email: data.email,
         address: data.address,
         linkedin_url: data.linkedin_url || null,
