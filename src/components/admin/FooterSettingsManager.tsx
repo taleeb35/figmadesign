@@ -102,6 +102,15 @@ export default function FooterSettingsManager() {
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="phone">Phone Number</Label>
+            <Input
+              id="phone"
+              {...register("phone")}
+              placeholder="+971856784543"
+            />
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="email">Email Address</Label>
             <Input
               id="email"
