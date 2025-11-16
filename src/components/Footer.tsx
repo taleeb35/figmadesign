@@ -92,7 +92,7 @@ const Footer = () => {
                   </svg>
                 </div>
                 <a href={`tel:${settings?.phoneuae || '+971856784543'}`} className="text-base font-semibold text-gray-900 hover:text-[hsl(var(--accent))]">
-                  {settings?.phone || "+971856784543"}
+                  {settings?.phoneuae || "+971856784543"}
                 </a>
               </li>
 
@@ -103,7 +103,7 @@ const Footer = () => {
                   </svg>
                 </div>
                 <a href={`tel:${settings?.phoneksa || '+971856784543'}`} className="text-base font-semibold text-gray-900 hover:text-[hsl(var(--accent))]">
-                  {settings?.phone || "+971856784543"}
+                  {settings?.phoneksa || "+971856784543"}
                 </a>
               </li>
 
