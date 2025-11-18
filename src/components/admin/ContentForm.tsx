@@ -21,7 +21,7 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
   const [loading, setLoading] = useState(false);
   const [contentType, setContentType] = useState<"pdf" | "flipbook" | "youtube">(item?.content_type || "pdf");
   const [title, setTitle] = useState(item?.title || "");
-  const [year, setYear] = useState(item?.year || new Date().getFullYear());
+  const [year, setYear] = useState<string>((item?.year?.toString()) || new Date().getFullYear().toString());
   
   // Image field for all types
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
@@ -63,9 +63,14 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      const yearValue = parseInt(year, 10);
+      if (isNaN(yearValue) || yearValue < 1900 || yearValue > 2100) {
+        throw new Error("Please enter a valid year between 1900 and 2100");
+      }
+
       let dataToSave: any = {
         content_type: contentType,
-        year: year,
+        year: yearValue,
         title,
         category_id: null,
         created_by: user.id,
@@ -174,7 +179,7 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
               min="1900"
               max="2100"
               value={year}
-              onChange={(e) => setYear(parseInt(e.target.value) || new Date().getFullYear())}
+              onChange={(e) => setYear(e.target.value)}
               required
             />
           </div>
