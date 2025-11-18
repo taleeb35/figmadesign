@@ -86,7 +86,7 @@ const Index = () => {
             )
           `)
           .in("content_type", ["pdf", "flipbook"])
-          .order("created_at", { ascending: false })
+          .order("year", { ascending: false })
           .limit(6),
       ]);
 
