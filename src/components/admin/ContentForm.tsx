@@ -21,6 +21,7 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
   const [loading, setLoading] = useState(false);
   const [contentType, setContentType] = useState<"pdf" | "flipbook" | "youtube">(item?.content_type || "pdf");
   const [title, setTitle] = useState(item?.title || "");
+  const [year, setYear] = useState(item?.year || new Date().getFullYear());
   
   // Image field for all types
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
@@ -64,7 +65,7 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
 
       let dataToSave: any = {
         content_type: contentType,
-        year: new Date().getFullYear(),
+        year: year,
         title,
         category_id: null,
         created_by: user.id,
@@ -161,6 +162,19 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="year">Year</Label>
+            <Input
+              id="year"
+              type="number"
+              min="1900"
+              max="2100"
+              value={year}
+              onChange={(e) => setYear(parseInt(e.target.value) || new Date().getFullYear())}
               required
             />
           </div>
