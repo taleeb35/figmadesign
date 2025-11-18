@@ -77,16 +77,8 @@ const Reports = () => {
       return true;
     })
     .sort((a, b) => {
-      // First, sort by content type (YouTube videos at the end)
-      if (a.content_type === "youtube" && b.content_type !== "youtube") return 1;
-      if (a.content_type !== "youtube" && b.content_type === "youtube") return -1;
-      
-      // Then sort by date
-      if (sortOrder === "latest") {
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      } else {
-        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-      }
+      // Sort by year in descending order (newest first)
+      return b.year - a.year;
     });
 
   const totalPages = Math.ceil(filteredAndSortedItems.length / pageSize);
