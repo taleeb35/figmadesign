@@ -277,13 +277,7 @@ img.whatsapp_icon {
     background-color: rgb(164 168 171);
     padding: 5px;
 }
-.fourth_section .flex{
-    flex-direction: column;
-    align-items: center;
-}
-.fourth_section .timeline-connector {
-    display: none;
-}
+
 @media only screen and (max-width: 767px) {
 			.leading-tight {
 		    font-size: 26px !important;
@@ -318,5 +312,12 @@ img.whatsapp_icon {
 		}
         .info_div_g .object-cover {
     		object-fit: contain !important;
+		}
+		.fourth_section .flex{
+		    flex-direction: column;
+		    align-items: center;
+		}
+		.fourth_section .timeline-connector {
+		    display: none;
 		}
 }
