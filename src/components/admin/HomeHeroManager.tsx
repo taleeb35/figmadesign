@@ -164,21 +164,6 @@ export function HomeHeroManager() {
           )}
         </div>
 
-        <div>
-          <Label htmlFor="video_url">Or enter Video URL (YouTube embed or direct video URL)</Label>
-          <Input
-            id="video_url"
-            placeholder="https://www.youtube.com/embed/... or video file URL"
-            value={hero?.video_url || ""}
-            onChange={(e) => setHero(prev => prev ? { ...prev, video_url: e.target.value } : {
-              id: "", main_title: "", description: "", video_url: e.target.value
-            })}
-          />
-          <p className="text-xs text-muted-foreground mt-1">
-            For YouTube: Use embed URL format (e.g., https://www.youtube.com/embed/VIDEO_ID)
-          </p>
-        </div>
-
         <Button type="submit" disabled={saving}>
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
         </Button>
