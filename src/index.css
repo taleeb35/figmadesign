@@ -273,6 +273,10 @@ img.whatsapp_icon {
 .align-items-center {
 	align-items: center !important;
 }
+.clint_logogs .bg-gray-50 {
+    background-color: rgb(164 168 171);
+    padding: 5px;
+}
 @media only screen and (max-width: 767px) {
 			.leading-tight {
 		    font-size: 26px !important;
