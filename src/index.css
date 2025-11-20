@@ -281,6 +281,9 @@ img.whatsapp_icon {
     flex-direction: column;
     align-items: center;
 }
+.fourth_section .timeline-connector {
+    display: none;
+}
 @media only screen and (max-width: 767px) {
 			.leading-tight {
 		    font-size: 26px !important;
