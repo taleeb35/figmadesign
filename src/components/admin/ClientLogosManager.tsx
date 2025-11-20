@@ -198,3 +198,9 @@ export function ClientLogosManager() {
     </div>
   );
 }
+<style>
+    .clint_logogs {
+        background-color: rgb(164 168 171);
+        padding: 5px;
+    }
+</style>
