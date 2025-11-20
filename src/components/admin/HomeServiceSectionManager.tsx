@@ -176,20 +176,7 @@ export function HomeServiceSectionManager() {
           )}
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="video_url">Video URL (or YouTube URL)</Label>
-          <Input
-            id="video_url"
-            value={section.video_url || ""}
-            onChange={(e) =>
-              setSection({ ...section, video_url: e.target.value })
-            }
-            placeholder="https://example.com/video.mp4 or YouTube URL"
-          />
-          <p className="text-sm text-muted-foreground">
-            Upload a video file above or paste a direct URL / YouTube link here
-          </p>
-        </div>
+        
 
         {section.video_url && (
           <div className="space-y-2">
