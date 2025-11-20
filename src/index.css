@@ -277,6 +277,10 @@ img.whatsapp_icon {
     background-color: rgb(164 168 171);
     padding: 5px;
 }
+.fourth_section .flex{
+    flex-direction: column;
+    align-items: center;
+}
 @media only screen and (max-width: 767px) {
 			.leading-tight {
 		    font-size: 26px !important;
