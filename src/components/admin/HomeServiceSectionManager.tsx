@@ -181,7 +181,7 @@ export function HomeServiceSectionManager() {
         {section.video_url && (
           <div className="space-y-2">
             <Label>Video Preview</Label>
-            <div className="relative w-full max-w-md aspect-video rounded-lg overflow-hidden bg-muted">
+            <div className="relative w-full max-w-md rounded-lg overflow-hidden bg-muted">
               {section.video_url.includes("youtube.com") ||
               section.video_url.includes("youtu.be") ? (
                 <iframe
