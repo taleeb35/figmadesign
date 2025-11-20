@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "assets/admin.css";
+import "@/admin.css";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
