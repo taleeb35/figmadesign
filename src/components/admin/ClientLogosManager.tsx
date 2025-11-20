@@ -174,7 +174,7 @@ export function ClientLogosManager() {
       <div className="grid gap-4 grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
         {logos.map((logo) => (
           <div key={logo.id} className="border rounded p-4 space-y-2">
-            <img src={logo.logo_url} alt={logo.name} className="w-full h-20 object-contain bg-gray-50 rounded" />
+            <img src={logo.logo_url} alt={logo.name} className="w-full h-20 object-contain bg-gray-50 rounded clint_logogs" />
             <p className="text-sm font-medium text-center">{logo.name}</p>
             <p className="text-xs text-muted-foreground text-center">Order: {logo.display_order}</p>
             <div className="flex gap-2 justify-center">
