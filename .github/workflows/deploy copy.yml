@@ -1,0 +1,137 @@
+name: Deploy theannualreports
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    types: [ "closed" ]
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-theannualreports
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true) || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node 22 on runner
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Refresh package-lock.json (no install)
+        run: |
+          npm --version
+          npm install --package-lock-only
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "${{ secrets.VPS_PORT }}" -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Validate SSH private key & handshake
+        shell: bash
+        run: |
+          set -e
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ci_key
+          sed -i 's/\r$//' /tmp/ci_key
+          chmod 600 /tmp/ci_key
+          ssh-keygen -y -f /tmp/ci_key > /dev/null
+          ssh -o StrictHostKeyChecking=no -i /tmp/ci_key -p "${{ secrets.VPS_PORT }}" \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" "echo handshake-ok"
+
+      - name: Rsync source to server (using validated key)
+        shell: bash
+        run: |
+          set -e
+          RSYNC_SSH="ssh -p ${{ secrets.VPS_PORT }} -i /tmp/ci_key -o StrictHostKeyChecking=no"
+          rsync -avzr --delete \
+            --exclude='.git' --exclude='node_modules' --exclude='dist' --exclude='.env*' \
+            -e "$RSYNC_SSH" \
+            ./ "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/"
+
+      - name: Build on server & start/reload PM2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          port: ${{ secrets.VPS_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            set -Eeuo pipefail
+            trap 'echo "::error::FAILED at line $LINENO"; exit 1' ERR
+
+            echo "::group::cd to project"
+            cd "${{ secrets.VPS_PATH }}"
+            pwd; ls -la | head
+            echo "::endgroup::"
+
+            echo "::group::Ensure NVM/Node 22"
+            export NVM_DIR="$HOME/.nvm"
+            if [ ! -s "$NVM_DIR/nvm.sh" ]; then
+              curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+            fi
+            . "$NVM_DIR/nvm.sh"
+            nvm install 22
+            nvm use 22
+            hash -r
+            echo "Node: $(node -v)  npm: $(npm -v)"
+            export PATH="$HOME/.nvm/versions/node/$(node -v | sed 's/^v//')/bin:$PATH"
+            echo "::endgroup::"
+
+            echo "::group::.env.production sanity"
+            if [ ! -f .env.production ]; then
+              echo "::error::.env.production missing"; exit 1
+            fi
+            # Ensure no NODE_ENV line (Vite handles mode)
+            sed -i '/^NODE_ENV=/d' .env.production || true
+            echo "::endgroup::"
+
+            echo "::group::Install deps & build"
+            rm -rf node_modules
+            if [ -f package-lock.json ]; then
+              npm ci || (npm install --package-lock-only && npm ci)
+            else
+              npm install
+            fi
+            npm run build
+            echo "::endgroup::"
+
+            echo "::group::PM2 start/reload"
+            # ensure start script is executable
+            [ -f pm2-start.sh ] && chmod +x pm2-start.sh || true
+
+            if ! command -v pm2 >/dev/null 2>&1; then
+              npm i -g pm2
+              hash -r
+            fi
+            echo "pm2 version: $(pm2 --version)"
+
+            # Use describe (not grep) so it's safe with set -e
+            if pm2 describe theannualreports >/dev/null 2>&1; then
+              echo "Reloading existing PM2 app..."
+              pm2 reload theannualreports --update-env
+            else
+              echo "Starting PM2 app from ecosystem..."
+              pm2 start ecosystem.config.js
+              pm2 save || true
+            fi
+            pm2 status || true
+            echo "::endgroup::"
+
+            echo "::group::Health probe"
+            (curl -fsS http://127.0.0.1:3000 >/dev/null && echo "Health: OK") || (echo "Health: skipped/failed"; pm2 logs theannualreports --lines 100 || true)
+            echo "::endgroup::"
+
+            echo "Deploy OK"
