@@ -52,15 +52,11 @@ jobs:
             fi
             npm run build
 
-            echo "Start or reload PM2"
+            echo "Reload PM2"
             export NODE_ENV=production
             export PORT=3000
 
-            if pm2 describe theannualreports > /dev/null 2>&1; then
-              pm2 reload theannualreports --update-env
-            else
-              pm2 start npm --name theannualreports -- run preview
-            fi
+            pm2 reload theannualreports --update-env
 
             echo "Health probe"
             for i in {1..30}; do
