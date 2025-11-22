@@ -3,7 +3,7 @@ name: Deploy theannualreports
 on:
   push:
     branches:
-      - main
+      - main   # change if you deploy from another branch
 
 jobs:
   deploy:
@@ -13,6 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # If you already have rsync/scp set up, you can remove this block
       - name: Upload files to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -43,8 +44,7 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
             nvm use 22 >/dev/null 2>&1 || nvm install 22
 
-            echo "Install deps & build (with devDependencies)"
-            unset NODE_ENV   # make sure devDeps (vite) are installed
+            echo "Install deps & build"
             if [ -f package-lock.json ]; then
               npm ci
             else
@@ -57,12 +57,9 @@ jobs:
             export PORT=3000
 
             if pm2 describe theannualreports > /dev/null 2>&1; then
-              echo "Reload existing PM2 app"
               pm2 reload theannualreports --update-env
             else
-              echo "Start new PM2 app"
               pm2 start npm --name theannualreports -- run preview
-              pm2 save
             fi
 
             echo "Health probe"
