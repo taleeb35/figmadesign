@@ -45,6 +45,8 @@ jobs:
             nvm use 22 >/dev/null 2>&1 || nvm install 22
 
             echo "Install deps & build"
+            # IMPORTANT: install devDependencies too
+            unset NODE_ENV
             if [ -f package-lock.json ]; then
               npm ci
             else
@@ -56,7 +58,12 @@ jobs:
             export NODE_ENV=production
             export PORT=3000
 
-            pm2 reload theannualreports --update-env
+            if pm2 describe theannualreports > /dev/null 2>&1; then
+              pm2 reload theannualreports --update-env
+            else
+              pm2 start npm --name theannualreports -- run preview
+              pm2 save
+            fi
 
             echo "Health probe"
             for i in {1..30}; do
