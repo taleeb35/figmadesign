@@ -16,6 +16,9 @@ type ContentFormProps = {
   onClose: () => void;
 };
 
+const MAX_VIDEO_SIZE_MB = 300;
+const MAX_VIDEO_SIZE_BYTES = MAX_VIDEO_SIZE_MB * 1024 * 1024;
+
 const ContentForm = ({ item, onClose }: ContentFormProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -37,8 +40,9 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
   const [englishFlipbookUrl, setEnglishFlipbookUrl] = useState(item?.english_flipbook_url || "");
   const [arabicFlipbookUrl, setArabicFlipbookUrl] = useState(item?.arabic_flipbook_url || "");
   
-  // YouTube fields
-  const [youtubeUrl, setYoutubeUrl] = useState(item?.youtube_url || "");
+  // Video fields (replacing YouTube URL)
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoUrl, setVideoUrl] = useState(item?.youtube_url || "");
 
 
   const uploadFile = async (file: File, path: string): Promise<string> => {
@@ -53,6 +57,22 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
       .getPublicUrl(data.path);
 
     return publicUrl;
+  };
+
+  const handleVideoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > MAX_VIDEO_SIZE_BYTES) {
+        toast({
+          title: "File too large",
+          description: `Video file must be less than ${MAX_VIDEO_SIZE_MB}MB. Selected file is ${(file.size / (1024 * 1024)).toFixed(2)}MB.`,
+          variant: "destructive",
+        });
+        e.target.value = "";
+        return;
+      }
+      setVideoFile(file);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -103,7 +123,13 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
         dataToSave.english_flipbook_url = englishFlipbookUrl || null;
         dataToSave.arabic_flipbook_url = arabicFlipbookUrl || null;
       } else if (contentType === "youtube") {
-        dataToSave.youtube_url = youtubeUrl;
+        // Handle video file upload
+        if (videoFile) {
+          const url = await uploadFile(videoFile, `videos/${Date.now()}_${videoFile.name}`);
+          dataToSave.youtube_url = url;
+        } else if (item) {
+          dataToSave.youtube_url = videoUrl;
+        }
       }
 
       if (item) {
@@ -268,15 +294,23 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
 
           {contentType === "youtube" && (
             <div>
-              <Label htmlFor="youtubeUrl">YouTube URL</Label>
+              <Label htmlFor="videoFile">Video File (Max {MAX_VIDEO_SIZE_MB}MB)</Label>
               <Input
-                id="youtubeUrl"
-                type="url"
-                value={youtubeUrl}
-                onChange={(e) => setYoutubeUrl(e.target.value)}
-                required
-                placeholder="https://www.youtube.com/watch?v=..."
+                id="videoFile"
+                type="file"
+                accept="video/*"
+                onChange={handleVideoFileChange}
               />
+              {videoUrl && !videoFile && (
+                <div className="mt-2">
+                  <p className="text-sm text-muted-foreground mb-2">Current video:</p>
+                  <video 
+                    src={videoUrl} 
+                    className="max-w-xs h-32 object-cover rounded border"
+                    controls
+                  />
+                </div>
+              )}
             </div>
           )}
 
