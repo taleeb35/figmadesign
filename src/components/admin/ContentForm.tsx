@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { X, Upload } from "lucide-react";
+import { X } from "lucide-react";
 import type { ContentItem } from "./ContentManager";
-import type { ContentCategory } from "./ContentCategoryManager";
 import { CONTENT_TYPE_LABELS } from "@/lib/contentTypeLabels";
 
 type ContentFormProps = {
@@ -22,6 +22,8 @@ const MAX_VIDEO_SIZE_BYTES = MAX_VIDEO_SIZE_MB * 1024 * 1024;
 const ContentForm = ({ item, onClose }: ContentFormProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadingFileName, setUploadingFileName] = useState("");
   const [contentType, setContentType] = useState<"pdf" | "flipbook" | "youtube">(item?.content_type || "pdf");
   const [title, setTitle] = useState(item?.title || "");
   const [year, setYear] = useState<string>((item?.year?.toString()) || new Date().getFullYear().toString());
@@ -44,8 +46,62 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState(item?.youtube_url || "");
 
+  const uploadFileWithProgress = async (file: File, path: string): Promise<string> => {
+    setUploadingFileName(file.name);
+    setUploadProgress(0);
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData.session?.access_token;
+    
+    if (!accessToken) throw new Error("Not authenticated");
+
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const bucketName = "content-files";
+    const uploadUrl = `${supabaseUrl}/storage/v1/object/${bucketName}/${path}`;
+
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      
+      xhr.upload.addEventListener("progress", (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          setUploadProgress(percentComplete);
+        }
+      });
+
+      xhr.addEventListener("load", () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const { data: { publicUrl } } = supabase.storage
+            .from(bucketName)
+            .getPublicUrl(path);
+          setUploadProgress(100);
+          resolve(publicUrl);
+        } else {
+          reject(new Error(`Upload failed: ${xhr.statusText || 'Unknown error'}`));
+        }
+      });
+
+      xhr.addEventListener("error", () => {
+        reject(new Error("Upload failed due to network error"));
+      });
+
+      xhr.addEventListener("abort", () => {
+        reject(new Error("Upload was aborted"));
+      });
+
+      xhr.open("POST", uploadUrl, true);
+      xhr.setRequestHeader("Authorization", `Bearer ${accessToken}`);
+      xhr.setRequestHeader("x-upsert", "true");
+      xhr.send(file);
+    });
+  };
 
   const uploadFile = async (file: File, path: string): Promise<string> => {
+    // Use progress upload for large files (> 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      return uploadFileWithProgress(file, path);
+    }
+    
     const { data, error } = await supabase.storage
       .from("content-files")
       .upload(path, file, { upsert: true });
@@ -301,6 +357,11 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
                 accept="video/*"
                 onChange={handleVideoFileChange}
               />
+              {videoFile && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  Selected: {videoFile.name} ({(videoFile.size / (1024 * 1024)).toFixed(2)}MB)
+                </p>
+              )}
               {videoUrl && !videoFile && (
                 <div className="mt-2">
                   <p className="text-sm text-muted-foreground mb-2">Current video:</p>
@@ -311,6 +372,18 @@ const ContentForm = ({ item, onClose }: ContentFormProps) => {
                   />
                 </div>
               )}
+            </div>
+          )}
+
+          {loading && uploadProgress > 0 && (
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">
+                  Uploading: {uploadingFileName}
+                </span>
+                <span className="font-medium">{uploadProgress}%</span>
+              </div>
+              <Progress value={uploadProgress} className="h-2" />
             </div>
           )}
 
