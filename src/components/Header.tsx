@@ -91,7 +91,7 @@ const Header = () => {
       </div>
     </header>
 
-      <a href="https://api.whatsapp.com/send?phone=966703317655" target="_blank" rel="noopener noreferrer">
+      <a href="https://api.whatsapp.com/send?phone=966556713307" target="_blank" rel="noopener noreferrer">
         <img src={whatsapp} alt="Contact us on WhatsApp" className="whatsapp_icon" />
       </a>
     </>
